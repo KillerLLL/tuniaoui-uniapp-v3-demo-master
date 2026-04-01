@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)"
+    ]
+  }
+}

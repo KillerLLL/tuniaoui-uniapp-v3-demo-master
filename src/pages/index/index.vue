@@ -38,8 +38,8 @@ const {
 // 底部导航栏数据
 const tabbarData = [
   { text: '首页', icon: 'home-fill' },
-  { text: '列表', icon: 'list-fold' },
-  { text: '图鸟', icon: 'logo-tuniao' },
+  { text: '列表', icon: 'menu-fill' },
+  { text: '我的', icon: 'my-fill' },
 ]
 
 // 页面总数（包括基础和组件）
@@ -143,6 +143,13 @@ const floatMenuData = ref([
     icon: 'menu-more',
     color: 'tn-gradient-bg__cool-6',
     pageIndex: 3,
+  },
+  {
+    id: 'mine',
+    name: '我的',
+    icon: 'my',
+    color: 'tn-gradient-bg__cool-9',
+    pageIndex: 4,
   },
 ])
 

@@ -110,20 +110,40 @@ This project uses **pnpm** as the package manager.
 ## Architecture
 
 ### Directory Structure
-- `src/pages/` - Main application pages
-- `src/demo-pages/` - Component demos organized by category (basic/, component/)
-- `src/plugin-demo/` - Plugin component demos (tn-color-select, tn-comment-list, etc.)
-- `src/components/` - Custom demo components (custom-page, demo-container)
-- `src/hooks/` - Composable functions (use-demo-h5-page, use-wx-share)
-- `src/config/` - Configuration files (upload headers)
-- `tuniaoui/` - Local TuniaoUI component library (aliased from @tuniao/tnui-vue3-uniapp)
-- `src/static/` - Static assets
+
+#### 主包（仅首页入口，尽量精简）
+- `src/pages/` - 主包页面，仅保留启动入口页（index）
+
+#### 业务分包（每个模块独立分包）
+- `src/biz-pages/login/` - 登录模块分包
+- `src/biz-pages/<module>/` - 其他业务模块分包，按模块名独立创建（如 user、order 等）
+
+#### 业务支撑目录
+- `src/api/` - API 接口层，按业务模块拆分文件（user.js、order.js 等）
+- `src/utils/` - 通用工具函数（request.js 请求封装、format.js 格式化等）
+- `src/hooks/` - 组合式函数（composables）
+- `src/components/` - 业务公共组件
+- `src/config/` - 业务配置文件
+
+#### Demo 相关（非业务代码，不要在其中编写业务逻辑）
+- `src/demo-pages/` - TuniaoUI 组件演示页面 (basic/, component/)
+- `src/plugin-demo/` - 插件组件演示 (tn-color-select, tn-comment-list 等)
+
+#### 其他
+- `src/static/` - 静态资源
+- `tuniaoui/` - 本地 TuniaoUI 组件库（aliased from @tuniao/tnui-vue3-uniapp）
 
 ### Key Configuration
 - `vite.config.ts` - Vite configuration with UniApp plugin
-- `pages.json` - UniApp routing configuration with subPackages structure
+- `pages.json` - UniApp 路由配置，主包仅含首页入口，业务页面按模块注册在 `subPackages` 中
 - `.eslintrc.json` - Extends @tuniao/eslint-config
 - `.prettierrc` - Prettier config: single quotes, no semicolons, 80 char width
+
+### 分包规则
+- **主包** `pages/` 只放首页入口，不放业务页面
+- **业务分包** `biz-pages/<module>/` 每个业务模块一个独立分包
+- 新增业务模块时：创建 `src/biz-pages/<module>/` 目录，在 `pages.json` 的 `subPackages` 中注册
+- 跳转路径格式：`/biz-pages/<module>/<page>`
 
 ### Entry Point
 - `src/main.ts` - Creates app, globally registers TnIcon component

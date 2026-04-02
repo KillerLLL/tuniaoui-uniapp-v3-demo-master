@@ -1,13 +1,10 @@
 /**
  * 格式化数字，往数值后添加单位并保留指定位数的小数
- * @param value 待格式化的数值
- * @param digits 保留的小数位数
- * @returns 返回截取带单位后的字符串
+ * @param {string|number} value 待格式化的数值
+ * @param {number} [digits=2] 保留的小数位数
+ * @returns {string} 返回截取带单位后的字符串
  */
-export const formatNumberWithQuantityUnit = (
-  value: string | number,
-  digits = 2
-): string => {
+export const formatNumberWithQuantityUnit = (value, digits = 2) => {
   // 数值分割点
   const unitSplit = [
     { value: 1, symbol: '' },

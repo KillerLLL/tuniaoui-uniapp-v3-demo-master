@@ -1,10 +1,7 @@
 /**
  * 复制到剪切板
  */
-export const copyToClipBoard = (
-  text: string | number,
-  successTips = '复制成功'
-) => {
+export const copyToClipBoard = (text, successTips = '复制成功') => {
   if (typeof text === 'number') {
     text = text.toString()
   }

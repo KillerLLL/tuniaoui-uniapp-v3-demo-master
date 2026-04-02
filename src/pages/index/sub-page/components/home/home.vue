@@ -1,55 +1,88 @@
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { inject, ref } from 'vue'
 import { onShow } from '@dcloudio/uni-app'
-import TnSwiper from '@tuniao/tnui-vue3-uniapp/components/swiper/src/swiper.vue'
+import TnSearchBox from '@tuniao/tnui-vue3-uniapp/components/search-box/src/search-box.vue'
+import TnNoticeBar from '@tuniao/tnui-vue3-uniapp/components/notice-bar/src/notice-bar.vue'
 import TnIcon from '@tuniao/tnui-vue3-uniapp/components/icon/src/icon.vue'
+import TnTitle from '@tuniao/tnui-vue3-uniapp/components/title/src/title.vue'
 
-// 轮播图数据
-const swiperData = ref([
-  'https://resource.tuniaokj.com/images/vue3/market/vue3-banner-1-min.jpg',
-  'https://resource.tuniaokj.com/images/vue3/market/vue3-banner-2-min.jpg',
-  'https://resource.tuniaokj.com/images/vue3/market/vue3-banner-3-min.jpg',
+import { indexPageContextKey } from '@/tokens'
+import type { IndexPageContext } from '@/tokens'
+
+// 获取页面切换方法
+const indexPageContext = inject(indexPageContextKey) as IndexPageContext
+
+// 搜索关键词
+const searchValue = ref('')
+
+// 通知栏数据
+const noticeData = ref([
+  'TuniaoUI Vue3 UniApp 版本已上线，欢迎使用',
+  '新版本支持 60+ 组件，覆盖多种使用场景',
+  '支持 H5、微信小程序、App 多端运行',
 ])
 
-// 金刚区导航数据
+// 快捷导航数据 - 展示主要功能入口
 const navData = ref([
-  { icon: 'shop', name: '商城', color: '#fbbd08' },
-  { icon: 'gift', name: '礼品', color: '#fa3534' },
-  { icon: 'coupon', name: '优惠券', color: '#ff871f' },
-  { icon: 'discover', name: '发现', color: '#1cbbb4' },
-  { icon: 'topic', name: '话题', color: '#8799a3' },
-  { icon: 'rank', name: '排行', color: '#ffc107' },
-  { icon: 'message', name: '消息', color: '#007aff' },
-  { icon: 'user', name: '我的', color: '#4cd964' },
+  { icon: 'code', name: '基础组件', color: '#007aff', pageIndex: 2 },
+  { icon: 'menu-circle-fill', name: '组件库', color: '#ff6b35', pageIndex: 3 },
+  { icon: 'menu-list', name: '组件列表', color: '#00b578', pageIndex: 1 },
+  { icon: 'logo-tuniao', name: '关于图鸟', color: '#e8485e', pageIndex: 4 },
 ])
 
-// 推荐列表数据
-const recommendList = ref([
+// 特性展示数据
+const featureData = ref([
   {
-    id: 1,
-    title: 'Vue3 全栈开发实战教程',
-    desc: '从零开始学习Vue3全栈开发，包含前端和后端完整内容',
-    image: 'https://resource.tuniaokj.com/images/vue3/banner/vue3-1-min.jpg',
-    price: '¥99',
-    tag: '热门',
+    icon: 'menu-fill',
+    title: '60+ 组件',
+    desc: '丰富的基础和业务组件',
+    color: '#007aff',
+    bg: 'rgba(0, 122, 255, 0.12)',
   },
   {
-    id: 2,
-    title: 'UniApp 跨平台开发指南',
-    desc: '一套代码多端运行，快速构建跨平台应用',
-    image: 'https://resource.tuniaokj.com/images/vue3/banner/vue3-2-min.jpg',
-    price: '¥79',
-    tag: '推荐',
+    icon: 'image-text-fill',
+    title: '多端适配',
+    desc: 'H5 / 小程序 / App',
+    color: '#00b578',
+    bg: 'rgba(0, 181, 120, 0.12)',
   },
   {
-    id: 3,
-    title: 'TypeScript 进阶课程',
-    desc: '深入理解TypeScript高级特性，提升代码质量',
-    image: 'https://resource.tuniaokj.com/images/vue3/banner/vue3-3-min.jpg',
-    price: '¥89',
-    tag: '新课',
+    icon: 'star-fill',
+    title: 'Vue 3',
+    desc: 'Composition API 支持',
+    color: '#ff6b35',
+    bg: 'rgba(255, 107, 53, 0.12)',
+  },
+  {
+    icon: 'set-fill',
+    title: '高度可定制',
+    desc: '灵活的主题和样式配置',
+    color: '#e8485e',
+    bg: 'rgba(232, 72, 94, 0.12)',
   },
 ])
+
+// 热门组件快捷入口
+const hotComponents = ref([
+  { icon: 'write', name: 'Button' },
+  { icon: 'search', name: 'SearchBox' },
+  { icon: 'order', name: 'Navbar' },
+  { icon: 'folder', name: 'Tabs' },
+  { icon: 'square', name: 'Popup' },
+  { icon: 'calendar', name: 'Calendar' },
+  { icon: 'circle', name: 'Swiper' },
+  { icon: 'tag', name: 'Tag' },
+])
+
+// 搜索事件
+const onSearch = (val: string) => {
+  uni.showToast({ title: `搜索: ${val}`, icon: 'none' })
+}
+
+// 导航点击事件 - 跳转到对应页面
+const onNavClick = (item: any) => {
+  indexPageContext?.switchTab?.(item.pageIndex)
+}
 
 onShow(() => {
   console.log('首页显示')
@@ -68,77 +101,94 @@ export default {
 
 <template>
   <view class="home-page">
-    <!-- 顶部搜索栏 -->
-    <view class="search-bar tn-white_bg">
-      <view class="search-box tn-flex tn-flex-col-center">
-        <TnIcon name="search" color="#999" />
-        <text class="placeholder">搜索你感兴趣的内容</text>
-      </view>
-      <view class="message-btn">
-        <TnIcon name="message" size="48" />
+    <!-- 顶部标题区域 -->
+    <view class="header-area">
+      <view class="greeting">
+        <view class="greeting-text">
+          <text class="greeting-title">TuniaoUI</text>
+          <text class="greeting-sub">Vue3 UniApp 组件库</text>
+        </view>
+        <view class="greeting-logo">
+          <TnIcon name="logo-tuniao" size="56" color="#fff" />
+        </view>
       </view>
     </view>
 
-    <!-- 轮播图 -->
-    <view class="swiper-container">
-      <TnSwiper
-        v-model="swiperData"
-        :autoplay="true"
-        :interval="3000"
-        :indicator="true"
-        height="320rpx"
+    <!-- 搜索栏 -->
+    <view class="search-area">
+      <TnSearchBox
+        v-model="searchValue"
+        placeholder="搜索组件..."
+        shape="round"
+        :search-button="false"
+        @search="onSearch"
       />
     </view>
 
-    <!-- 金刚区导航 -->
-    <view class="nav-grid tn-white_bg">
+    <!-- 通知栏 -->
+    <view class="notice-area">
+      <TnNoticeBar
+        :data="noticeData"
+        left-icon="sound"
+        right-icon="right"
+      />
+    </view>
+
+    <!-- 快捷导航 -->
+    <view class="nav-section tn-white_bg">
       <view
         v-for="(item, index) in navData"
         :key="index"
-        class="nav-item tn-flex tn-flex-col tn-flex-center"
+        class="nav-item"
+        @tap="onNavClick(item)"
       >
         <view class="nav-icon" :style="{ backgroundColor: item.color }">
-          <TnIcon :name="item.icon" color="#fff" size="40" />
+          <TnIcon :name="item.icon" color="#fff" size="44" />
         </view>
         <text class="nav-name">{{ item.name }}</text>
       </view>
     </view>
 
-    <!-- 推荐列表 -->
-    <view class="recommend-section">
-      <view class="section-header tn-flex tn-flex-col-center tn-flex-between">
-        <view class="section-title">
-          <text class="title-text">为你推荐</text>
-          <view class="title-line" />
-        </view>
-        <view class="section-more">
-          <text class="more-text">更多</text>
-          <TnIcon name="right" size="24" />
-        </view>
-      </view>
-
-      <view class="recommend-list">
+    <!-- 特性展示 -->
+    <view class="feature-section">
+      <TnTitle title="核心特性" mode="vLine" size="lg" />
+      <view class="feature-grid">
         <view
-          v-for="item in recommendList"
-          :key="item.id"
-          class="recommend-item tn-white_bg"
+          v-for="(item, index) in featureData"
+          :key="index"
+          class="feature-card"
         >
-          <view class="item-image">
-            <image :src="item.image" mode="aspectFill" />
-            <view v-if="item.tag" class="item-tag tn-type-primary_bg">
-              {{ item.tag }}
-            </view>
+          <view class="feature-icon" :style="{ backgroundColor: item.bg }">
+            <TnIcon :name="item.icon" :color="item.color" size="48" />
           </view>
-          <view class="item-content">
-            <view class="item-title">{{ item.title }}</view>
-            <view class="item-desc tn-gray_text">{{ item.desc }}</view>
-            <view class="item-footer tn-flex tn-flex-col-center tn-flex-between">
-              <view class="item-price tn-type-error_text">{{ item.price }}</view>
-              <view class="item-btn">查看详情</view>
-            </view>
+          <view class="feature-info">
+            <text class="feature-title">{{ item.title }}</text>
+            <text class="feature-desc">{{ item.desc }}</text>
           </view>
         </view>
       </view>
+    </view>
+
+    <!-- 热门组件 -->
+    <view class="hot-section">
+      <TnTitle title="热门组件" mode="vLine" size="lg" />
+      <view class="hot-grid tn-white_bg">
+        <view
+          v-for="(item, index) in hotComponents"
+          :key="index"
+          class="hot-item"
+        >
+          <view class="hot-icon">
+            <TnIcon :name="item.icon" color="#007aff" size="44" />
+          </view>
+          <text class="hot-name">{{ item.name }}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 页脚信息 -->
+    <view class="footer-area">
+      <text class="footer-text">TuniaoUI v3 · Made with ❤️</text>
     </view>
   </view>
 </template>
@@ -148,178 +198,187 @@ export default {
   position: relative;
   width: 100%;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #f4f5f7;
+  padding-bottom: env(safe-area-inset-bottom);
 
-  .search-bar {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    padding: 20rpx 30rpx;
-    box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.05);
+  // 顶部区域
+  .header-area {
+    padding: 40rpx 30rpx 30rpx;
+    background: linear-gradient(135deg, #007aff, #00b578);
 
-    .search-box {
-      flex: 1;
-      height: 70rpx;
-      padding: 0 30rpx;
-      margin-right: 20rpx;
-      background-color: #f5f5f5;
-      border-radius: 35rpx;
+    .greeting {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
 
-      .placeholder {
-        margin-left: 10rpx;
-        font-size: 28rpx;
-        color: #999;
+      .greeting-text {
+        display: flex;
+        flex-direction: column;
+
+        .greeting-title {
+          font-size: 48rpx;
+          font-weight: bold;
+          color: #fff;
+        }
+
+        .greeting-sub {
+          margin-top: 8rpx;
+          font-size: 28rpx;
+          color: rgba(255, 255, 255, 0.9);
+        }
       }
-    }
 
-    .message-btn {
-      padding: 10rpx;
-    }
-  }
-
-  .swiper-container {
-    margin: 20rpx 30rpx;
-    border-radius: 20rpx;
-    overflow: hidden;
-  }
-
-  .nav-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 30rpx;
-    padding: 40rpx 30rpx;
-    margin: 0 30rpx 30rpx;
-    border-radius: 20rpx;
-
-    .nav-item {
-      .nav-icon {
-        width: 100rpx;
-        height: 100rpx;
-        margin-bottom: 15rpx;
-        border-radius: 50%;
+      .greeting-logo {
+        width: 90rpx;
+        height: 90rpx;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: rgba(255, 255, 255, 0.25);
+        border-radius: 24rpx;
+      }
+    }
+  }
+
+  // 搜索栏
+  .search-area {
+    padding: 20rpx 30rpx;
+    background: #fff;
+  }
+
+  // 通知栏
+  .notice-area {
+    margin: 20rpx 30rpx 0;
+    border-radius: 16rpx;
+    overflow: hidden;
+  }
+
+  // 快捷导航
+  .nav-section {
+    display: flex;
+    justify-content: space-around;
+    padding: 40rpx 20rpx;
+    margin: 30rpx;
+    border-radius: 24rpx;
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+
+      .nav-icon {
+        width: 96rpx;
+        height: 96rpx;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 24rpx;
+        margin-bottom: 16rpx;
       }
 
       .nav-name {
-        font-size: 24rpx;
+        font-size: 26rpx;
         color: #333;
       }
     }
   }
 
-  .recommend-section {
-    padding: 0 30rpx 40rpx;
+  // 特性展示
+  .feature-section {
+    padding: 0 30rpx;
+    margin-bottom: 30rpx;
 
-    .section-header {
-      margin-bottom: 30rpx;
-      padding: 0 10rpx;
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20rpx;
+      margin-top: 24rpx;
 
-      .section-title {
-        position: relative;
+      .feature-card {
         display: flex;
         align-items: center;
-
-        .title-text {
-          font-size: 36rpx;
-          font-weight: bold;
-          color: #333;
-        }
-
-        .title-line {
-          width: 60rpx;
-          height: 6rpx;
-          margin-left: 20rpx;
-          background: linear-gradient(90deg, #fbbd08, #fa3534);
-          border-radius: 3rpx;
-        }
-      }
-
-      .section-more {
-        display: flex;
-        align-items: center;
-        font-size: 26rpx;
-        color: #999;
-      }
-    }
-
-    .recommend-list {
-      .recommend-item {
-        display: flex;
-        margin-bottom: 30rpx;
-        padding: 20rpx;
+        padding: 28rpx 24rpx;
+        background: #fff;
         border-radius: 20rpx;
-        overflow: hidden;
 
-        .item-image {
-          position: relative;
-          width: 240rpx;
-          height: 180rpx;
+        .feature-icon {
+          width: 80rpx;
+          height: 80rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 20rpx;
           margin-right: 20rpx;
-          border-radius: 15rpx;
-          overflow: hidden;
           flex-shrink: 0;
-
-          image {
-            width: 100%;
-            height: 100%;
-          }
-
-          .item-tag {
-            position: absolute;
-            top: 10rpx;
-            left: 10rpx;
-            padding: 4rpx 12rpx;
-            font-size: 20rpx;
-            color: #fff;
-            border-radius: 8rpx;
-          }
         }
 
-        .item-content {
-          flex: 1;
+        .feature-info {
           display: flex;
           flex-direction: column;
-          justify-content: space-between;
-          padding: 10rpx 0;
+          overflow: hidden;
 
-          .item-title {
-            font-size: 30rpx;
+          .feature-title {
+            font-size: 28rpx;
             font-weight: bold;
             color: #333;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
           }
 
-          .item-desc {
-            font-size: 24rpx;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-          }
-
-          .item-footer {
-            .item-price {
-              font-size: 36rpx;
-              font-weight: bold;
-            }
-
-            .item-btn {
-              padding: 10rpx 30rpx;
-              font-size: 24rpx;
-              color: #fff;
-              background: linear-gradient(90deg, #fbbd08, #fa3534);
-              border-radius: 30rpx;
-            }
+          .feature-desc {
+            font-size: 22rpx;
+            color: #666;
+            margin-top: 6rpx;
           }
         }
       }
+    }
+  }
+
+  // 热门组件
+  .hot-section {
+    padding: 0 30rpx;
+    margin-bottom: 30rpx;
+
+    .hot-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20rpx;
+      padding: 30rpx 20rpx;
+      margin-top: 24rpx;
+      border-radius: 24rpx;
+
+      .hot-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .hot-icon {
+          width: 88rpx;
+          height: 88rpx;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0, 122, 255, 0.1);
+          border-radius: 20rpx;
+          margin-bottom: 12rpx;
+        }
+
+        .hot-name {
+          font-size: 24rpx;
+          color: #333;
+        }
+      }
+    }
+  }
+
+  // 页脚
+  .footer-area {
+    display: flex;
+    justify-content: center;
+    padding: 40rpx 0 60rpx;
+
+    .footer-text {
+      font-size: 24rpx;
+      color: #ccc;
     }
   }
 }

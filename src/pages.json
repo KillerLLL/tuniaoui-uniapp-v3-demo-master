@@ -4,6 +4,8 @@
       "path": "pages/index/index",
       "style": {
         "navigationBarTitleText": "图鸟UI",
+        "enablePullDownRefresh": true,
+        "backgroundTextStyle": "dark",
         "mp-alipay": {
           "defaultTitle": ""
         }

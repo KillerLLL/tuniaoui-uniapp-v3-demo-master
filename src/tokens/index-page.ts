@@ -11,6 +11,7 @@ export type IndexPageContext = {
   items: IndexSubPageContext[]
   addItem: (item: IndexSubPageContext) => void
   removeItem: (uid: number) => void
+  switchTab?: (index: number) => void
 }
 
 export const indexPageContextKey: InjectionKey<IndexPageContext> =

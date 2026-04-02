@@ -5,10 +5,12 @@ import { useOrderedChildren } from '@tuniao/tnui-vue3-uniapp/hooks'
 
 import TnTabbar from '@tuniao/tnui-vue3-uniapp/components/tabbar/src/tabbar.vue'
 import TnTabbarItem from '@tuniao/tnui-vue3-uniapp/components/tabbar/src/tabbar-item.vue'
+import FloatMenu from '@/components/float-menu/float-menu.vue'
 
+import HomePage from './sub-page/components/home/home.vue'
+import ListPage from './sub-page/components/list/list.vue'
 import BasicPage from './sub-page/components/basic/basic.vue'
 import ComponentPage from './sub-page/components/component/component.vue'
-import TemplatePage from './sub-page/components/template/template.vue'
 import AboutPage from './sub-page/components/about/about.vue'
 
 import type { CSSProperties } from 'vue'
@@ -35,35 +37,66 @@ const {
 
 // 底部导航栏数据
 const tabbarData = [
-  { text: '基础', icon: 'assign-fill' },
-  { text: '组件', icon: 'menu-more-fill' },
-  { text: '模板', icon: 'menu-match-fill' },
+  { text: '首页', icon: 'home-fill' },
+  { text: '列表', icon: 'list-fold' },
   { text: '图鸟', icon: 'logo-tuniao' },
 ]
+
+// 页面总数（包括基础和组件）
+const totalPages = 5
+// 底部Tab索引到实际页面索引的映射
+const tabToPageIndex: Record<number, number> = {
+  0: 0, // 首页
+  1: 1, // 列表
+  2: 4, // 图鸟
+}
+
+// 当前显示的页面索引
+const currentPageIndex = ref<number>(0)
+
 // 导航切换事件
 const onTabbarChange = (index: string | number) => {
-  if (!pageStatus.value?.[index as number]) {
-    pageStatus.value[index as number] = true
+  const pageIndex = tabToPageIndex[index as number]
+  switchToPage(pageIndex)
+}
+
+// 切换到指定页面
+const switchToPage = (index: number) => {
+  if (!pageStatus.value?.[index]) {
+    pageStatus.value[index] = true
     nextTick(() => {
-      items.value?.[index as number]?.onLoad?.()
+      items.value?.[index]?.onLoad?.()
     })
   }
-
-  items.value?.[index as number]?.onShow?.()
+  currentPageIndex.value = index
+  items.value?.[index]?.onShow?.()
 }
 
 // 记录每个子页面的状态
-const pageStatus = ref(Array.from({ length: tabbarData.length }, () => false))
+const pageStatus = ref(Array.from({ length: totalPages }, () => false))
 
-// 当前选中的子页面的索引
-const currentTabbarIndex = ref<number>(-1)
+// 当前选中的底部导航索引
+const currentTabbarIndex = computed({
+  get: () => {
+    // 根据当前页面索引返回对应的底部tab索引
+    for (const [tabIndex, pageIndex] of Object.entries(tabToPageIndex)) {
+      if (Number(pageIndex) === currentPageIndex.value) {
+        return Number(tabIndex)
+      }
+    }
+    return 0
+  },
+  set: (value) => {
+    // Tabbar组件内部会设置这个值，我们不需要做任何事
+  },
+})
 
 // pageContainer的样式
 const pageContainerStyle = computed<(index: number) => CSSProperties>(() => {
   return (index: number) => {
     const style: CSSProperties = {}
 
-    if (index !== currentTabbarIndex.value) {
+    if (index !== currentPageIndex.value) {
       style.display = 'none'
     }
 
@@ -77,7 +110,7 @@ onLoad((options: any) => {
   // 设置当前子页面的状态为true
   pageStatus.value[index] = true
   nextTick(() => {
-    currentTabbarIndex.value = index
+    currentPageIndex.value = index
     setTimeout(() => {
       // 执行子页面的onLoad钩子
       items.value?.[index]?.onLoad?.()
@@ -91,8 +124,33 @@ provide(
     items,
     addItem,
     removeItem,
+    switchTab: switchToPage,
   })
 )
+
+// 悬浮按钮菜单数据
+const floatMenuData = ref([
+  {
+    id: 'basic',
+    name: '基础组件',
+    icon: 'font',
+    color: 'tn-gradient-bg__cool-3',
+    pageIndex: 2,
+  },
+  {
+    id: 'component',
+    name: '组件库',
+    icon: 'menu-more',
+    color: 'tn-gradient-bg__cool-6',
+    pageIndex: 3,
+  },
+])
+
+// 悬浮按钮菜单点击事件
+const onFloatMenuClick = (item: any) => {
+  switchToPage(item.pageIndex)
+}
+
 </script>
 
 <template>
@@ -104,7 +162,7 @@ provide(
       :style="pageContainerStyle(0)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <BasicPage />
+        <HomePage />
       </scroll-view>
     </view>
     <view
@@ -113,7 +171,7 @@ provide(
       :style="pageContainerStyle(1)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <ComponentPage />
+        <ListPage />
       </scroll-view>
     </view>
     <view
@@ -122,13 +180,22 @@ provide(
       :style="pageContainerStyle(2)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <TemplatePage />
+        <BasicPage />
       </scroll-view>
     </view>
     <view
       v-if="pageStatus[3]"
       class="page__container"
       :style="pageContainerStyle(3)"
+    >
+      <scroll-view class="scroll-view" scroll-y>
+        <ComponentPage />
+      </scroll-view>
+    </view>
+    <view
+      v-if="pageStatus[4]"
+      class="page__container"
+      :style="pageContainerStyle(4)"
     >
       <scroll-view class="scroll-view" scroll-y>
         <AboutPage />
@@ -153,6 +220,11 @@ provide(
       :active-icon="item.icon"
     />
   </TnTabbar>
+  <!-- 悬浮按钮 -->
+  <FloatMenu
+    :menu-data="floatMenuData"
+    @menu-click="onFloatMenuClick"
+  />
 </template>
 
 <style lang="scss" scoped>

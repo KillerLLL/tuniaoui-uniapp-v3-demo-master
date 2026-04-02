@@ -1,0 +1,98 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "Write(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "Edit(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "Glob(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)"
+    ],
+    "additionalDirectories": [
+      "f:\\work\\mcp\\tuniaoui-uniapp-v3-demo-master\\.claude\\skills"
+    ]
+  },
+  "skills": {
+    "dev": {
+      "description": "启动开发服务器",
+      "examples": [
+        "/dev",
+        "/dev mp-weixin",
+        "/dev app"
+      ]
+    },
+    "build": {
+      "description": "构建生产版本",
+      "examples": [
+        "/build",
+        "/build mp-weixin",
+        "/build app"
+      ]
+    },
+    "component": {
+      "description": "创建新组件",
+      "examples": [
+        "/component button-group"
+      ]
+    },
+    "page": {
+      "description": "创建新页面",
+      "examples": [
+        "/page user-profile"
+      ]
+    },
+    "type-check": {
+      "description": "类型检查",
+      "examples": [
+        "/type-check"
+      ]
+    },
+    "lint": {
+      "description": "代码检查",
+      "examples": [
+        "/lint"
+      ]
+    },
+    "format": {
+      "description": "格式化代码",
+      "examples": [
+        "/format"
+      ]
+    }
+  },
+  "agents": {
+    "component-developer": {
+      "description": "TuniaoUI 组件开发专家",
+      "useFor": "创建和维护 TuniaoUI 组件"
+    },
+    "demo-creator": {
+      "description": "Demo 页面创建专家",
+      "useFor": "创建组件演示页面"
+    },
+    "platform-tester": {
+      "description": "跨平台测试专家",
+      "useFor": "确保代码在各平台正常运行"
+    },
+    "code-reviewer": {
+      "description": "代码审查专家",
+      "useFor": "确保代码质量和最佳实践"
+    },
+    "bug-fixer": {
+      "description": "Bug 修复专家",
+      "useFor": "快速定位和修复问题"
+    },
+    "stylist": {
+      "description": "UI 样式专家",
+      "useFor": "负责组件样式和主题设计"
+    },
+    "documenter": {
+      "description": "文档编写专家",
+      "useFor": "负责组件文档和使用说明"
+    }
+  },
+  "hooks": {
+    "preCommit": [
+      "type-check",
+      "lint"
+    ]
+  }
+}

@@ -8,7 +8,7 @@
       "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)"
     ],
     "additionalDirectories": [
-      "f:\\work\\mcp\\tuniaoui-uniapp-v3-demo-master\\.claude\\skills"
+      "f:\\work\\mcp\\tuniaoui-uniapp-v3-demo-master\\.claude"
     ]
   },
   "skills": {
@@ -57,6 +57,13 @@
       "examples": [
         "/format"
       ]
+    },
+    "multi-agent": {
+      "description": "启动多智能体协作系统",
+      "examples": [
+        "/multi-agent 帮我创建一个 badge 组件",
+        "/multi-agent 优化这段代码的性能"
+      ]
     }
   },
   "agents": {
@@ -87,6 +94,43 @@
     "documenter": {
       "description": "文档编写专家",
       "useFor": "负责组件文档和使用说明"
+    },
+    "human-brain": {
+      "description": "人性脑 - 识别意图与方向",
+      "useFor": "多智能体协作系统第一步：识别用户真实需求"
+    },
+    "science-brain": {
+      "description": "科学脑 - 逻辑与推理",
+      "useFor": "多智能体协作系统第二步：构建完整解决方案"
+    },
+    "scholar-brain": {
+      "description": "学者脑 - 事实、规则、依据",
+      "useFor": "多智能体协作系统第三步：确保符合规范和标准"
+    },
+    "critic-brain": {
+      "description": "质疑官 - 风险与可行性",
+      "useFor": "多智能体协作系统第四步：批判性审查和风险评估"
+    },
+    "executor-brain": {
+      "description": "执行者 - 整合与交付",
+      "useFor": "多智能体协作系统第五步：整合输出最终结果"
+    }
+  },
+  "multiAgentSystem": {
+    "enabled": true,
+    "mode": "auto",
+    "brains": [
+      "human-brain",
+      "science-brain",
+      "scholar-brain",
+      "critic-brain",
+      "executor-brain"
+    ],
+    "rules": {
+      "sequential": true,
+      "skipNotAllowed": true,
+      "autoConfirm": true,
+      "completeThinking": true
     }
   },
   "hooks": {

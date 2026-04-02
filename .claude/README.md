@@ -2,6 +2,40 @@
 
 这个目录包含了 TuniaoUI Vue3 UniApp 项目的 Claude Code 专属配置。
 
+## 🚨 重要：多智能体协作系统（默认启用）
+
+**本项目已强制启用多智能体协作系统，所有任务都会自动通过5个智能体协作完成。**
+
+### 协作流程
+
+```
+用户需求
+    ↓
+【人性脑】意图识别 → 任务定位
+    ↓
+【科学脑】方案设计 → 逻辑拆解
+    ↓
+【学者脑】规范检查 → 依据提供
+    ↓
+【质疑官】风险评估 → 可行性分析
+    ↓
+【执行者】整合输出 → 最终结果
+```
+
+### 强制规则
+
+- ✅ 必须按顺序执行全部5个智能体
+- ✅ 必须主动补齐缺失信息
+- ✅ 必须闭环完成思考
+- ❌ 不能跳过任何步骤
+- ❌ 不能向用户询问
+
+**无需手动触发，系统会自动应用多智能体协作模式。**
+
+详见 [`.claude/multi-agent/README.md`](multi-agent/README.md)
+
+---
+
 ## 目录结构
 
 ```
@@ -13,7 +47,8 @@
 │   ├── page.md             # 创建新页面
 │   ├── type-check.md       # 代码检查
 │   ├── lint.md             # 代码检查
-│   └── format.md           # 格式化代码
+│   ├── format.md           # 格式化代码
+│   └── multi-agent.md      # 多智能体系统
 ├── agents/          # Claude Code 专用代理
 │   ├── component-developer.md   # 组件开发专家
 │   ├── demo-creator.md          # Demo 页面创建专家
@@ -22,6 +57,13 @@
 │   ├── bug-fixer.md             # Bug 修复专家
 │   ├── stylist.md               # UI 样式专家
 │   └── documenter.md            # 文档编写专家
+├── multi-agent/    # 多智能体系统配置
+│   ├── human-brain.md           # 人性脑
+│   ├── science-brain.md         # 科学脑
+│   ├── scholar-brain.md         # 学者脑
+│   ├── critic-brain.md          # 质疑官
+│   ├── executor-brain.md        # 执行者
+│   └── README.md
 ├── settings.json    # Claude Code 配置
 └── README.md        # 本文件
 ```
@@ -32,7 +74,6 @@
 
 ### /dev
 启动开发服务器。
-
 ```
 /dev                 # H5 开发
 /dev mp-weixin       # 微信小程序开发
@@ -41,7 +82,6 @@
 
 ### /build
 构建生产版本。
-
 ```
 /build               # H5 构建
 /build mp-weixin     # 微信小程序构建
@@ -50,26 +90,22 @@
 
 ### /component
 创建新的 TuniaoUI 组件。
-
 ```
 /component button-group
 ```
 
 ### /page
 创建新页面。
-
 ```
 /page user-profile
 ```
 
-### /type-check
-运行 ESLint 代码检查。
-
-### /lint
-运行 ESLint 代码检查。
-
-### /format
-使用 Prettier 格式化代码。
+### /multi-agent
+控制多智能体系统（通常自动启用）。
+```
+/multi-agent                # 查看状态
+/multi-agent <需求>         # 使用多智能体处理
+```
 
 ## Agents（代理）
 
@@ -96,10 +132,19 @@ UI 样式专家。负责组件样式和主题设计。
 ### documenter
 文档编写专家。负责组件文档和使用说明。
 
-## 使用方式
+## Multi-Agent System（多智能体系统）
 
-1. **Skills**：直接在对话中使用，如 `/dev mp-weixin`
-2. **Agents**：通过 Claude Code 界面选择合适的代理来处理任务
+### 5个智能体
+
+| 智能体 | 文件 | 职责 |
+|--------|------|------|
+| 🧠 人性脑 | `human-brain.md` | 识别意图、确定目标 |
+| 🔬 科学脑 | `science-brain.md` | 方案设计、逻辑拆解 |
+| 📚 学者脑 | `scholar-brain.md` | 规范检查、依据提供 |
+| ⚠️ 质疑官 | `critic-brain.md` | 风险评估、可行性分析 |
+| 🛠️ 执行者 | `executor-brain.md` | 整合输出、最终结果 |
+
+**注意**：多智能体系统已默认启用，无需手动触发。
 
 ## 配置说明
 
@@ -107,6 +152,7 @@ settings.json 包含以下配置：
 - **permissions**：文件读写权限
 - **skills**：技能定义和示例
 - **agents**：代理定义和用途
+- **multiAgentSystem**：多智能体系统配置（已启用）
 - **hooks**：Git hooks 配置（pre-commit 自动运行 lint）
 
 ## 项目信息
@@ -116,14 +162,11 @@ settings.json 包含以下配置：
 - **支持平台**：微信小程序、H5、原生 App 等
 - **包管理器**：pnpm
 
-## 其他 AI 工具支持
+### 代码规范
 
-项目根目录同时提供了通用的 `skills/` 和 `agents/` 目录，可供其他 AI 编程工具使用：
-
-- **Cursor**: 引用根目录的 skills/agents 文件
-- **GitHub Copilot**: 复制相关规范内容
-- **豆包编程助手**: 参考项目规范
-- **Google Gemini**: 使用项目配置
-- **其他工具**: 均可使用根目录的通用配置
-
-详见 [skills/README.md](../skills/README.md) 和 [agents/README.md](../agents/README.md)
+- 单引号、2空格、无分号
+- 使用 `<script setup>` 语法
+- 使用 uni-app 标签（view/text/image）
+- 样式单位使用 rpx
+- **长逻辑(超过10行)必须添加注释**
+- **复杂逻辑必须添加注释解释处理流程**

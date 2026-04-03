@@ -6,7 +6,7 @@ import { ref, onMounted } from 'vue'
 import { getGrabListApi, grabOrderApi } from '@/api/driver'
 
 // 货源列表
-const grabList = ref([])
+const grabList = ref<any[]>([])
 
 // 筛选状态
 const filterIndex = ref(0)
@@ -33,21 +33,21 @@ const loadData = async () => {
 }
 
 // 筛选切换
-const handleFilterChange = (index) => {
+const handleFilterChange = (index: number) => {
   if (filterIndex.value === index) return
   filterIndex.value = index
   loadData()
 }
 
 // 查看详情
-const goToDetail = (item) => {
+const goToDetail = (item: any) => {
   uni.navigateTo({
     url: `/biz-pages/driver/order/detail?id=${item.id}&type=grab`,
   })
 }
 
 // 抢单
-const handleGrab = async (item) => {
+const handleGrab = async (item: any) => {
   uni.showModal({
     title: '确认抢单',
     content: `确认抢下此订单？运费 ¥${item.freight}`,
@@ -86,7 +86,7 @@ onMounted(() => {
     <view class="top-navbar">
       <text class="navbar-title">抢单大厅</text>
       <view class="navbar-right" @tap="goToSearch">
-        <text class="search-icon">🔍</text>
+        <TnIcon name="search" size="40" />
       </view>
     </view>
 
@@ -131,8 +131,8 @@ onMounted(() => {
           <!-- 装卸地址 -->
           <view class="address-section">
             <view class="address-item">
-              <view class="address-dot start">
-                <text>○</text>
+              <view class="address-icon-box start">
+                <TnIcon name="start" size="24" />
               </view>
               <view class="address-info">
                 <text class="address-label">装货</text>
@@ -141,8 +141,8 @@ onMounted(() => {
             </view>
             <view class="address-line"></view>
             <view class="address-item">
-              <view class="address-dot end">
-                <text>●</text>
+              <view class="address-icon-box end">
+                <TnIcon name="location-fill" size="24" />
               </view>
               <view class="address-info">
                 <text class="address-label">卸货</text>
@@ -170,7 +170,7 @@ onMounted(() => {
 
         <!-- 空状态 -->
         <view class="empty-state" v-if="grabList.length === 0 && !loading">
-          <text class="empty-icon">📦</text>
+          <TnEmpty mode="car" />
           <text class="empty-text">暂无货源</text>
         </view>
       </scroll-view>
@@ -181,7 +181,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .grab-page {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f5f6f8;
 }
 
 .top-navbar {
@@ -200,10 +200,6 @@ onMounted(() => {
 
   .navbar-right {
     padding: 10rpx;
-
-    .search-icon {
-      font-size: 40rpx;
-    }
   }
 }
 
@@ -233,7 +229,7 @@ onMounted(() => {
     }
 
     &.active {
-      background: linear-gradient(135deg, #007aff, #00b4ff);
+      background: linear-gradient(135deg, #007AFF, #00B4FF);
 
       .tab-text {
         color: #fff;
@@ -267,28 +263,28 @@ onMounted(() => {
     gap: 12rpx;
 
     .goods-tag {
-      background: #e6f0ff;
+      background: #E6F0FF;
       padding: 6rpx 16rpx;
       border-radius: 8rpx;
 
       .tag-text {
         font-size: 22rpx;
-        color: #007aff;
+        color: #007AFF;
       }
 
       &.weight {
-        background: #fff7e6;
+        background: #FFF7E6;
 
         .tag-text {
-          color: #ff7a00;
+          color: #FF7A00;
         }
       }
 
       &.distance {
-        background: #e6fff0;
+        background: #E6FFF0;
 
         .tag-text {
-          color: #00b578;
+          color: #00B578;
         }
       }
     }
@@ -309,16 +305,23 @@ onMounted(() => {
     display: flex;
     align-items: flex-start;
 
-    .address-dot {
-      font-size: 28rpx;
+    .address-icon-box {
+      width: 40rpx;
+      height: 40rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-right: 12rpx;
 
       &.start {
-        color: #007aff;
+        background: #E6F0FF;
+        color: #007AFF;
       }
 
       &.end {
-        color: #00b578;
+        background: #E6FFF0;
+        color: #00B578;
       }
     }
 
@@ -343,7 +346,7 @@ onMounted(() => {
     width: 4rpx;
     height: 24rpx;
     background: #ddd;
-    margin-left: 6rpx;
+    margin-left: 18rpx;
     margin-top: 8rpx;
     margin-bottom: 8rpx;
   }
@@ -363,7 +366,7 @@ onMounted(() => {
 
     .freight-value {
       font-size: 40rpx;
-      color: #ff7a00;
+      color: #FF7A00;
       font-weight: bold;
       margin-left: 8rpx;
     }
@@ -387,7 +390,7 @@ onMounted(() => {
       }
 
       &.grab {
-        background: linear-gradient(135deg, #ff7a00, #ff4500);
+        background: linear-gradient(135deg, #FF7A00, #FF4500);
 
         .btn-text {
           color: #fff;
@@ -402,15 +405,11 @@ onMounted(() => {
   text-align: center;
   padding: 100rpx 0;
 
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
   .empty-text {
     font-size: 32rpx;
     color: #999;
+    margin-top: 24rpx;
+    display: block;
   }
 }
 </style>

@@ -5,7 +5,8 @@
       "Write(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
       "Edit(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
       "Glob(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
-      "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)"
+      "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "mcp__MiniMax__web_search"
     ],
     "additionalDirectories": [
       "f:\\work\\mcp\\tuniaoui-uniapp-v3-demo-master\\.claude"
@@ -58,6 +59,22 @@
         "/format"
       ]
     },
+    "design": {
+      "description": "设计稿转代码 - 分析UI图片并生成Vue/UniApp代码",
+      "examples": [
+        "/design",
+        "/design 分析这个设计稿",
+        "/design 还原UI截图"
+      ]
+    },
+    "ui2code": {
+      "description": "UI截图还原 - 将设计稿图片还原为前端代码",
+      "examples": [
+        "/ui2code",
+        "/ui2code 截图",
+        "/ui2code 设计稿转代码"
+      ]
+    },
     "multi-agent": {
       "description": "启动多智能体协作系统",
       "examples": [
@@ -94,6 +111,10 @@
     "documenter": {
       "description": "文档编写专家",
       "useFor": "负责组件文档和使用说明"
+    },
+    "design": {
+      "description": "UI设计专家",
+      "useFor": "分析设计稿图片并生成Vue/UniApp/TuniaoUI代码"
     },
     "human-brain": {
       "description": "人性脑 - 识别意图与方向",

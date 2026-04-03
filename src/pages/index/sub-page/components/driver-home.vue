@@ -26,14 +26,14 @@ const incomeData = ref([
 ])
 
 // 进行中的订单
-const ongoingOrder = ref(null)
+const ongoingOrder = ref<any>(null)
 
 // 快捷入口
 const quickActions = [
-  { id: 1, label: '我要接单', icon: '🚚', path: '/biz-pages/driver/grab/index' },
-  { id: 2, label: '我的订单', icon: '📋', path: '/biz-pages/driver/order/list' },
-  { id: 3, label: '我的钱包', icon: '💰', path: '/biz-pages/driver/my/wallet' },
-  { id: 4, label: '车辆管理', icon: '🚗', path: '/biz-pages/driver/my/vehicle' },
+  { id: 1, label: '我要接单', icon: 'car', path: '/biz-pages/driver/grab/index' },
+  { id: 2, label: '我的订单', icon: 'order', path: '/biz-pages/driver/order/list' },
+  { id: 3, label: '我的钱包', icon: 'wallet', path: '/biz-pages/driver/my/wallet' },
+  { id: 4, label: '车辆管理', icon: 'car-fill', path: '/biz-pages/driver/my/vehicle' },
 ]
 
 // 公告列表
@@ -67,7 +67,7 @@ const loadData = async () => {
 }
 
 // 跳转到页面
-const navigateTo = (path) => {
+const navigateTo = (path: string) => {
   uni.navigateTo({ url: path })
 }
 
@@ -98,11 +98,14 @@ onMounted(() => {
     <!-- 顶部导航栏 -->
     <view class="top-navbar">
       <view class="navbar-left" @tap="goToSwitchRole">
-        <text class="role-tag">司机</text>
+        <view class="role-tag">
+          <TnIcon name="identity" />
+          <text class="role-text">司机</text>
+        </view>
       </view>
       <view class="navbar-right" @tap="goToMessage">
-        <text class="message-icon">🔔</text>
-        <view class="message-badge">3</view>
+        <TnIcon name="sound" size="44" />
+        <TnBadge :value="3" absolute />
       </view>
     </view>
 
@@ -112,12 +115,13 @@ onMounted(() => {
       <view class="user-card">
         <view class="user-info">
           <view class="avatar-box">
-            <text class="avatar-text">{{ userInfo.nickname?.charAt(0) || '司' }}</text>
+            <TnIcon name="people" size="50" color="#fff" />
           </view>
           <view class="user-detail">
             <text class="nickname">{{ userInfo.nickname }}</text>
             <text class="phone">{{ userInfo.phone }}</text>
             <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
+              <TnIcon name="verify" size="20" color="#fff" />
               <text class="verify-text">已认证</text>
             </view>
           </view>
@@ -154,7 +158,9 @@ onMounted(() => {
             class="quick-item"
             @tap="navigateTo(item.path)"
           >
-            <text class="quick-icon">{{ item.icon }}</text>
+            <view class="quick-icon-box">
+              <TnIcon :name="item.icon" size="48" />
+            </view>
             <text class="quick-label">{{ item.label }}</text>
           </view>
         </view>
@@ -165,7 +171,8 @@ onMounted(() => {
         <view class="section-title">
           <text class="title-text">进行中订单</text>
           <text class="title-more" @tap="navigateTo('/biz-pages/driver/order/list')">
-            查看全部 →
+            查看全部
+            <TnIcon name="right" size="24" />
           </text>
         </view>
         <view class="order-card" v-if="ongoingOrder" @tap="goToOrderDetail">
@@ -180,25 +187,30 @@ onMounted(() => {
           </view>
           <view class="order-route">
             <view class="route-point">
-              <text class="point-icon">○</text>
+              <view class="point-icon-box start">
+                <TnIcon name="start" size="24" />
+              </view>
               <text class="point-text">{{ ongoingOrder.loadingAddress }}</text>
             </view>
             <view class="route-line"></view>
             <view class="route-point">
-              <text class="point-icon">●</text>
+              <view class="point-icon-box end">
+                <TnIcon name="location-fill" size="24" />
+              </view>
               <text class="point-text">{{ ongoingOrder.unloadingAddress }}</text>
             </view>
           </view>
           <view class="order-footer">
             <text class="order-freight">运费: ¥{{ ongoingOrder.freight }}</text>
-            <text class="action-text">查看详情 →</text>
+            <text class="action-text">查看详情</text>
+            <TnIcon name="right" size="24" color="#007AFF" />
           </view>
         </view>
         <view class="order-empty" v-else>
-          <text class="empty-icon">📋</text>
+          <TnEmpty mode="order" />
           <text class="empty-text">暂无进行中的订单</text>
           <view class="empty-btn" @tap="navigateTo('/biz-pages/driver/grab/index')">
-            <text class="btn-text">去抢单</text>
+            <TnButton theme="primary" size="sm">去抢单</TnButton>
           </view>
         </view>
       </view>
@@ -206,7 +218,9 @@ onMounted(() => {
       <!-- 公告 -->
       <view class="notice-section">
         <view class="notice-card">
-          <text class="notice-icon">📢</text>
+          <view class="notice-icon-box">
+            <TnIcon name="sound" size="36" color="#007AFF" />
+          </view>
           <swiper class="notice-swiper" vertical autoplay circular interval="3000">
             <swiper-item v-for="(notice, index) in noticeList" :key="index">
               <text class="notice-text">{{ notice }}</text>
@@ -221,7 +235,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .driver-home {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f5f6f8;
 }
 
 .top-navbar {
@@ -230,37 +244,29 @@ onMounted(() => {
   align-items: center;
   padding: 20rpx 30rpx;
   padding-top: 80rpx;
-  background: linear-gradient(135deg, #007aff, #00b4ff);
+  background: linear-gradient(135deg, #007AFF, #00B4FF);
 }
 
 .navbar-left {
   .role-tag {
+    display: flex;
+    align-items: center;
     background: rgba(255, 255, 255, 0.2);
     color: #fff;
     padding: 10rpx 24rpx;
     border-radius: 20rpx;
     font-size: 26rpx;
     font-weight: bold;
+
+    .role-text {
+      margin-left: 8rpx;
+    }
   }
 }
 
 .navbar-right {
   position: relative;
-
-  .message-icon {
-    font-size: 44rpx;
-  }
-
-  .message-badge {
-    position: absolute;
-    top: -8rpx;
-    right: -8rpx;
-    background: #ff4c4c;
-    color: #fff;
-    font-size: 20rpx;
-    padding: 4rpx 10rpx;
-    border-radius: 12rpx;
-  }
+  padding: 10rpx;
 }
 
 .home-content {
@@ -269,7 +275,7 @@ onMounted(() => {
 
 // 用户卡片
 .user-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
+  background: linear-gradient(135deg, #007AFF, #00B4FF);
   border-radius: 24rpx;
   padding: 40rpx;
   margin-bottom: 30rpx;
@@ -287,12 +293,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-
-      .avatar-text {
-        font-size: 40rpx;
-        color: #fff;
-        font-weight: bold;
-      }
     }
 
     .user-detail {
@@ -322,6 +322,7 @@ onMounted(() => {
         .verify-text {
           font-size: 20rpx;
           color: #fff;
+          margin-left: 6rpx;
         }
       }
     }
@@ -399,6 +400,8 @@ onMounted(() => {
   }
 
   .title-more {
+    display: flex;
+    align-items: center;
     font-size: 26rpx;
     color: #999;
   }
@@ -418,9 +421,16 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
 
-    .quick-icon {
-      font-size: 48rpx;
+    .quick-icon-box {
+      width: 88rpx;
+      height: 88rpx;
+      background: linear-gradient(135deg, #007AFF, #00B4FF);
+      border-radius: 24rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 12rpx;
+      color: #fff;
     }
 
     .quick-label {
@@ -469,16 +479,31 @@ onMounted(() => {
       display: flex;
       align-items: flex-start;
 
-      .point-icon {
-        font-size: 24rpx;
-        color: #007aff;
+      .point-icon-box {
+        width: 40rpx;
+        height: 40rpx;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 12rpx;
+
+        &.start {
+          background: #e6f0ff;
+          color: #007AFF;
+        }
+
+        &.end {
+          background: #e6fff0;
+          color: #00B578;
+        }
       }
 
       .point-text {
         font-size: 28rpx;
         color: #333;
         flex: 1;
+        line-height: 40rpx;
       }
     }
 
@@ -486,7 +511,7 @@ onMounted(() => {
       width: 4rpx;
       height: 30rpx;
       background: #ddd;
-      margin-left: 8rpx;
+      margin-left: 18rpx;
       margin-top: 8rpx;
       margin-bottom: 8rpx;
     }
@@ -494,18 +519,19 @@ onMounted(() => {
 
   .order-footer {
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-top: 20rpx;
 
     .order-freight {
       font-size: 32rpx;
-      color: #ff7a00;
+      color: #FF7A00;
       font-weight: bold;
     }
 
     .action-text {
-      color: #007aff;
+      flex: 1;
+      text-align: right;
+      color: #007AFF;
       font-size: 28rpx;
     }
   }
@@ -518,29 +544,15 @@ onMounted(() => {
   text-align: center;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 
-  .empty-icon {
-    font-size: 80rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
   .empty-text {
     font-size: 28rpx;
     color: #999;
     display: block;
-    margin-bottom: 30rpx;
+    margin: 24rpx 0;
   }
 
   .empty-btn {
     display: inline-block;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    padding: 16rpx 40rpx;
-    border-radius: 30rpx;
-
-    .btn-text {
-      color: #fff;
-      font-size: 28rpx;
-    }
   }
 }
 
@@ -557,8 +569,7 @@ onMounted(() => {
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 
-  .notice-icon {
-    font-size: 36rpx;
+  .notice-icon-box {
     margin-right: 16rpx;
   }
 

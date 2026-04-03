@@ -7,7 +7,7 @@ import { getOrderListApi } from '@/api/driver'
 import { ORDER_STATUS_CONFIG } from '@/utils/const'
 
 // 订单列表
-const orderList = ref([])
+const orderList = ref<any[]>([])
 
 // 筛选状态
 const filterIndex = ref(0)
@@ -40,14 +40,14 @@ const loadData = async () => {
 }
 
 // 筛选切换
-const handleFilterChange = (index) => {
+const handleFilterChange = (index: number) => {
   if (filterIndex.value === index) return
   filterIndex.value = index
   loadData()
 }
 
 // 查看详情
-const goToDetail = (item) => {
+const goToDetail = (item: any) => {
   uni.navigateTo({
     url: `/biz-pages/driver/order/detail?id=${item.id}`,
   })
@@ -107,12 +107,16 @@ onMounted(() => {
             </view>
             <view class="route-info">
               <view class="route-item">
-                <text class="route-dot start">○</text>
+                <view class="route-icon-box start">
+                  <TnIcon name="start" size="20" />
+                </view>
                 <text class="route-text">{{ item.loadingAddress }}</text>
               </view>
               <view class="route-line"></view>
               <view class="route-item">
-                <text class="route-dot end">●</text>
+                <view class="route-icon-box end">
+                  <TnIcon name="location-fill" size="20" />
+                </view>
                 <text class="route-text">{{ item.unloadingAddress }}</text>
               </view>
             </view>
@@ -120,13 +124,16 @@ onMounted(() => {
 
           <view class="card-footer">
             <text class="freight">运费: ¥{{ item.freight }}</text>
-            <text class="action-hint">查看详情 →</text>
+            <view class="action-hint">
+              <text>查看详情</text>
+              <TnIcon name="right" size="22" />
+            </view>
           </view>
         </view>
 
         <!-- 空状态 -->
         <view class="empty-state" v-if="orderList.length === 0 && !loading">
-          <text class="empty-icon">📋</text>
+          <TnEmpty mode="order" />
           <text class="empty-text">暂无订单</text>
         </view>
       </scroll-view>
@@ -137,7 +144,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .order-list-page {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f5f6f8;
 }
 
 .top-navbar {
@@ -171,6 +178,7 @@ onMounted(() => {
   background: #fff;
   border-radius: 16rpx;
   padding: 8rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 
   .filter-tab {
     padding: 16rpx 32rpx;
@@ -184,7 +192,7 @@ onMounted(() => {
     }
 
     &.active {
-      background: linear-gradient(135deg, #007aff, #00b4ff);
+      background: linear-gradient(135deg, #007AFF, #00B4FF);
 
       .tab-text {
         color: #fff;
@@ -254,16 +262,23 @@ onMounted(() => {
       display: flex;
       align-items: center;
 
-      .route-dot {
-        font-size: 24rpx;
+      .route-icon-box {
+        width: 36rpx;
+        height: 36rpx;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 12rpx;
 
         &.start {
-          color: #007aff;
+          background: #E6F0FF;
+          color: #007AFF;
         }
 
         &.end {
-          color: #00b578;
+          background: #E6FFF0;
+          color: #00B578;
         }
       }
 
@@ -277,7 +292,7 @@ onMounted(() => {
       width: 4rpx;
       height: 20rpx;
       background: #ddd;
-      margin-left: 8rpx;
+      margin-left: 16rpx;
       margin-top: 6rpx;
       margin-bottom: 6rpx;
     }
@@ -292,13 +307,15 @@ onMounted(() => {
 
   .freight {
     font-size: 32rpx;
-    color: #ff7a00;
+    color: #FF7A00;
     font-weight: bold;
   }
 
   .action-hint {
+    display: flex;
+    align-items: center;
     font-size: 26rpx;
-    color: #007aff;
+    color: #007AFF;
   }
 }
 
@@ -306,15 +323,11 @@ onMounted(() => {
   text-align: center;
   padding: 100rpx 0;
 
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
   .empty-text {
     font-size: 32rpx;
     color: #999;
+    margin-top: 24rpx;
+    display: block;
   }
 }
 </style>

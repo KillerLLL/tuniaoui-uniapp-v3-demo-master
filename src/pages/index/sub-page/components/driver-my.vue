@@ -6,7 +6,7 @@ import { ref, onMounted } from 'vue'
 import { getUserInfoApi } from '@/api/driver'
 
 // 用户信息
-const userInfo = ref({
+const userInfo = ref<any>({
   nickname: '李师傅',
   avatar: '',
   phone: '138****8888',
@@ -24,12 +24,12 @@ const userInfo = ref({
 
 // 功能菜单列表
 const menuList = [
-  { id: 1, icon: '💰', label: '我的钱包', path: '/biz-pages/driver/my/wallet' },
-  { id: 2, icon: '📋', label: '发票管理', path: '/biz-pages/driver/my/invoice' },
-  { id: 3, icon: '🚗', label: '车辆管理', path: '/biz-pages/driver/my/vehicle' },
-  { id: 4, icon: '🎫', label: '优惠券', path: '/biz-pages/driver/my/coupon' },
-  { id: 5, icon: '📞', label: '客服与帮助', path: '' },
-  { id: 6, icon: '⚙️', label: '设置', path: '/biz-pages/driver/my/settings' },
+  { id: 1, icon: 'wallet', label: '我的钱包', path: '/biz-pages/driver/my/wallet' },
+  { id: 2, icon: 'ticket', label: '发票管理', path: '/biz-pages/driver/my/invoice' },
+  { id: 3, icon: 'car-fill', label: '车辆管理', path: '/biz-pages/driver/my/vehicle' },
+  { id: 4, icon: 'coupon', label: '优惠券', path: '/biz-pages/driver/my/coupon' },
+  { id: 5, icon: 'service', label: '客服与帮助', path: '' },
+  { id: 6, icon: 'setting', label: '设置', path: '/biz-pages/driver/my/settings' },
 ]
 
 // 加载数据
@@ -45,7 +45,7 @@ const loadData = async () => {
 }
 
 // 跳转到页面
-const navigateTo = (path) => {
+const navigateTo = (path: string) => {
   if (!path) {
     uni.showToast({ title: '功能开发中', icon: 'none' })
     return
@@ -78,7 +78,7 @@ onMounted(() => {
     <!-- 顶部导航栏 -->
     <view class="top-navbar">
       <view class="navbar-right" @tap="goToSettings">
-        <text class="settings-icon">⚙️</text>
+        <TnIcon name="setting" size="44" />
       </view>
     </view>
 
@@ -88,12 +88,13 @@ onMounted(() => {
       <view class="user-card">
         <view class="user-info">
           <view class="avatar-box">
-            <text class="avatar-text">{{ userInfo.nickname?.charAt(0) || '司' }}</text>
+            <TnIcon name="people" size="50" color="#fff" />
           </view>
           <view class="user-detail">
             <text class="nickname">{{ userInfo.nickname }}</text>
             <text class="phone">{{ userInfo.phone }}</text>
             <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
+              <TnIcon name="verify" size="20" color="#fff" />
               <text class="verify-text">已认证</text>
             </view>
           </view>
@@ -133,9 +134,11 @@ onMounted(() => {
             class="menu-item"
             @tap="navigateTo(item.path)"
           >
-            <text class="menu-icon">{{ item.icon }}</text>
+            <view class="menu-icon-box">
+              <TnIcon :name="item.icon" size="40" />
+            </view>
             <text class="menu-label">{{ item.label }}</text>
-            <text class="menu-arrow">→</text>
+            <TnIcon name="right" size="28" color="#ccc" />
           </view>
         </view>
       </view>
@@ -143,7 +146,7 @@ onMounted(() => {
       <!-- 身份切换 -->
       <view class="switch-section">
         <view class="switch-btn" @tap="goToSwitchRole">
-          <text class="switch-icon">🔄</text>
+          <TnIcon name="swap" size="36" />
           <text class="switch-text">切换为货主</text>
         </view>
       </view>
@@ -159,7 +162,7 @@ onMounted(() => {
 <style lang="scss" scoped>
 .my-page {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f5f6f8;
 }
 
 .top-navbar {
@@ -168,11 +171,11 @@ onMounted(() => {
   align-items: center;
   padding: 20rpx 30rpx;
   padding-top: 80rpx;
-  background: linear-gradient(135deg, #007aff, #00b4ff);
+  background: linear-gradient(135deg, #007AFF, #00B4FF);
+}
 
-  .settings-icon {
-    font-size: 44rpx;
-  }
+.navbar-right {
+  padding: 10rpx;
 }
 
 .my-content {
@@ -182,7 +185,7 @@ onMounted(() => {
 
 // 用户卡片
 .user-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
+  background: linear-gradient(135deg, #007AFF, #00B4FF);
   border-radius: 24rpx;
   padding: 40rpx;
   margin-bottom: 30rpx;
@@ -200,12 +203,6 @@ onMounted(() => {
       display: flex;
       align-items: center;
       justify-content: center;
-
-      .avatar-text {
-        font-size: 40rpx;
-        color: #fff;
-        font-weight: bold;
-      }
     }
 
     .user-detail {
@@ -235,6 +232,7 @@ onMounted(() => {
         .verify-text {
           font-size: 20rpx;
           color: #fff;
+          margin-left: 6rpx;
         }
       }
     }
@@ -292,7 +290,7 @@ onMounted(() => {
       display: block;
 
       &.primary {
-        color: #ff7a00;
+        color: #FF7A00;
       }
     }
   }
@@ -325,8 +323,15 @@ onMounted(() => {
     border-bottom: none;
   }
 
-  .menu-icon {
-    font-size: 40rpx;
+  .menu-icon-box {
+    width: 64rpx;
+    height: 64rpx;
+    background: linear-gradient(135deg, #007AFF, #00B4FF);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
     margin-right: 20rpx;
   }
 
@@ -334,11 +339,6 @@ onMounted(() => {
     flex: 1;
     font-size: 30rpx;
     color: #333;
-  }
-
-  .menu-arrow {
-    font-size: 28rpx;
-    color: #ccc;
   }
 }
 
@@ -355,16 +355,12 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .switch-icon {
-    font-size: 36rpx;
-    margin-right: 12rpx;
-  }
+  color: #007AFF;
 
   .switch-text {
     font-size: 30rpx;
-    color: #007aff;
     font-weight: bold;
+    margin-left: 12rpx;
   }
 }
 

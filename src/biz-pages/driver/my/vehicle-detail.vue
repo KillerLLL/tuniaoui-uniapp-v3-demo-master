@@ -2,9 +2,13 @@
 /**
  * 车辆详情页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
-import { getVehicleDetailApi, addVehicleApi, updateVehicleApi } from '@/api/driver'
+import {
+  addVehicleApi,
+  getVehicleDetailApi,
+  updateVehicleApi,
+} from '@/api/driver'
 
 // 车辆ID
 const vehicleId = ref('')

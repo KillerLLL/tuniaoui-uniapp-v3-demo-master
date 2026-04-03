@@ -3,7 +3,7 @@
  * 个人中心页面（我的）
  * 包含个人信息、收入概览、功能菜单、身份切换
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getUserInfoApi } from '@/api/driver'
 
@@ -18,20 +18,45 @@ const userInfo = ref({
     carPlate: '京A12345',
   },
   wallet: {
-    todayIncome: 356.00,
-    totalIncome: 12560.00,
-    pendingSettlement: 1280.00,
+    todayIncome: 356.0,
+    totalIncome: 12560.0,
+    pendingSettlement: 1280.0,
   },
 })
 
 // 功能菜单列表
 const menuList = [
-  { id: 1, icon: '💰', label: '我的钱包', path: '/biz-pages/driver/my/wallet' },
-  { id: 2, icon: '📋', label: '发票管理', path: '/biz-pages/driver/my/invoice' },
-  { id: 3, icon: '🚗', label: '车辆管理', path: '/biz-pages/driver/my/vehicle' },
-  { id: 4, icon: '🎫', label: '优惠券', path: '/biz-pages/driver/my/coupon' },
-  { id: 5, icon: '📞', label: '客服与帮助', path: '' },
-  { id: 6, icon: '⚙️', label: '设置', path: '/biz-pages/driver/my/settings' },
+  {
+    id: 1,
+    icon: 'wallet',
+    label: '我的钱包',
+    path: '/biz-pages/driver/my/wallet',
+  },
+  {
+    id: 2,
+    icon: 'ticket',
+    label: '发票管理',
+    path: '/biz-pages/driver/my/invoice',
+  },
+  {
+    id: 3,
+    icon: 'car-fill',
+    label: '车辆管理',
+    path: '/biz-pages/driver/my/vehicle',
+  },
+  {
+    id: 4,
+    icon: 'coupon',
+    label: '优惠券',
+    path: '/biz-pages/driver/my/coupon',
+  },
+  { id: 5, icon: 'service', label: '客服与帮助', path: '' },
+  {
+    id: 6,
+    icon: 'setting',
+    label: '设置',
+    path: '/biz-pages/driver/my/settings',
+  },
 ]
 
 // 加载数据
@@ -81,7 +106,7 @@ onMounted(() => {
     <CustomNavbar title="我的" :show-back="false">
       <template #right>
         <view class="navbar-right" @tap="goToSettings">
-          <text class="settings-icon">⚙️</text>
+          <TnIcon name="setting" size="40" />
         </view>
       </template>
     </CustomNavbar>
@@ -92,45 +117,55 @@ onMounted(() => {
       <view class="user-card">
         <view class="user-info">
           <view class="avatar-box">
-            <text class="avatar-text">{{ userInfo.nickname?.charAt(0) || '司' }}</text>
+            <text class="avatar-text">{{
+              userInfo.nickname?.charAt(0) || '司'
+            }}</text>
           </view>
           <view class="user-detail">
             <text class="nickname">{{ userInfo.nickname }}</text>
             <text class="phone">{{ userInfo.phone }}</text>
-            <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
-              <text class="verify-icon">⭐</text>
+            <view v-if="userInfo.verifyStatus === 2" class="verify-tag">
+              <TnIcon name="star" size="20" color="#fff" />
               <text class="verify-text">已认证</text>
             </view>
           </view>
         </view>
-        <view class="car-info" v-if="userInfo.driverInfo">
+        <view v-if="userInfo.driverInfo" class="car-info">
           <text class="car-text">{{ userInfo.driverInfo.carType }}</text>
           <text class="plate-text">{{ userInfo.driverInfo.carPlate }}</text>
         </view>
       </view>
 
       <!-- 收入概览 -->
-      <view class="income-section" @tap="goToIncome">
-        <view class="income-card">
+      <view class="income-section">
+        <TnTitle title="收入概览" mode="dot" assist-color="#00B578" size="lg" />
+        <view class="income-card" @tap="goToIncome">
           <view class="income-item" @tap.stop>
             <text class="income-label">今日收益</text>
-            <text class="income-value">¥{{ userInfo.wallet?.todayIncome || 0 }}</text>
+            <text class="income-value"
+              >¥{{ userInfo.wallet?.todayIncome || 0 }}</text
+            >
           </view>
-          <view class="income-divider"></view>
+          <view class="income-divider" />
           <view class="income-item" @tap.stop>
             <text class="income-label">累计收益</text>
-            <text class="income-value">¥{{ (userInfo.wallet?.totalIncome || 0).toLocaleString() }}</text>
+            <text class="income-value"
+              >¥{{ (userInfo.wallet?.totalIncome || 0).toLocaleString() }}</text
+            >
           </view>
-          <view class="income-divider"></view>
+          <view class="income-divider" />
           <view class="income-item" @tap.stop>
             <text class="income-label">待结算</text>
-            <text class="income-value primary">¥{{ userInfo.wallet?.pendingSettlement || 0 }}</text>
+            <text class="income-value primary"
+              >¥{{ userInfo.wallet?.pendingSettlement || 0 }}</text
+            >
           </view>
         </view>
       </view>
 
       <!-- 功能菜单 -->
       <view class="menu-section">
+        <TnTitle title="功能菜单" mode="dot" assist-color="#007AFF" size="lg" />
         <view class="menu-list">
           <view
             v-for="item in menuList"
@@ -138,19 +173,28 @@ onMounted(() => {
             class="menu-item"
             @tap="navigateTo(item.path)"
           >
-            <text class="menu-icon">{{ item.icon }}</text>
+            <view class="menu-icon-box">
+              <TnIcon :name="item.icon" size="36" color="#fff" />
+            </view>
             <text class="menu-label">{{ item.label }}</text>
-            <text class="menu-arrow">→</text>
+            <TnIcon name="right" size="28" color="#ccc" />
           </view>
         </view>
       </view>
 
       <!-- 身份切换 -->
       <view class="switch-section">
-        <view class="switch-btn" @tap="goToSwitchRole">
-          <text class="switch-icon">🔄</text>
+        <TnButton
+          type="primary"
+          plain
+          shape="round"
+          width="100%"
+          height="96rpx"
+          @click="goToSwitchRole"
+        >
+          <TnIcon name="swap" size="36" />
           <text class="switch-text">切换为货主</text>
-        </view>
+        </TnButton>
       </view>
 
       <!-- 版本信息 -->
@@ -268,6 +312,10 @@ onMounted(() => {
 // 收入概览
 .income-section {
   margin-bottom: 30rpx;
+
+  :deep(.tn-title) {
+    margin-bottom: 20rpx;
+  }
 }
 
 .income-card {
@@ -329,8 +377,14 @@ onMounted(() => {
     border-bottom: none;
   }
 
-  .menu-icon {
-    font-size: 40rpx;
+  .menu-icon-box {
+    width: 64rpx;
+    height: 64rpx;
+    background: linear-gradient(135deg, #007aff, #00b4ff);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 20rpx;
   }
 
@@ -339,36 +393,22 @@ onMounted(() => {
     font-size: 30rpx;
     color: #333;
   }
-
-  .menu-arrow {
-    font-size: 28rpx;
-    color: #ccc;
-  }
 }
 
 // 身份切换
 .switch-section {
   margin-bottom: 30rpx;
-}
 
-.switch-btn {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .switch-icon {
-    font-size: 36rpx;
-    margin-right: 12rpx;
+  :deep(.tn-button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .switch-text {
     font-size: 30rpx;
-    color: #007aff;
     font-weight: bold;
+    margin-left: 12rpx;
   }
 }
 

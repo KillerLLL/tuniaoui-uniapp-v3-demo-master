@@ -2,7 +2,7 @@
 /**
  * 货主端订单详情页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getOrderDetailApi } from '@/api/shipper'
 
@@ -47,10 +47,12 @@ onMounted(() => {
     <CustomNavbar title="订单详情" />
 
     <!-- 页面内容 -->
-    <view class="detail-content" v-if="orderDetail">
+    <view v-if="orderDetail" class="detail-content">
       <!-- 状态卡片 -->
       <view class="status-card">
-        <text class="status-text">{{ orderDetail.status === 'in_transit' ? '运输中' : orderDetail.status }}</text>
+        <text class="status-text">{{
+          orderDetail.status === 'in_transit' ? '运输中' : orderDetail.status
+        }}</text>
       </view>
 
       <!-- 货物信息 -->
@@ -73,7 +75,7 @@ onMounted(() => {
       </view>
 
       <!-- 司机信息 -->
-      <view class="info-section" v-if="orderDetail.driver">
+      <view v-if="orderDetail.driver" class="info-section">
         <view class="section-title">司机信息</view>
         <view class="info-card">
           <view class="info-row">
@@ -82,7 +84,10 @@ onMounted(() => {
           </view>
           <view class="info-row">
             <text class="info-label">联系电话</text>
-            <text class="info-value link" @tap="makePhoneCall(orderDetail.driver.phone)">
+            <text
+              class="info-value link"
+              @tap="makePhoneCall(orderDetail.driver.phone)"
+            >
               {{ orderDetail.driver.phone }}
             </text>
           </view>
@@ -92,7 +97,10 @@ onMounted(() => {
           </view>
           <view class="info-row">
             <text class="info-label">评分</text>
-            <text class="info-value">⭐ {{ orderDetail.driver.rating }}</text>
+            <view class="info-value">
+              <TnIcon name="star" size="24" color="#ffb800" />
+              <text class="rating-text">{{ orderDetail.driver.rating }}</text>
+            </view>
           </view>
         </view>
       </view>

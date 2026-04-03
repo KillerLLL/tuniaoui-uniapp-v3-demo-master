@@ -2,7 +2,7 @@
 /**
  * 货主端个人中心页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getShipperInfoApi } from '@/api/shipper'
 
@@ -16,9 +16,14 @@ const userInfo = ref({
 
 // 功能菜单
 const menuList = [
-  { id: 1, icon: '⚙️', label: '设置', path: '/biz-pages/driver/my/settings' },
-  { id: 2, icon: '📞', label: '客服与帮助', path: '' },
-  { id: 3, icon: 'ℹ️', label: '关于我们', path: '' },
+  {
+    id: 1,
+    icon: 'setting',
+    label: '设置',
+    path: '/biz-pages/driver/my/settings',
+  },
+  { id: 2, icon: 'service', label: '客服与帮助', path: '' },
+  { id: 3, icon: 'info', label: '关于我们', path: '' },
 ]
 
 // 跳转到页面
@@ -55,7 +60,7 @@ onMounted(() => {
     <CustomNavbar title="我的" :show-back="false">
       <template #right>
         <view class="navbar-right" @tap="goToSettings">
-          <text class="settings-icon">⚙️</text>
+          <TnIcon name="setting" size="40" />
         </view>
       </template>
     </CustomNavbar>
@@ -66,12 +71,14 @@ onMounted(() => {
       <view class="user-card">
         <view class="user-info">
           <view class="avatar-box">
-            <text class="avatar-text">{{ userInfo.nickname?.charAt(0) || '货' }}</text>
+            <text class="avatar-text">{{
+              userInfo.nickname?.charAt(0) || '货'
+            }}</text>
           </view>
           <view class="user-detail">
             <text class="nickname">{{ userInfo.nickname }}</text>
             <text class="company">{{ userInfo.companyName }}</text>
-            <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
+            <view v-if="userInfo.verifyStatus === 2" class="verify-tag">
               <text class="verify-text">已认证</text>
             </view>
           </view>
@@ -87,19 +94,28 @@ onMounted(() => {
             class="menu-item"
             @tap="navigateTo(item.path)"
           >
-            <text class="menu-icon">{{ item.icon }}</text>
+            <view class="menu-icon-box">
+              <TnIcon :name="item.icon" size="36" color="#fff" />
+            </view>
             <text class="menu-label">{{ item.label }}</text>
-            <text class="menu-arrow">→</text>
+            <TnIcon name="right" size="28" color="#ccc" />
           </view>
         </view>
       </view>
 
       <!-- 身份切换 -->
       <view class="switch-section">
-        <view class="switch-btn" @tap="goToSwitchRole">
-          <text class="switch-icon">🔄</text>
+        <TnButton
+          type="success"
+          plain
+          shape="round"
+          width="100%"
+          height="96rpx"
+          @click="goToSwitchRole"
+        >
+          <TnIcon name="swap" size="36" />
           <text class="switch-text">切换为司机</text>
-        </view>
+        </TnButton>
       </view>
 
       <!-- 版本信息 -->
@@ -207,8 +223,14 @@ onMounted(() => {
     border-bottom: none;
   }
 
-  .menu-icon {
-    font-size: 40rpx;
+  .menu-icon-box {
+    width: 64rpx;
+    height: 64rpx;
+    background: linear-gradient(135deg, #00b578, #00d68f);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 20rpx;
   }
 
@@ -217,35 +239,21 @@ onMounted(() => {
     font-size: 30rpx;
     color: #333;
   }
-
-  .menu-arrow {
-    font-size: 28rpx;
-    color: #ccc;
-  }
 }
 
 .switch-section {
   margin-bottom: 30rpx;
-}
 
-.switch-btn {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .switch-icon {
-    font-size: 36rpx;
-    margin-right: 12rpx;
+  :deep(.tn-button) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
   .switch-text {
     font-size: 30rpx;
-    color: #00b578;
     font-weight: bold;
+    margin-left: 12rpx;
   }
 }
 

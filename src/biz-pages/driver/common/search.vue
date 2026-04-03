@@ -23,7 +23,7 @@ const hotList = ref([
 // 搜索
 const handleSearch = () => {
   if (!searchKey.value.trim()) return
-  uni.showToast({ title: '搜索: ' + searchKey.value, icon: 'none' })
+  uni.showToast({ title: `搜索: ${searchKey.value}`, icon: 'none' })
 }
 
 // 清空历史
@@ -54,7 +54,7 @@ const clearHistory = () => {
       </view>
 
       <!-- 搜索历史 -->
-      <view class="history-section" v-if="historyList.length > 0">
+      <view v-if="historyList.length > 0" class="history-section">
         <view class="section-header">
           <text class="section-title">搜索历史</text>
           <text class="clear-btn" @tap="clearHistory">清空</text>

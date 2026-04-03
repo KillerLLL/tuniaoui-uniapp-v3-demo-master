@@ -2,7 +2,7 @@
 /**
  * 货主端首页
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getShipperInfoApi } from '@/api/shipper'
 
@@ -16,10 +16,30 @@ const userInfo = ref({
 
 // 快捷入口
 const quickActions = [
-  { id: 1, label: '发布货源', icon: '📤', path: '/biz-pages/shipper/publish/index' },
-  { id: 2, label: '我的货源', icon: '📦', path: '/biz-pages/shipper/publish/list' },
-  { id: 3, label: '我的订单', icon: '📋', path: '/biz-pages/shipper/order/list' },
-  { id: 4, label: '身份切换', icon: '🔄', path: '/biz-pages/driver/common/switch-role' },
+  {
+    id: 1,
+    label: '发布货源',
+    icon: 'upload',
+    path: '/biz-pages/shipper/publish/index',
+  },
+  {
+    id: 2,
+    label: '我的货源',
+    icon: 'express',
+    path: '/biz-pages/shipper/publish/list',
+  },
+  {
+    id: 3,
+    label: '我的订单',
+    icon: 'order',
+    path: '/biz-pages/shipper/order/list',
+  },
+  {
+    id: 4,
+    label: '身份切换',
+    icon: 'swap',
+    path: '/biz-pages/driver/common/switch-role',
+  },
 ]
 
 // 跳转到页面
@@ -57,7 +77,13 @@ onMounted(() => {
       </template>
       <template #right>
         <view class="navbar-right" @tap="goToMessage">
-          <text class="message-icon">🔔</text>
+          <TnIcon name="sound" size="40" />
+          <TnBadge
+            value="3"
+            type="danger"
+            absolute
+            :absolute-config="{ top: '-10rpx', right: '-10rpx' }"
+          />
         </view>
       </template>
     </CustomNavbar>
@@ -68,12 +94,14 @@ onMounted(() => {
       <view class="user-card">
         <view class="user-info">
           <view class="avatar-box">
-            <text class="avatar-text">{{ userInfo.nickname?.charAt(0) || '货' }}</text>
+            <text class="avatar-text">{{
+              userInfo.nickname?.charAt(0) || '货'
+            }}</text>
           </view>
           <view class="user-detail">
             <text class="nickname">{{ userInfo.nickname }}</text>
             <text class="company">{{ userInfo.companyName }}</text>
-            <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
+            <view v-if="userInfo.verifyStatus === 2" class="verify-tag">
               <text class="verify-text">已认证</text>
             </view>
           </view>
@@ -82,6 +110,7 @@ onMounted(() => {
 
       <!-- 快捷功能 -->
       <view class="quick-section">
+        <TnTitle title="快捷功能" mode="dot" assist-color="#00B578" size="lg" />
         <view class="quick-grid">
           <view
             v-for="item in quickActions"
@@ -89,7 +118,9 @@ onMounted(() => {
             class="quick-item"
             @tap="navigateTo(item.path)"
           >
-            <text class="quick-icon">{{ item.icon }}</text>
+            <view class="quick-icon-box">
+              <TnIcon :name="item.icon" size="40" color="#fff" />
+            </view>
             <text class="quick-label">{{ item.label }}</text>
           </view>
         </view>
@@ -98,7 +129,9 @@ onMounted(() => {
       <!-- 公告 -->
       <view class="notice-section">
         <view class="notice-card">
-          <text class="notice-icon">📢</text>
+          <view class="notice-icon-box">
+            <TnIcon name="sound" size="36" color="#007aff" />
+          </view>
           <view class="notice-text">
             <text>欢迎使用物流运输平台</text>
           </view>
@@ -200,6 +233,10 @@ onMounted(() => {
 
 .quick-section {
   margin-bottom: 30rpx;
+
+  :deep(.tn-title) {
+    margin-bottom: 20rpx;
+  }
 }
 
 .quick-grid {
@@ -216,8 +253,14 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
 
-    .quick-icon {
-      font-size: 48rpx;
+    .quick-icon-box {
+      width: 80rpx;
+      height: 80rpx;
+      background: linear-gradient(135deg, #00b578, #00d68f);
+      border-radius: 20rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-bottom: 12rpx;
     }
 
@@ -240,8 +283,7 @@ onMounted(() => {
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 
-  .notice-icon {
-    font-size: 36rpx;
+  .notice-icon-box {
     margin-right: 16rpx;
   }
 

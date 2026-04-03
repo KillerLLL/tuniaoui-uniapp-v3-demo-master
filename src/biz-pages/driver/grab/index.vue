@@ -3,12 +3,12 @@
  * 抢单大厅页面
  * 显示货源列表，支持筛选和抢单
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getGrabListApi, grabOrderApi } from '@/api/driver'
 
 // 货源列表
-const grabList = ref([])
+const grabList = ref<any[]>([])
 
 // 筛选状态
 const filterIndex = ref(0)
@@ -39,7 +39,7 @@ const loadData = async () => {
 }
 
 // 筛选切换
-const handleFilterChange = (index) => {
+const handleFilterChange = (index: number) => {
   if (filterIndex.value === index) return
   filterIndex.value = index
   loadData()
@@ -51,14 +51,14 @@ const handleSearch = () => {
 }
 
 // 查看详情
-const goToDetail = (item) => {
+const goToDetail = (item: any) => {
   uni.navigateTo({
     url: `/biz-pages/driver/order/detail?id=${item.id}&type=grab`,
   })
 }
 
 // 抢单
-const handleGrab = async (item) => {
+const handleGrab = async (item: any) => {
   uni.showModal({
     title: '确认抢单',
     content: `确认抢下此订单？运费 ¥${item.freight}`,
@@ -91,8 +91,11 @@ onMounted(() => {
     <!-- 自定义导航栏 -->
     <CustomNavbar title="抢单大厅" :show-back="false">
       <template #right>
-        <view class="navbar-right" @tap="uni.navigateTo({ url: '/biz-pages/driver/common/search' })">
-          <text class="search-icon">🔍</text>
+        <view
+          class="navbar-right"
+          @tap="uni.navigateTo({ url: '/biz-pages/driver/common/search' })"
+        >
+          <TnIcon name="search" size="40" />
         </view>
       </template>
     </CustomNavbar>
@@ -114,23 +117,13 @@ onMounted(() => {
 
       <!-- 货源列表 -->
       <scroll-view scroll-y class="grab-list">
-        <view
-          v-for="item in grabList"
-          :key="item.id"
-          class="grab-card"
-        >
+        <view v-for="item in grabList" :key="item.id" class="grab-card">
           <!-- 货物信息头部 -->
           <view class="card-header">
             <view class="goods-tags">
-              <view class="goods-tag">
-                <text class="tag-text">{{ item.goodsType }}</text>
-              </view>
-              <view class="goods-tag weight">
-                <text class="tag-text">{{ item.weight }}</text>
-              </view>
-              <view class="goods-tag distance">
-                <text class="tag-text">{{ item.distance }}</text>
-              </view>
+              <TnTag type="primary" size="sm">{{ item.goodsType }}</TnTag>
+              <TnTag type="warning" size="sm">{{ item.weight }}</TnTag>
+              <TnTag type="success" size="sm">{{ item.distance }}</TnTag>
             </view>
             <text class="publish-time">{{ item.publishTime }}</text>
           </view>
@@ -138,18 +131,18 @@ onMounted(() => {
           <!-- 装卸地址 -->
           <view class="address-section">
             <view class="address-item">
-              <view class="address-dot start">
-                <text>○</text>
+              <view class="address-icon-box start">
+                <TnIcon name="start" size="24" />
               </view>
               <view class="address-info">
                 <text class="address-label">装货</text>
                 <text class="address-text">{{ item.loadingAddress }}</text>
               </view>
             </view>
-            <view class="address-line"></view>
+            <view class="address-line" />
             <view class="address-item">
-              <view class="address-dot end">
-                <text>●</text>
+              <view class="address-icon-box end">
+                <TnIcon name="location-fill" size="24" />
               </view>
               <view class="address-info">
                 <text class="address-label">卸货</text>
@@ -166,25 +159,33 @@ onMounted(() => {
               <text class="service-fee">(含服务费¥{{ item.serviceFee }})</text>
             </view>
             <view class="footer-right">
-              <view class="action-btn detail" @tap="goToDetail(item)">
-                <text class="btn-text">查看详情</text>
-              </view>
-              <view class="action-btn grab" @tap="handleGrab(item)">
-                <text class="btn-text">立即抢单</text>
-              </view>
+              <TnButton type="info" plain size="sm" @click="goToDetail(item)"
+                >查看详情</TnButton
+              >
+              <TnButton
+                type="warning"
+                shape="round"
+                shadow
+                @click="handleGrab(item)"
+                >立即抢单</TnButton
+              >
             </view>
           </view>
         </view>
 
         <!-- 空状态 -->
-        <view class="empty-state" v-if="grabList.length === 0 && !loading">
-          <text class="empty-icon">📦</text>
-          <text class="empty-text">暂无货源</text>
-          <text class="empty-hint">稍后再来看看吧</text>
-        </view>
+        <TnEmpty
+          v-if="grabList.length === 0 && !loading"
+          mode="goods"
+          show-tips
+        >
+          <template #tips>
+            <text class="empty-hint">暂无货源，稍后再来看看吧</text>
+          </template>
+        </TnEmpty>
 
         <!-- 加载中 -->
-        <view class="loading-state" v-if="loading">
+        <view v-if="loading" class="loading-state">
           <text class="loading-text">加载中...</text>
         </view>
       </scroll-view>
@@ -195,15 +196,11 @@ onMounted(() => {
 <style lang="scss" scoped>
 .grab-page {
   min-height: 100vh;
-  background: #f4f5f7;
+  background: #f5f6f8;
 }
 
 .navbar-right {
   padding: 10rpx;
-
-  .search-icon {
-    font-size: 36rpx;
-  }
 }
 
 .grab-content {
@@ -264,33 +261,6 @@ onMounted(() => {
   .goods-tags {
     display: flex;
     gap: 12rpx;
-
-    .goods-tag {
-      background: #e6f0ff;
-      padding: 6rpx 16rpx;
-      border-radius: 8rpx;
-
-      .tag-text {
-        font-size: 22rpx;
-        color: #007aff;
-      }
-
-      &.weight {
-        background: #fff7e6;
-
-        .tag-text {
-          color: #ff7a00;
-        }
-      }
-
-      &.distance {
-        background: #e6fff0;
-
-        .tag-text {
-          color: #00b578;
-        }
-      }
-    }
   }
 
   .publish-time {
@@ -308,15 +278,22 @@ onMounted(() => {
     display: flex;
     align-items: flex-start;
 
-    .address-dot {
-      font-size: 28rpx;
+    .address-icon-box {
+      width: 40rpx;
+      height: 40rpx;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-right: 12rpx;
 
       &.start {
+        background: #e6f0ff;
         color: #007aff;
       }
 
       &.end {
+        background: #e6fff0;
         color: #00b578;
       }
     }
@@ -342,7 +319,7 @@ onMounted(() => {
     width: 4rpx;
     height: 24rpx;
     background: #ddd;
-    margin-left: 6rpx;
+    margin-left: 18rpx;
     margin-top: 8rpx;
     margin-bottom: 8rpx;
   }
@@ -377,54 +354,14 @@ onMounted(() => {
   .footer-right {
     display: flex;
     gap: 16rpx;
-
-    .action-btn {
-      padding: 16rpx 24rpx;
-      border-radius: 30rpx;
-      font-size: 26rpx;
-
-      &.detail {
-        background: #f0f0f0;
-
-        .btn-text {
-          color: #666;
-        }
-      }
-
-      &.grab {
-        background: linear-gradient(135deg, #ff7a00, #ff4500);
-
-        .btn-text {
-          color: #fff;
-          font-weight: bold;
-        }
-      }
-    }
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #333;
-    display: block;
-  }
-
-  .empty-hint {
-    font-size: 26rpx;
-    color: #999;
-    display: block;
-    margin-top: 10rpx;
-  }
+.empty-hint {
+  font-size: 26rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 
 .loading-state {

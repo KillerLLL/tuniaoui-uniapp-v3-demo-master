@@ -2,7 +2,7 @@
 /**
  * 发票管理页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getInvoiceListApi } from '@/api/driver'
 
@@ -48,27 +48,33 @@ onMounted(() => {
     <!-- 自定义导航栏 -->
     <CustomNavbar title="发票管理">
       <template #right>
-        <view class="navbar-right" @tap="applyInvoice">
-          <text class="apply-text">申请</text>
+        <view class="navbar-right">
+          <TnButton type="primary" size="sm" plain @click="applyInvoice">
+            申请
+          </TnButton>
         </view>
       </template>
     </CustomNavbar>
 
     <!-- 页面内容 -->
     <view class="invoice-content">
-      <view
-        v-for="item in invoiceList"
-        :key="item.id"
-        class="invoice-card"
-      >
+      <view v-for="item in invoiceList" :key="item.id" class="invoice-card">
         <view class="card-header">
           <text class="invoice-title">{{ item.title }}</text>
-          <view
-            class="invoice-status"
-            :style="{ background: getStatusColor(item.status) }"
+          <TnTag
+            :type="
+              item.status === 2
+                ? 'success'
+                : item.status === 0
+                ? 'warning'
+                : item.status === 1
+                ? 'primary'
+                : 'danger'
+            "
+            size="sm"
           >
             {{ getStatusText(item.status) }}
-          </view>
+          </TnTag>
         </view>
         <view class="card-body">
           <view class="info-row">
@@ -83,7 +89,7 @@ onMounted(() => {
             <text class="info-label">申请时间</text>
             <text class="info-value">{{ item.createTime }}</text>
           </view>
-          <view class="info-row" v-if="item.invoiceTime">
+          <view v-if="item.invoiceTime" class="info-row">
             <text class="info-label">开票时间</text>
             <text class="info-value">{{ item.invoiceTime }}</text>
           </view>
@@ -91,13 +97,22 @@ onMounted(() => {
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" v-if="invoiceList.length === 0">
-        <text class="empty-icon">📋</text>
-        <text class="empty-text">暂无发票记录</text>
-        <view class="empty-btn" @tap="applyInvoice">
-          <text class="btn-text">申请开票</text>
-        </view>
-      </view>
+      <TnEmpty v-if="invoiceList.length === 0" mode="order" show-tips>
+        <template #tips>
+          <text class="empty-text">暂无发票记录</text>
+          <view class="empty-btn">
+            <TnButton
+              type="primary"
+              size="sm"
+              shadow
+              shape="round"
+              @click="applyInvoice"
+            >
+              申请开票
+            </TnButton>
+          </view>
+        </template>
+      </TnEmpty>
     </view>
   </view>
 </template>
@@ -110,12 +125,6 @@ onMounted(() => {
 
 .navbar-right {
   padding: 10rpx;
-
-  .apply-text {
-    font-size: 28rpx;
-    color: #007aff;
-    font-weight: bold;
-  }
 }
 
 .invoice-content {
@@ -141,13 +150,6 @@ onMounted(() => {
       font-size: 30rpx;
       color: #333;
       font-weight: bold;
-    }
-
-    .invoice-status {
-      padding: 6rpx 16rpx;
-      border-radius: 20rpx;
-      font-size: 22rpx;
-      color: #fff;
     }
   }
 
@@ -175,33 +177,14 @@ onMounted(() => {
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 30rpx;
+}
 
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-    display: block;
-    margin-bottom: 30rpx;
-  }
-
-  .empty-btn {
-    display: inline-block;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    padding: 16rpx 40rpx;
-    border-radius: 30rpx;
-
-    .btn-text {
-      color: #fff;
-      font-size: 28rpx;
-    }
-  }
+.empty-btn {
+  display: inline-block;
 }
 </style>

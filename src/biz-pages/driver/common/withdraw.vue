@@ -4,7 +4,7 @@
  */
 import { ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
-import { withdrawApi, getWalletInfoApi } from '@/api/driver'
+import { getWalletInfoApi, withdrawApi } from '@/api/driver'
 
 // 提现金额
 const withdrawAmount = ref('')
@@ -38,7 +38,7 @@ const withdrawAll = () => {
 
 // 提交提现
 const handleWithdraw = async () => {
-  const amount = parseFloat(withdrawAmount.value)
+  const amount = Number.parseFloat(withdrawAmount.value)
   if (!amount || amount <= 0) {
     uni.showToast({ title: '请输入提现金额', icon: 'none' })
     return
@@ -110,12 +110,14 @@ loadData()
       <!-- 银行卡 -->
       <view class="bank-section">
         <view class="bank-card">
-          <text class="bank-icon">🏦</text>
+          <view class="bank-icon-box">
+            <TnIcon name="bank" size="40" color="#fff" />
+          </view>
           <view class="bank-info">
             <text class="bank-name">中国工商银行</text>
             <text class="bank-no">**** **** **** 4567</text>
           </view>
-          <text class="bank-arrow">→</text>
+          <TnIcon name="right" size="28" color="#ccc" />
         </view>
       </view>
 
@@ -244,8 +246,14 @@ loadData()
   align-items: center;
   box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
 
-  .bank-icon {
-    font-size: 48rpx;
+  .bank-icon-box {
+    width: 80rpx;
+    height: 80rpx;
+    background: linear-gradient(135deg, #007aff, #00b4ff);
+    border-radius: 20rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 20rpx;
   }
 
@@ -264,11 +272,6 @@ loadData()
       font-size: 26rpx;
       color: #999;
     }
-  }
-
-  .bank-arrow {
-    font-size: 28rpx;
-    color: #ccc;
   }
 }
 

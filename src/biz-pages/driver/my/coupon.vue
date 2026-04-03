@@ -2,7 +2,7 @@
 /**
  * 优惠券页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getCouponListApi } from '@/api/driver'
 
@@ -58,20 +58,27 @@ onMounted(() => {
         <view class="coupon-right">
           <text class="coupon-name">{{ item.name }}</text>
           <text class="coupon-expire">有效期至 {{ item.expireTime }}</text>
-          <view
-            class="coupon-status"
-            :style="{ background: getStatusColor(item.status) }"
+          <TnTag
+            :type="
+              item.status === 0
+                ? 'success'
+                : item.status === 1
+                ? 'info'
+                : 'danger'
+            "
+            size="sm"
           >
             {{ getStatusText(item.status) }}
-          </view>
+          </TnTag>
         </view>
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" v-if="couponList.length === 0">
-        <text class="empty-icon">🎫</text>
-        <text class="empty-text">暂无优惠券</text>
-      </view>
+      <TnEmpty v-if="couponList.length === 0" mode="coupon" show-tips>
+        <template #tips>
+          <text class="empty-text">暂无优惠券</text>
+        </template>
+      </TnEmpty>
     </view>
   </view>
 </template>
@@ -138,32 +145,13 @@ onMounted(() => {
       color: #999;
       display: block;
     }
-
-    .coupon-status {
-      position: absolute;
-      top: 30rpx;
-      right: 30rpx;
-      padding: 6rpx 16rpx;
-      border-radius: 20rpx;
-      font-size: 22rpx;
-      color: #fff;
-    }
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-  }
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 </style>

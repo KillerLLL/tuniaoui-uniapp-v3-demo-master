@@ -58,7 +58,7 @@ const handleBack = () => {
     >
       <!-- 返回按钮 -->
       <view v-if="showBack" class="back-btn" @tap="handleBack">
-        <text class="back-icon">←</text>
+        <TnIcon name="left" size="36" />
         <text class="back-text">返回</text>
       </view>
       <!-- 左侧插槽 -->
@@ -95,8 +95,8 @@ const handleBack = () => {
     z-index: 1;
 
     .back-icon {
-      font-size: 32rpx;
-      font-weight: bold;
+      display: flex;
+      align-items: center;
     }
 
     .back-text {

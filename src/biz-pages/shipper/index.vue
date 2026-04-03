@@ -61,7 +61,12 @@ const handleTabbarChange = (index) => {
         :class="{ active: currentIndex === index }"
         @tap="handleTabbarChange(index)"
       >
-        <text class="tabbar-icon">{{ index === 0 ? '🏠' : index === 1 ? '📦' : index === 2 ? '📋' : '👤' }}</text>
+        <view class="tabbar-icon-box">
+          <TnIcon
+            :name="currentIndex === index ? item.activeIcon : item.icon"
+            size="44"
+          />
+        </view>
         <text class="tabbar-text">{{ item.text }}</text>
       </view>
     </view>
@@ -96,9 +101,9 @@ const handleTabbarChange = (index) => {
     padding: 10rpx 30rpx;
     transition: all 0.2s;
 
-    .tabbar-icon {
-      font-size: 44rpx;
+    .tabbar-icon-box {
       margin-bottom: 6rpx;
+      color: #999;
     }
 
     .tabbar-text {
@@ -107,6 +112,10 @@ const handleTabbarChange = (index) => {
     }
 
     &.active {
+      .tabbar-icon-box {
+        color: #007aff;
+      }
+
       .tabbar-text {
         color: #007aff;
         font-weight: bold;

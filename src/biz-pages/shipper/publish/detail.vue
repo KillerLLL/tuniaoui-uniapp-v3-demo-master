@@ -2,7 +2,7 @@
 /**
  * 货源详情页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getGoodsDetailApi } from '@/api/shipper'
 
@@ -39,7 +39,7 @@ onMounted(() => {
     <CustomNavbar title="货源详情" />
 
     <!-- 页面内容 -->
-    <view class="detail-content" v-if="goodsDetail">
+    <view v-if="goodsDetail" class="detail-content">
       <!-- 状态 -->
       <view class="status-card">
         <text class="status-text">{{ goodsDetail.status }}</text>

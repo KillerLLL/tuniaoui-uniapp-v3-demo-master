@@ -2,7 +2,7 @@
 /**
  * 我的钱包页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getWalletInfoApi } from '@/api/driver'
 
@@ -53,26 +53,32 @@ onMounted(() => {
         <text class="balance-label">账户余额(元)</text>
         <text class="balance-value">¥{{ walletInfo.balance.toFixed(2) }}</text>
         <view class="balance-actions">
-          <view class="action-btn withdraw" @tap="goToWithdraw">
-            <text class="btn-text">提现</text>
-          </view>
+          <TnButton type="primary" shadow shape="round" @click="goToWithdraw">
+            提现
+          </TnButton>
         </view>
       </view>
 
       <!-- 收入统计 -->
       <view class="income-stats">
         <view class="stat-item" @tap="goToIncome">
-          <text class="stat-value">¥{{ walletInfo.todayIncome.toFixed(2) }}</text>
+          <text class="stat-value"
+            >¥{{ walletInfo.todayIncome.toFixed(2) }}</text
+          >
           <text class="stat-label">今日收入</text>
         </view>
-        <view class="stat-divider"></view>
+        <view class="stat-divider" />
         <view class="stat-item">
-          <text class="stat-value">¥{{ walletInfo.totalIncome.toFixed(2) }}</text>
+          <text class="stat-value"
+            >¥{{ walletInfo.totalIncome.toFixed(2) }}</text
+          >
           <text class="stat-label">累计收入</text>
         </view>
-        <view class="stat-divider"></view>
+        <view class="stat-divider" />
         <view class="stat-item">
-          <text class="stat-value primary">¥{{ walletInfo.pendingSettlement.toFixed(2) }}</text>
+          <text class="stat-value primary"
+            >¥{{ walletInfo.pendingSettlement.toFixed(2) }}</text
+          >
           <text class="stat-label">待结算</text>
         </view>
       </view>
@@ -80,19 +86,25 @@ onMounted(() => {
       <!-- 功能列表 -->
       <view class="func-list">
         <view class="func-item" @tap="goToIncome">
-          <text class="func-icon">📊</text>
+          <view class="func-icon-box">
+            <TnIcon name="chart" size="36" color="#fff" />
+          </view>
           <text class="func-label">我的收入</text>
-          <text class="func-arrow">→</text>
+          <TnIcon name="right" size="28" color="#ccc" />
         </view>
         <view class="func-item" @tap="goToWithdraw">
-          <text class="func-icon">💵</text>
+          <view class="func-icon-box">
+            <TnIcon name="money" size="36" color="#fff" />
+          </view>
           <text class="func-label">提现记录</text>
-          <text class="func-arrow">→</text>
+          <TnIcon name="right" size="28" color="#ccc" />
         </view>
         <view class="func-item">
-          <text class="func-icon">📋</text>
+          <view class="func-icon-box">
+            <TnIcon name="order" size="36" color="#fff" />
+          </view>
           <text class="func-label">银行卡管理</text>
-          <text class="func-arrow">→</text>
+          <TnIcon name="right" size="28" color="#ccc" />
         </view>
       </view>
     </view>
@@ -134,17 +146,6 @@ onMounted(() => {
   .balance-actions {
     display: flex;
     gap: 20rpx;
-
-    .action-btn {
-      padding: 16rpx 40rpx;
-      border-radius: 30rpx;
-      background: rgba(255, 255, 255, 0.2);
-
-      .btn-text {
-        color: #fff;
-        font-size: 28rpx;
-      }
-    }
   }
 }
 
@@ -204,8 +205,14 @@ onMounted(() => {
     border-bottom: none;
   }
 
-  .func-icon {
-    font-size: 40rpx;
+  .func-icon-box {
+    width: 64rpx;
+    height: 64rpx;
+    background: linear-gradient(135deg, #007aff, #00b4ff);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 20rpx;
   }
 
@@ -213,11 +220,6 @@ onMounted(() => {
     flex: 1;
     font-size: 30rpx;
     color: #333;
-  }
-
-  .func-arrow {
-    font-size: 28rpx;
-    color: #ccc;
   }
 }
 </style>

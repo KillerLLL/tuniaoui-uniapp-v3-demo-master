@@ -2,7 +2,7 @@
 /**
  * 车辆管理页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getVehicleListApi } from '@/api/driver'
 
@@ -42,7 +42,7 @@ onMounted(() => {
     <CustomNavbar title="车辆管理">
       <template #right>
         <view class="navbar-right" @tap="addVehicle">
-          <text class="add-icon">+</text>
+          <TnIcon name="add" size="40" />
         </view>
       </template>
     </CustomNavbar>
@@ -86,13 +86,22 @@ onMounted(() => {
         </view>
 
         <!-- 空状态 -->
-        <view class="empty-state" v-if="vehicleList.length === 0">
-          <text class="empty-icon">🚗</text>
-          <text class="empty-text">暂无车辆</text>
-          <view class="empty-btn" @tap="addVehicle">
-            <text class="btn-text">添加车辆</text>
-          </view>
-        </view>
+        <TnEmpty v-if="vehicleList.length === 0" mode="car" show-tips>
+          <template #tips>
+            <text class="empty-text">暂无车辆</text>
+            <view class="empty-btn">
+              <TnButton
+                type="primary"
+                size="sm"
+                shadow
+                shape="round"
+                @click="addVehicle"
+              >
+                添加车辆
+              </TnButton>
+            </view>
+          </template>
+        </TnEmpty>
       </view>
     </view>
   </view>
@@ -195,33 +204,14 @@ onMounted(() => {
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-bottom: 30rpx;
+}
 
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-    display: block;
-    margin-bottom: 30rpx;
-  }
-
-  .empty-btn {
-    display: inline-block;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    padding: 16rpx 40rpx;
-    border-radius: 30rpx;
-
-    .btn-text {
-      color: #fff;
-      font-size: 28rpx;
-    }
-  }
+.empty-btn {
+  display: inline-block;
 }
 </style>

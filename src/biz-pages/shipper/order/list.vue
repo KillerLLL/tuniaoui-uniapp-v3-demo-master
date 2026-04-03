@@ -2,7 +2,7 @@
 /**
  * 货主端订单列表页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getOrderListApi } from '@/api/shipper'
 
@@ -23,13 +23,23 @@ const loadData = async () => {
 
 // 状态文本
 const getStatusText = (status) => {
-  const texts = { pending: '待接单', in_transit: '进行中', completed: '已完成', cancelled: '已取消' }
+  const texts = {
+    pending: '待接单',
+    in_transit: '进行中',
+    completed: '已完成',
+    cancelled: '已取消',
+  }
   return texts[status] || '未知'
 }
 
 // 状态颜色
 const getStatusColor = (status) => {
-  const colors = { pending: '#ff7a00', in_transit: '#007aff', completed: '#00b578', cancelled: '#999' }
+  const colors = {
+    pending: '#ff7a00',
+    in_transit: '#007aff',
+    completed: '#00b578',
+    cancelled: '#999',
+  }
   return colors[status] || '#999'
 }
 
@@ -58,9 +68,20 @@ onMounted(() => {
       >
         <view class="card-header">
           <text class="order-no">{{ item.orderNo }}</text>
-          <view class="order-status" :style="{ background: getStatusColor(item.status) }">
+          <TnTag
+            :type="
+              item.status === 'completed'
+                ? 'success'
+                : item.status === 'pending'
+                ? 'warning'
+                : item.status === 'in_transit'
+                ? 'primary'
+                : 'info'
+            "
+            size="sm"
+          >
             {{ getStatusText(item.status) }}
-          </view>
+          </TnTag>
         </view>
         <view class="card-body">
           <view class="goods-info">
@@ -69,30 +90,38 @@ onMounted(() => {
           </view>
           <view class="route-info">
             <view class="route-item">
-              <text class="route-dot start">○</text>
+              <view class="route-icon-box start">
+                <TnIcon name="start" size="20" />
+              </view>
               <text class="route-text">{{ item.loadingAddress }}</text>
             </view>
             <view class="route-item">
-              <text class="route-dot end">●</text>
+              <view class="route-icon-box end">
+                <TnIcon name="location-fill" size="20" />
+              </view>
               <text class="route-text">{{ item.unloadingAddress }}</text>
             </view>
           </view>
-          <view class="driver-info" v-if="item.driverName">
+          <view v-if="item.driverName" class="driver-info">
             <text class="driver-name">司机：{{ item.driverName }}</text>
             <text class="driver-plate">{{ item.driverPlate }}</text>
           </view>
         </view>
         <view class="card-footer">
           <text class="order-price">¥{{ item.price }}</text>
-          <text class="action-hint">查看详情 →</text>
+          <view class="action-hint">
+            <text>查看详情</text>
+            <TnIcon name="right" size="22" color="#007aff" />
+          </view>
         </view>
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" v-if="orderList.length === 0">
-        <text class="empty-icon">📋</text>
-        <text class="empty-text">暂无订单</text>
-      </view>
+      <TnEmpty v-if="orderList.length === 0" mode="order" show-tips>
+        <template #tips>
+          <text class="empty-text">暂无订单</text>
+        </template>
+      </TnEmpty>
     </view>
   </view>
 </template>
@@ -124,13 +153,6 @@ onMounted(() => {
       font-size: 26rpx;
       color: #666;
     }
-
-    .order-status {
-      padding: 6rpx 16rpx;
-      border-radius: 20rpx;
-      font-size: 22rpx;
-      color: #fff;
-    }
   }
 
   .card-body {
@@ -160,15 +182,22 @@ onMounted(() => {
         display: flex;
         align-items: center;
 
-        .route-dot {
-          font-size: 24rpx;
+        .route-icon-box {
+          width: 36rpx;
+          height: 36rpx;
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
           margin-right: 12rpx;
 
           &.start {
+            background: #e6f0ff;
             color: #007aff;
           }
 
           &.end {
+            background: #e6fff0;
             color: #00b578;
           }
         }
@@ -210,25 +239,18 @@ onMounted(() => {
     }
 
     .action-hint {
+      display: flex;
+      align-items: center;
       font-size: 26rpx;
       color: #007aff;
     }
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-  }
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 </style>

@@ -3,7 +3,7 @@
  * 订单列表页面
  * 显示全部订单，支持状态筛选
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getOrderListApi } from '@/api/driver'
 import { ORDER_STATUS_CONFIG } from '@/utils/const'
@@ -28,7 +28,9 @@ const loading = ref(false)
 const loadData = async () => {
   loading.value = true
   try {
-    const res = await getOrderListApi({ status: filterList[filterIndex.value].status })
+    const res = await getOrderListApi({
+      status: filterList[filterIndex.value].status,
+    })
     if (res.code === 200) {
       orderList.value = res.data
     }
@@ -90,12 +92,18 @@ onMounted(() => {
         >
           <view class="card-header">
             <text class="order-no">{{ item.orderNo }}</text>
-            <view
-              class="order-status"
-              :style="{ background: ORDER_STATUS_CONFIG[item.status]?.color || '#999' }"
+            <TnTag
+              :type="
+                ORDER_STATUS_CONFIG[item.status]?.color === '#00B578'
+                  ? 'success'
+                  : ORDER_STATUS_CONFIG[item.status]?.color === '#FF7A00'
+                  ? 'warning'
+                  : 'primary'
+              "
+              size="sm"
             >
               {{ ORDER_STATUS_CONFIG[item.status]?.text || '未知' }}
-            </view>
+            </TnTag>
           </view>
 
           <view class="card-body">
@@ -105,12 +113,16 @@ onMounted(() => {
             </view>
             <view class="route-info">
               <view class="route-item">
-                <text class="route-dot start">○</text>
+                <view class="route-icon-box start">
+                  <TnIcon name="start" size="20" />
+                </view>
                 <text class="route-text">{{ item.loadingAddress }}</text>
               </view>
-              <view class="route-line"></view>
+              <view class="route-line" />
               <view class="route-item">
-                <text class="route-dot end">●</text>
+                <view class="route-icon-box end">
+                  <TnIcon name="location-fill" size="20" />
+                </view>
                 <text class="route-text">{{ item.unloadingAddress }}</text>
               </view>
             </view>
@@ -118,18 +130,26 @@ onMounted(() => {
 
           <view class="card-footer">
             <text class="freight">运费: ¥{{ item.freight }}</text>
-            <text class="action-hint">查看详情 →</text>
+            <view class="action-hint">
+              <text>查看详情</text>
+              <TnIcon name="right" size="22" color="#007aff" />
+            </view>
           </view>
         </view>
 
         <!-- 空状态 -->
-        <view class="empty-state" v-if="orderList.length === 0 && !loading">
-          <text class="empty-icon">📋</text>
-          <text class="empty-text">暂无订单</text>
-        </view>
+        <TnEmpty
+          v-if="orderList.length === 0 && !loading"
+          mode="order"
+          show-tips
+        >
+          <template #tips>
+            <text class="empty-text">暂无订单</text>
+          </template>
+        </TnEmpty>
 
         <!-- 加载中 -->
-        <view class="loading-state" v-if="loading">
+        <view v-if="loading" class="loading-state">
           <text class="loading-text">加载中...</text>
         </view>
       </scroll-view>
@@ -206,13 +226,6 @@ onMounted(() => {
     font-size: 26rpx;
     color: #666;
   }
-
-  .order-status {
-    padding: 6rpx 16rpx;
-    border-radius: 20rpx;
-    font-size: 22rpx;
-    color: #fff;
-  }
 }
 
 .card-body {
@@ -242,15 +255,22 @@ onMounted(() => {
       display: flex;
       align-items: center;
 
-      .route-dot {
-        font-size: 24rpx;
+      .route-icon-box {
+        width: 36rpx;
+        height: 36rpx;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         margin-right: 12rpx;
 
         &.start {
+          background: #e6f0ff;
           color: #007aff;
         }
 
         &.end {
+          background: #e6fff0;
           color: #00b578;
         }
       }
@@ -265,7 +285,7 @@ onMounted(() => {
       width: 4rpx;
       height: 20rpx;
       background: #ddd;
-      margin-left: 8rpx;
+      margin-left: 16rpx;
       margin-top: 6rpx;
       margin-bottom: 6rpx;
     }
@@ -285,25 +305,18 @@ onMounted(() => {
   }
 
   .action-hint {
+    display: flex;
+    align-items: center;
     font-size: 26rpx;
     color: #007aff;
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-  }
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 
 .loading-state {

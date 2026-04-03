@@ -37,27 +37,49 @@ const switchToRole = (role) => {
 
       <!-- 角色选择 -->
       <view class="role-list">
-        <view class="role-card driver" @tap="switchToRole('driver')">
-          <view class="role-icon">🚚</view>
-          <view class="role-info">
-            <text class="role-name">司机</text>
-            <text class="role-desc">承接货源、运输货物</text>
+        <TnButton
+          type="primary"
+          plain
+          shape="round"
+          width="100%"
+          height="auto"
+          @click="switchToRole('driver')"
+        >
+          <view class="role-card driver">
+            <view class="role-icon-box">
+              <TnIcon name="car-fill" size="48" color="#fff" />
+            </view>
+            <view class="role-info">
+              <text class="role-name">司机</text>
+              <text class="role-desc">承接货源、运输货物</text>
+            </view>
+            <view class="role-check">
+              <TnIcon name="check" size="32" color="#00b578" />
+            </view>
           </view>
-          <view class="role-check">
-            <text>✓</text>
-          </view>
-        </view>
+        </TnButton>
 
-        <view class="role-card shipper" @tap="switchToRole('shipper')">
-          <view class="role-icon">📦</view>
-          <view class="role-info">
-            <text class="role-name">货主</text>
-            <text class="role-desc">发布货源、管理订单</text>
+        <TnButton
+          type="success"
+          plain
+          shape="round"
+          width="100%"
+          height="auto"
+          @click="switchToRole('shipper')"
+        >
+          <view class="role-card shipper">
+            <view class="role-icon-box">
+              <TnIcon name="express" size="48" color="#fff" />
+            </view>
+            <view class="role-info">
+              <text class="role-name">货主</text>
+              <text class="role-desc">发布货源、管理订单</text>
+            </view>
+            <view class="role-check">
+              <TnIcon name="check" size="32" color="#00b578" />
+            </view>
           </view>
-          <view class="role-check">
-            <text>✓</text>
-          </view>
-        </view>
+        </TnButton>
       </view>
 
       <!-- 提示 -->
@@ -97,16 +119,17 @@ const switchToRole = (role) => {
 }
 
 .role-list {
+  :deep(.tn-button) {
+    margin-bottom: 30rpx;
+  }
+
   .role-card {
     background: #fff;
     border-radius: 24rpx;
     padding: 40rpx;
-    margin-bottom: 30rpx;
     display: flex;
     align-items: center;
-    box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
     border: 4rpx solid transparent;
-    transition: all 0.2s;
 
     &.driver {
       border-color: #007aff;
@@ -116,8 +139,14 @@ const switchToRole = (role) => {
       border-color: #00b578;
     }
 
-    .role-icon {
-      font-size: 80rpx;
+    .role-icon-box {
+      width: 100rpx;
+      height: 100rpx;
+      background: linear-gradient(135deg, #007aff, #00b4ff);
+      border-radius: 24rpx;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       margin-right: 30rpx;
     }
 
@@ -145,19 +174,14 @@ const switchToRole = (role) => {
       display: flex;
       align-items: center;
       justify-content: center;
-
-      text {
-        font-size: 36rpx;
-        color: #fff;
-      }
     }
 
     &.driver .role-check {
-      background: #007aff;
+      background: #e6f0ff;
     }
 
     &.shipper .role-check {
-      background: #00b578;
+      background: #e6fff0;
     }
   }
 }

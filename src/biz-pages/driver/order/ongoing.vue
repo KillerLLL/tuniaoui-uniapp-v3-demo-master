@@ -3,7 +3,7 @@
  * 进行中订单页面
  * 司机当前正在执行的订单
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getOrderDetailApi, updateOrderStatusApi } from '@/api/driver'
 import { ORDER_STATUS, ORDER_STATUS_CONFIG } from '@/utils/const'
@@ -20,10 +20,22 @@ const loading = ref(false)
 // 获取状态操作
 const getStatusAction = (status) => {
   const actions = {
-    [ORDER_STATUS.GRABBED]: { text: '确认到达装货点', nextStatus: ORDER_STATUS.PICKED_UP },
-    [ORDER_STATUS.PICKED_UP]: { text: '确认装货出发', nextStatus: ORDER_STATUS.IN_TRANSIT },
-    [ORDER_STATUS.IN_TRANSIT]: { text: '确认到达卸货点', nextStatus: ORDER_STATUS.DELIVERED },
-    [ORDER_STATUS.DELIVERED]: { text: '确认收款完成', nextStatus: ORDER_STATUS.COMPLETED },
+    [ORDER_STATUS.GRABBED]: {
+      text: '确认到达装货点',
+      nextStatus: ORDER_STATUS.PICKED_UP,
+    },
+    [ORDER_STATUS.PICKED_UP]: {
+      text: '确认装货出发',
+      nextStatus: ORDER_STATUS.IN_TRANSIT,
+    },
+    [ORDER_STATUS.IN_TRANSIT]: {
+      text: '确认到达卸货点',
+      nextStatus: ORDER_STATUS.DELIVERED,
+    },
+    [ORDER_STATUS.DELIVERED]: {
+      text: '确认收款完成',
+      nextStatus: ORDER_STATUS.COMPLETED,
+    },
   }
   return actions[status] || null
 }
@@ -40,7 +52,10 @@ const handleStatusAction = async () => {
       if (res.confirm) {
         try {
           uni.showLoading({ title: '处理中...' })
-          const result = await updateOrderStatusApi(orderId.value, action.nextStatus)
+          const result = await updateOrderStatusApi(
+            orderId.value,
+            action.nextStatus
+          )
           uni.hideLoading()
           if (result.code === 200) {
             uni.showToast({ title: '操作成功', icon: 'success' })
@@ -102,24 +117,31 @@ onMounted(() => {
     <CustomNavbar title="进行中订单" />
 
     <!-- 页面内容 -->
-    <view class="ongoing-content" v-if="orderDetail">
+    <view v-if="orderDetail" class="ongoing-content">
       <!-- 状态卡片 -->
       <view class="status-card">
         <view class="status-header">
           <view
             class="status-badge"
-            :style="{ background: ORDER_STATUS_CONFIG[orderDetail.status]?.color }"
+            :style="{
+              background: ORDER_STATUS_CONFIG[orderDetail.status]?.color,
+            }"
           >
             {{ ORDER_STATUS_CONFIG[orderDetail.status]?.text }}
           </view>
           <text class="order-no">{{ orderDetail.orderNo }}</text>
         </view>
-        <view class="status-action" v-if="getStatusAction(orderDetail.status)">
+        <view v-if="getStatusAction(orderDetail.status)" class="status-action">
           <text class="action-hint">{{
-            orderDetail.status === ORDER_STATUS.GRABBED ? '请前往装货点' :
-            orderDetail.status === ORDER_STATUS.PICKED_UP ? '货物已装好，准备出发' :
-            orderDetail.status === ORDER_STATUS.IN_TRANSIT ? '运输中，请注意安全' :
-            orderDetail.status === ORDER_STATUS.DELIVERED ? '已到达目的地，确认收款' : ''
+            orderDetail.status === ORDER_STATUS.GRABBED
+              ? '请前往装货点'
+              : orderDetail.status === ORDER_STATUS.PICKED_UP
+              ? '货物已装好，准备出发'
+              : orderDetail.status === ORDER_STATUS.IN_TRANSIT
+              ? '运输中，请注意安全'
+              : orderDetail.status === ORDER_STATUS.DELIVERED
+              ? '已到达目的地，确认收款'
+              : ''
           }}</text>
         </view>
       </view>
@@ -127,23 +149,39 @@ onMounted(() => {
       <!-- 装货信息 -->
       <view class="info-section">
         <view class="section-header">
-          <view class="section-dot start"></view>
+          <view class="section-dot start" />
           <text class="section-title">装货信息</text>
         </view>
         <view class="info-card">
-          <view class="address-row" @tap="openMap(orderDetail.loading.latitude, orderDetail.loading.longitude, orderDetail.loading.address)">
+          <view
+            class="address-row"
+            @tap="
+              openMap(
+                orderDetail.loading.latitude,
+                orderDetail.loading.longitude,
+                orderDetail.loading.address
+              )
+            "
+          >
             <text class="address-text">{{ orderDetail.loading.address }}</text>
             <text class="map-icon">📍</text>
           </view>
           <view class="contact-row">
-            <text class="contact-name">{{ orderDetail.loading.contactName }}</text>
-            <text class="contact-phone" @tap="makePhoneCall(orderDetail.loading.contactPhone)">
+            <text class="contact-name">{{
+              orderDetail.loading.contactName
+            }}</text>
+            <text
+              class="contact-phone"
+              @tap="makePhoneCall(orderDetail.loading.contactPhone)"
+            >
               {{ orderDetail.loading.contactPhone }}
             </text>
           </view>
           <view class="time-row">
             <text class="time-label">装货时间</text>
-            <text class="time-value">{{ orderDetail.loading.scheduledTime }}</text>
+            <text class="time-value">{{
+              orderDetail.loading.scheduledTime
+            }}</text>
           </view>
         </view>
       </view>
@@ -151,17 +189,33 @@ onMounted(() => {
       <!-- 卸货信息 -->
       <view class="info-section">
         <view class="section-header">
-          <view class="section-dot end"></view>
+          <view class="section-dot end" />
           <text class="section-title">卸货信息</text>
         </view>
         <view class="info-card">
-          <view class="address-row" @tap="openMap(orderDetail.unloading.latitude, orderDetail.unloading.longitude, orderDetail.unloading.address)">
-            <text class="address-text">{{ orderDetail.unloading.address }}</text>
+          <view
+            class="address-row"
+            @tap="
+              openMap(
+                orderDetail.unloading.latitude,
+                orderDetail.unloading.longitude,
+                orderDetail.unloading.address
+              )
+            "
+          >
+            <text class="address-text">{{
+              orderDetail.unloading.address
+            }}</text>
             <text class="map-icon">📍</text>
           </view>
           <view class="contact-row">
-            <text class="contact-name">{{ orderDetail.unloading.contactName }}</text>
-            <text class="contact-phone" @tap="makePhoneCall(orderDetail.unloading.contactPhone)">
+            <text class="contact-name">{{
+              orderDetail.unloading.contactName
+            }}</text>
+            <text
+              class="contact-phone"
+              @tap="makePhoneCall(orderDetail.unloading.contactPhone)"
+            >
               {{ orderDetail.unloading.contactPhone }}
             </text>
           </view>
@@ -176,33 +230,41 @@ onMounted(() => {
         <view class="info-card fee-card">
           <view class="fee-row">
             <text class="fee-label">运费</text>
-            <text class="fee-value primary">¥{{ orderDetail.fee.freight }}</text>
+            <text class="fee-value primary"
+              >¥{{ orderDetail.fee.freight }}</text
+            >
           </view>
           <view class="fee-row">
             <text class="fee-label">服务费</text>
-            <text class="fee-value danger">-¥{{ orderDetail.fee.serviceFee }}</text>
+            <text class="fee-value danger"
+              >-¥{{ orderDetail.fee.serviceFee }}</text
+            >
           </view>
-          <view class="fee-divider"></view>
+          <view class="fee-divider" />
           <view class="fee-row total">
             <text class="fee-label">实际收入</text>
-            <text class="fee-value highlight">¥{{ orderDetail.fee.actualIncome }}</text>
+            <text class="fee-value highlight"
+              >¥{{ orderDetail.fee.actualIncome }}</text
+            >
           </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
-      <view class="action-section" v-if="getStatusAction(orderDetail.status)">
+      <view v-if="getStatusAction(orderDetail.status)" class="action-section">
         <view class="primary-btn" @tap="handleStatusAction">
-          <text class="btn-text">{{ getStatusAction(orderDetail.status).text }}</text>
+          <text class="btn-text">{{
+            getStatusAction(orderDetail.status).text
+          }}</text>
         </view>
       </view>
 
       <!-- 底部占位 -->
-      <view class="bottom-space"></view>
+      <view class="bottom-space" />
     </view>
 
     <!-- 加载中 -->
-    <view class="loading-state" v-else>
+    <view v-else class="loading-state">
       <text class="loading-text">加载中...</text>
     </view>
   </view>

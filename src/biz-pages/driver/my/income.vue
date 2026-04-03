@@ -2,9 +2,9 @@
 /**
  * 我的收入页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
-import { getIncomeOverviewApi, getIncomeDetailApi } from '@/api/driver'
+import { getIncomeDetailApi, getIncomeOverviewApi } from '@/api/driver'
 
 // 收入概览
 const incomeOverview = ref({
@@ -51,41 +51,43 @@ onMounted(() => {
       <view class="overview-card">
         <view class="overview-header">
           <text class="header-title">总收入</text>
-          <text class="header-value">¥{{ incomeOverview.totalIncome.toFixed(2) }}</text>
+          <text class="header-value"
+            >¥{{ incomeOverview.totalIncome.toFixed(2) }}</text
+          >
         </view>
         <view class="overview-stats">
           <view class="stat-item">
             <text class="stat-label">今日收入</text>
-            <text class="stat-value">¥{{ incomeOverview.todayIncome.toFixed(2) }}</text>
+            <text class="stat-value"
+              >¥{{ incomeOverview.todayIncome.toFixed(2) }}</text
+            >
           </view>
-          <view class="stat-divider"></view>
+          <view class="stat-divider" />
           <view class="stat-item">
             <text class="stat-label">待结算</text>
-            <text class="stat-value primary">¥{{ incomeOverview.pendingSettlement.toFixed(2) }}</text>
+            <text class="stat-value primary"
+              >¥{{ incomeOverview.pendingSettlement.toFixed(2) }}</text
+            >
           </view>
         </view>
       </view>
 
       <!-- 收入明细 -->
       <view class="detail-section">
-        <view class="section-header">
-          <text class="section-title">收入明细</text>
-        </view>
+        <TnTitle title="收入明细" mode="dot" assist-color="#007AFF" size="lg" />
         <view class="detail-list">
-          <view
-            v-for="item in incomeDetail"
-            :key="item.id"
-            class="detail-item"
-          >
+          <view v-for="item in incomeDetail" :key="item.id" class="detail-item">
             <view class="detail-left">
               <text class="detail-date">{{ item.date }}</text>
               <text class="detail-order">订单号: {{ item.orderNo }}</text>
             </view>
             <text class="detail-amount">+¥{{ item.amount }}</text>
           </view>
-          <view class="empty-state" v-if="incomeDetail.length === 0">
-            <text class="empty-text">暂无收入记录</text>
-          </view>
+          <TnEmpty v-if="incomeDetail.length === 0" mode="order" show-tips>
+            <template #tips>
+              <text class="empty-text">暂无收入记录</text>
+            </template>
+          </TnEmpty>
         </view>
       </view>
     </view>
@@ -163,15 +165,7 @@ onMounted(() => {
 
 // 收入明细
 .detail-section {
-  .section-header {
-    margin-bottom: 20rpx;
-
-    .section-title {
-      font-size: 32rpx;
-      font-weight: bold;
-      color: #333;
-    }
-  }
+  margin-bottom: 30rpx;
 }
 
 .detail-list {
@@ -213,13 +207,10 @@ onMounted(() => {
   }
 }
 
-.empty-state {
-  padding: 60rpx 0;
-  text-align: center;
-
-  .empty-text {
-    font-size: 28rpx;
-    color: #999;
-  }
+.empty-text {
+  font-size: 28rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 </style>

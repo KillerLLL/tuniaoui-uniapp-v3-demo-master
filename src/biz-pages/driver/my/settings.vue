@@ -6,12 +6,12 @@ import CustomNavbar from '@/components/custom-navbar/index.vue'
 
 // 设置项列表
 const settingsList = [
-  { id: 1, icon: '🔔', label: '消息通知', type: 'switch' },
-  { id: 2, icon: '🔒', label: '隐私设置', type: 'arrow' },
-  { id: 3, icon: '❓', label: '帮助与反馈', type: 'arrow' },
-  { id: 4, icon: '📜', label: '用户协议', type: 'arrow' },
-  { id: 5, icon: '🔐', label: '隐私政策', type: 'arrow' },
-  { id: 6, icon: 'ℹ️', label: '关于我们', type: 'arrow' },
+  { id: 1, icon: 'sound', label: '消息通知', type: 'switch' },
+  { id: 2, icon: 'lock', label: '隐私设置', type: 'arrow' },
+  { id: 3, icon: 'question', label: '帮助与反馈', type: 'arrow' },
+  { id: 4, icon: 'file', label: '用户协议', type: 'arrow' },
+  { id: 5, icon: 'lock', label: '隐私政策', type: 'arrow' },
+  { id: 6, icon: 'info', label: '关于我们', type: 'arrow' },
 ]
 
 // 退出登录
@@ -39,23 +39,32 @@ const handleLogout = () => {
     <view class="settings-content">
       <!-- 设置列表 -->
       <view class="settings-list">
-        <view
-          v-for="item in settingsList"
-          :key="item.id"
-          class="settings-item"
-        >
-          <text class="settings-icon">{{ item.icon }}</text>
+        <view v-for="item in settingsList" :key="item.id" class="settings-item">
+          <view class="settings-icon-box">
+            <TnIcon :name="item.icon" size="36" color="#fff" />
+          </view>
           <text class="settings-label">{{ item.label }}</text>
-          <text class="settings-arrow" v-if="item.type === 'arrow'">→</text>
-          <switch class="settings-switch" v-else :checked="true" />
+          <TnIcon
+            v-if="item.type === 'arrow'"
+            name="right"
+            size="28"
+            color="#ccc"
+          />
+          <switch v-else class="settings-switch" :checked="true" />
         </view>
       </view>
 
       <!-- 退出登录 -->
       <view class="logout-section">
-        <view class="logout-btn" @tap="handleLogout">
-          <text class="logout-text">退出登录</text>
-        </view>
+        <TnButton
+          type="danger"
+          plain
+          width="100%"
+          height="96rpx"
+          @click="handleLogout"
+        >
+          退出登录
+        </TnButton>
       </view>
 
       <!-- 版本信息 -->
@@ -94,8 +103,14 @@ const handleLogout = () => {
     border-bottom: none;
   }
 
-  .settings-icon {
-    font-size: 40rpx;
+  .settings-icon-box {
+    width: 64rpx;
+    height: 64rpx;
+    background: linear-gradient(135deg, #007aff, #00b4ff);
+    border-radius: 16rpx;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin-right: 20rpx;
   }
 
@@ -105,11 +120,6 @@ const handleLogout = () => {
     color: #333;
   }
 
-  .settings-arrow {
-    font-size: 28rpx;
-    color: #ccc;
-  }
-
   .settings-switch {
     transform: scale(0.8);
   }
@@ -117,19 +127,6 @@ const handleLogout = () => {
 
 .logout-section {
   margin-bottom: 30rpx;
-}
-
-.logout-btn {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  text-align: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .logout-text {
-    font-size: 30rpx;
-    color: #ff4c4c;
-  }
 }
 
 .version-info {

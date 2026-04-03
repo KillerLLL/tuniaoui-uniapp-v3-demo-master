@@ -2,7 +2,7 @@
 /**
  * 消息列表页面
  */
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import CustomNavbar from '@/components/custom-navbar/index.vue'
 import { getMessageListApi } from '@/api/driver'
 
@@ -22,9 +22,9 @@ const loadData = async () => {
 }
 
 // 类型图标
-const getTypeIcon = (type) => {
-  const icons = { 1: '⚙️', 2: '📋', 3: '🎁' }
-  return icons[type] || '📢'
+const getTypeIcon = (type: number) => {
+  const icons: Record<number, string> = { 1: 'setting', 2: 'order', 3: 'gift' }
+  return icons[type] || 'sound'
 }
 
 onMounted(() => {
@@ -46,7 +46,7 @@ onMounted(() => {
         :class="{ unread: !item.isRead }"
       >
         <view class="message-icon">
-          <text>{{ getTypeIcon(item.type) }}</text>
+          <TnIcon :name="getTypeIcon(item.type)" size="36" color="#fff" />
         </view>
         <view class="message-info">
           <view class="message-header">
@@ -55,14 +55,15 @@ onMounted(() => {
           </view>
           <text class="message-content-text">{{ item.content }}</text>
         </view>
-        <view class="unread-dot" v-if="!item.isRead"></view>
+        <view v-if="!item.isRead" class="unread-dot" />
       </view>
 
       <!-- 空状态 -->
-      <view class="empty-state" v-if="messageList.length === 0">
-        <text class="empty-icon">📭</text>
-        <text class="empty-text">暂无消息</text>
-      </view>
+      <TnEmpty v-if="messageList.length === 0" mode="message" show-tips>
+        <template #tips>
+          <text class="empty-text">暂无消息</text>
+        </template>
+      </TnEmpty>
     </view>
   </view>
 </template>
@@ -94,12 +95,11 @@ onMounted(() => {
   .message-icon {
     width: 80rpx;
     height: 80rpx;
-    background: #f0f0f0;
+    background: linear-gradient(135deg, #007aff, #00b4ff);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 36rpx;
     margin-right: 20rpx;
     flex-shrink: 0;
   }
@@ -144,19 +144,10 @@ onMounted(() => {
   }
 }
 
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-icon {
-    font-size: 100rpx;
-    display: block;
-    margin-bottom: 20rpx;
-  }
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-  }
+.empty-text {
+  font-size: 32rpx;
+  color: #999;
+  display: block;
+  margin-top: 20rpx;
 }
 </style>

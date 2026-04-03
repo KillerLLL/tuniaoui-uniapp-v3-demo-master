@@ -5,7 +5,8 @@
       "Write(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
       "Edit(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
       "Glob(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
-      "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)"
+      "Grep(//f/work/mcp/tuniaoui-uniapp-v3-demo-master/**)",
+      "mcp__MiniMax__understand_image"
     ],
     "additionalDirectories": [
       "f:\\work\\mcp\\tuniaoui-uniapp-v3-demo-master\\.claude"

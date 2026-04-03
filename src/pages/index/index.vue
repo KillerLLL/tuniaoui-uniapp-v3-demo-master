@@ -1,54 +1,38 @@
 <script setup lang="ts">
-import { computed, nextTick, provide, reactive, ref } from 'vue'
-import { onLoad, onShareAppMessage, onShareTimeline } from '@dcloudio/uni-app'
-import { useOrderedChildren } from '@tuniao/tnui-vue3-uniapp/hooks'
+/**
+ * 物流运输小程序 - 主包首页（Tabbar壳）
+ * 包含底部导航和4个子页面切换
+ */
+import { computed, nextTick, ref } from 'vue'
+import { onLoad } from '@dcloudio/uni-app'
 
 import TnTabbar from '@tuniao/tnui-vue3-uniapp/components/tabbar/src/tabbar.vue'
 import TnTabbarItem from '@tuniao/tnui-vue3-uniapp/components/tabbar/src/tabbar-item.vue'
-import FloatMenu from '@/components/float-menu/float-menu.vue'
 
-import HomePage from './sub-page/components/home/home.vue'
-import ListPage from './sub-page/components/list/list.vue'
-import BasicPage from './sub-page/components/basic/basic.vue'
-import ComponentPage from './sub-page/components/component/component.vue'
-import AboutPage from './sub-page/components/about/about.vue'
+import DriverHome from './sub-page/components/driver-home.vue'
+import DriverGrab from './sub-page/components/driver-grab.vue'
+import DriverOrder from './sub-page/components/driver-order.vue'
+import DriverMy from './sub-page/components/driver-my.vue'
 
 import type { CSSProperties } from 'vue'
-import type { IndexSubPageContext } from '@/tokens'
 
-import { useWxShare } from '@/hooks'
-import { indexPageContextKey } from '@/tokens'
-
-import { navMiniProgram } from '@/utils'
-
-// 微信分享
-onShareAppMessage(() => ({}))
-onShareTimeline(() => ({}))
-useWxShare({
-  imageUrl:
-    'https://resource.tuniaokj.com/images/vue3/market/vue3-banner-min.jpg',
-})
-
-const {
-  children: items,
-  addChild: addItem,
-  removeChild: removeItem,
-} = useOrderedChildren<IndexSubPageContext>()
+// 页面总数
+const totalPages = 4
 
 // 底部导航栏数据
 const tabbarData = [
   { text: '首页', icon: 'home-fill' },
-  { text: '列表', icon: 'menu-fill' },
+  { text: '抢单', icon: 'order-fill' },
+  { text: '订单', icon: 'list-fill' },
   { text: '我的', icon: 'my-fill' },
 ]
 
-// 页面总数（包括基础和组件）
-const totalPages = 5
 // 底部Tab索引到实际页面索引的映射
 const tabToPageIndex: Record<number, number> = {
-  0: 0, // 首页
-  1: 1, // 列表
-  2: 4, // 图鸟
+  0: 0,
+  1: 1,
+  2: 2,
+  3: 3,
 }
 
 // 当前显示的页面索引
@@ -64,12 +48,8 @@ const onTabbarChange = (index: string | number) => {
 const switchToPage = (index: number) => {
   if (!pageStatus.value?.[index]) {
     pageStatus.value[index] = true
-    nextTick(() => {
-      items.value?.[index]?.onLoad?.()
-    })
   }
   currentPageIndex.value = index
-  items.value?.[index]?.onShow?.()
 }
 
 // 记录每个子页面的状态
@@ -78,7 +58,6 @@ const pageStatus = ref(Array.from({ length: totalPages }, () => false))
 // 当前选中的底部导航索引
 const currentTabbarIndex = computed({
   get: () => {
-    // 根据当前页面索引返回对应的底部tab索引
     for (const [tabIndex, pageIndex] of Object.entries(tabToPageIndex)) {
       if (Number(pageIndex) === currentPageIndex.value) {
         return Number(tabIndex)
@@ -86,129 +65,75 @@ const currentTabbarIndex = computed({
     }
     return 0
   },
-  set: (value) => {
-    // Tabbar组件内部会设置这个值，我们不需要做任何事
-  },
+  set: () => {},
 })
 
 // pageContainer的样式
 const pageContainerStyle = computed<(index: number) => CSSProperties>(() => {
   return (index: number) => {
     const style: CSSProperties = {}
-
     if (index !== currentPageIndex.value) {
       style.display = 'none'
     }
-
     return style
   }
 })
 
 onLoad((options: any) => {
-  // 获取当前进入的子页面的索引
   const index = Number(options?.index || 0)
-  // 设置当前子页面的状态为true
   pageStatus.value[index] = true
   nextTick(() => {
     currentPageIndex.value = index
-    setTimeout(() => {
-      // 执行子页面的onLoad钩子
-      items.value?.[index]?.onLoad?.()
-    }, 50)
   })
 })
-
-provide(
-  indexPageContextKey,
-  reactive({
-    items,
-    addItem,
-    removeItem,
-    switchTab: switchToPage,
-  })
-)
-
-// 悬浮按钮菜单数据
-const floatMenuData = ref([
-  {
-    id: 'basic',
-    name: '基础组件',
-    icon: 'font',
-    color: 'tn-gradient-bg__cool-3',
-    pageIndex: 2,
-  },
-  {
-    id: 'component',
-    name: '组件库',
-    icon: 'menu-more',
-    color: 'tn-gradient-bg__cool-6',
-    pageIndex: 3,
-  },
-  {
-    id: 'mine',
-    name: '我的',
-    icon: 'my',
-    color: 'tn-gradient-bg__cool-9',
-    pageIndex: 4,
-  },
-])
-
-// 悬浮按钮菜单点击事件
-const onFloatMenuClick = (item: any) => {
-  switchToPage(item.pageIndex)
-}
-
 </script>
 
 <template>
-  <!-- 虚拟首页 -->
+  <!-- 物流小程序首页 -->
   <view class="page">
+    <!-- 首页 -->
     <view
       v-if="pageStatus[0]"
       class="page__container"
       :style="pageContainerStyle(0)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <HomePage />
+        <DriverHome />
       </scroll-view>
     </view>
+    <!-- 抢单 -->
     <view
       v-if="pageStatus[1]"
       class="page__container"
       :style="pageContainerStyle(1)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <ListPage />
+        <DriverGrab />
       </scroll-view>
     </view>
+    <!-- 订单 -->
     <view
       v-if="pageStatus[2]"
       class="page__container"
       :style="pageContainerStyle(2)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <BasicPage />
+        <DriverOrder />
       </scroll-view>
     </view>
+    <!-- 我的 -->
     <view
       v-if="pageStatus[3]"
       class="page__container"
       :style="pageContainerStyle(3)"
     >
       <scroll-view class="scroll-view" scroll-y>
-        <ComponentPage />
-      </scroll-view>
-    </view>
-    <view
-      v-if="pageStatus[4]"
-      class="page__container"
-      :style="pageContainerStyle(4)"
-    >
-      <scroll-view class="scroll-view" scroll-y>
-        <AboutPage />
+        <DriverMy />
       </scroll-view>
     </view>
   </view>
+
+  <!-- 底部导航栏 -->
   <TnTabbar
     v-model="currentTabbarIndex"
     fixed
@@ -227,13 +152,27 @@ const onFloatMenuClick = (item: any) => {
       :active-icon="item.icon"
     />
   </TnTabbar>
-  <!-- 悬浮按钮 -->
-  <FloatMenu
-    :menu-data="floatMenuData"
-    @menu-click="onFloatMenuClick"
-  />
 </template>
 
 <style lang="scss" scoped>
-@import './style/index.scss';
+.page {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #f4f5f7;
+
+  &__container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 120rpx;
+  }
+}
+
+.scroll-view {
+  height: 100%;
+}
 </style>

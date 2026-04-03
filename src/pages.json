@@ -3,9 +3,9 @@
     {
       "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "图鸟UI",
-        "enablePullDownRefresh": true,
-        "backgroundTextStyle": "dark",
+        "navigationBarTitleText": "物流运输",
+        "navigationStyle": "custom",
+        "enablePullDownRefresh": false,
         "mp-alipay": {
           "defaultTitle": ""
         }
@@ -22,6 +22,59 @@
             "navigationBarTitleText": "登录",
             "navigationStyle": "custom"
           }
+        }
+      ]
+    },
+    {
+      "root": "biz-pages/driver",
+      "pages": [
+        {
+          "path": "order-detail/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "search/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "wallet/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "invoice/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "invoice/apply",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "vehicle/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "vehicle/add",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "message/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "coupon/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "setting/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "profile/index",
+          "style": { "navigationStyle": "custom" }
+        },
+        {
+          "path": "customer-service/index",
+          "style": { "navigationStyle": "custom" }
         }
       ]
     },

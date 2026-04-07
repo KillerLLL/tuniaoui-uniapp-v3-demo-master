@@ -24,12 +24,12 @@ const userInfo = ref<any>({
 
 // 功能菜单列表
 const menuList = [
-  { id: 1, icon: 'wallet', label: '我的钱包', path: '/biz-pages/driver/my/wallet' },
-  { id: 2, icon: 'ticket', label: '发票管理', path: '/biz-pages/driver/my/invoice' },
-  { id: 3, icon: 'car-fill', label: '车辆管理', path: '/biz-pages/driver/my/vehicle' },
-  { id: 4, icon: 'coupon', label: '优惠券', path: '/biz-pages/driver/my/coupon' },
-  { id: 5, icon: 'service', label: '客服与帮助', path: '' },
-  { id: 6, icon: 'setting', label: '设置', path: '/biz-pages/driver/my/settings' },
+  { id: 1, icon: 'wallet', label: '我的钱包', path: '/biz-pages/driver/my/wallet', gradient: 'from-primary-500 to-primary-600' },
+  { id: 2, icon: 'ticket', label: '发票管理', path: '/biz-pages/driver/my/invoice', gradient: 'from-success-500 to-success-600' },
+  { id: 3, icon: 'car-fill', label: '车辆管理', path: '/biz-pages/driver/my/vehicle', gradient: 'from-warning-500 to-warning-600' },
+  { id: 4, icon: 'coupon', label: '优惠券', path: '/biz-pages/driver/my/coupon', gradient: 'from-danger-500 to-danger-600' },
+  { id: 5, icon: 'service', label: '客服与帮助', path: '', gradient: 'from-zinc-500 to-zinc-600' },
+  { id: 6, icon: 'setting', label: '设置', path: '/biz-pages/driver/my/settings', gradient: 'from-zinc-400 to-zinc-500' },
 ]
 
 // 加载数据
@@ -74,304 +74,220 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="my-page">
+  <view class="my-page min-h-screen bg-zinc-100">
+    <!-- 顶部渐变背景 -->
+    <view class="top-bg">
+      <view class="top-gradient" />
+    </view>
+
     <!-- 顶部导航栏 -->
-    <view class="top-navbar">
-      <view class="navbar-right" @tap="goToSettings">
-        <TnIcon name="setting" size="44" />
+    <view class="navbar-glass fixed top-0 left-0 right-0 z-50 safe-top">
+      <view class="navbar-inner flex-end h-100rpx pr-30rpx">
+        <view
+          class="settings-btn flex-center w-70rpx h-70rpx bg-white/20 backdrop-blur-md rounded-full card-press"
+          @tap="goToSettings"
+        >
+          <TnIcon name="setting" size="40rpx" color="#fff" />
+        </view>
       </view>
     </view>
 
     <!-- 页面内容 -->
-    <view class="my-content">
+    <view class="my-content pb-180rpx">
       <!-- 个人信息卡片 -->
-      <view class="user-card">
-        <view class="user-info">
-          <view class="avatar-box">
-            <TnIcon name="people" size="50" color="#fff" />
-          </view>
-          <view class="user-detail">
-            <text class="nickname">{{ userInfo.nickname }}</text>
-            <text class="phone">{{ userInfo.phone }}</text>
-            <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
-              <TnIcon name="verify" size="20" color="#fff" />
-              <text class="verify-text">已认证</text>
+      <view class="user-card-glass mx-30rpx mt-180rpx relative z-10">
+        <view class="card-decoration absolute -top-40rpx -right-40rpx w-200rpx h-200rpx bg-gradient-to-br from-white/20 to-transparent rounded-full" />
+
+        <view class="user-info-row flex items-center">
+          <!-- 头像 -->
+          <view class="avatar-container">
+            <view class="avatar-ring">
+              <view class="avatar-inner flex-center">
+                <text class="text-white text-44rpx font-bold">
+                  {{ userInfo.nickname?.charAt(0) || '司' }}
+                </text>
+              </view>
             </view>
+            <view class="online-dot absolute bottom-4rpx right-4rpx" />
+          </view>
+
+          <!-- 用户信息 -->
+          <view class="user-detail ml-30rpx flex-1">
+            <view class="flex items-center gap-16rpx">
+              <text class="text-white text-36rpx font-bold">{{ userInfo.nickname }}</text>
+              <view
+                v-if="userInfo.verifyStatus === 2"
+                class="verify-badge flex items-center gap-4rpx bg-white/25 backdrop-blur-sm px-12rpx py-4rpx rounded-full"
+              >
+                <TnIcon name="star" size="20rpx" color="#fbbf24" />
+                <text class="text-white text-20rpx">已认证</text>
+              </view>
+            </view>
+            <text class="text-white/70 text-24rpx mt-8rpx block">{{ userInfo.phone }}</text>
           </view>
         </view>
-        <view class="car-info" v-if="userInfo.driverInfo">
-          <text class="car-text">{{ userInfo.driverInfo.carType }}</text>
-          <text class="plate-text">{{ userInfo.driverInfo.carPlate }}</text>
+
+        <!-- 车辆信息 -->
+        <view
+          v-if="userInfo.driverInfo"
+          class="car-info-row mt-24rpx pt-24rpx border-t border-white/20"
+        >
+          <view class="flex items-center gap-8rpx">
+            <TnIcon name="car" size="28rpx" color="rgba(255,255,255,0.85)" />
+            <text class="text-white/85 text-26rpx">{{ userInfo.driverInfo.carType }}</text>
+            <text class="text-white text-26rpx font-bold ml-16rpx">{{ userInfo.driverInfo.carPlate }}</text>
+          </view>
         </view>
       </view>
 
       <!-- 收入概览 -->
-      <view class="income-section" @tap="goToIncome">
-        <view class="income-card">
-          <view class="income-item">
-            <text class="income-label">今日收益</text>
-            <text class="income-value">¥{{ userInfo.wallet?.todayIncome || 0 }}</text>
+      <view
+        class="income-card-glass mx-30rpx mt-30rpx rounded-24rpx p-30rpx relative z-10 card-press"
+        @tap="goToIncome"
+      >
+        <view class="grid grid-cols-3 gap-20rpx">
+          <view class="text-center">
+            <text class="text-white/70 text-24rpx block">今日收益</text>
+            <text class="text-white text-36rpx font-bold mt-8rpx block">¥{{ userInfo.wallet?.todayIncome || 0 }}</text>
           </view>
-          <view class="income-divider"></view>
-          <view class="income-item">
-            <text class="income-label">累计收益</text>
-            <text class="income-value">¥{{ (userInfo.wallet?.totalIncome || 0).toLocaleString() }}</text>
+          <view class="text-center border-x border-white/20">
+            <text class="text-white/70 text-24rpx block">累计收益</text>
+            <text class="text-white text-36rpx font-bold mt-8rpx block">¥{{ (userInfo.wallet?.totalIncome || 0).toLocaleString() }}</text>
           </view>
-          <view class="income-divider"></view>
-          <view class="income-item">
-            <text class="income-label">待结算</text>
-            <text class="income-value primary">¥{{ userInfo.wallet?.pendingSettlement || 0 }}</text>
+          <view class="text-center">
+            <text class="text-white/70 text-24rpx block">待结算</text>
+            <text class="text-warning-300 text-36rpx font-bold mt-8rpx block">¥{{ userInfo.wallet?.pendingSettlement || 0 }}</text>
           </view>
         </view>
       </view>
 
       <!-- 功能菜单 -->
-      <view class="menu-section">
-        <view class="menu-list">
+      <view class="menu-section mx-30rpx mt-30rpx relative z-10">
+        <view class="menu-list glass-card rounded-24rpx overflow-hidden">
           <view
-            v-for="item in menuList"
+            v-for="(item, index) in menuList"
             :key="item.id"
-            class="menu-item"
+            class="menu-item flex items-center p-32rpx"
+            :class="index !== menuList.length - 1 ? 'border-b border-zinc-100/50' : ''"
             @tap="navigateTo(item.path)"
           >
-            <view class="menu-icon-box">
-              <TnIcon :name="item.icon" size="40" />
+            <view
+              class="menu-icon w-64rpx h-64rpx rounded-16rpx flex-center mr-20rpx"
+              :class="`bg-gradient-to-br ${item.gradient}`"
+            >
+              <TnIcon :name="item.icon" size="36rpx" color="#fff" />
             </view>
-            <text class="menu-label">{{ item.label }}</text>
-            <TnIcon name="right" size="28" color="#ccc" />
+            <text class="flex-1 text-zinc-800 text-30rpx">{{ item.label }}</text>
+            <TnIcon name="right" size="28rpx" color="#ccc" />
           </view>
         </view>
       </view>
 
       <!-- 身份切换 -->
-      <view class="switch-section">
-        <view class="switch-btn" @tap="goToSwitchRole">
-          <TnIcon name="swap" size="36" />
-          <text class="switch-text">切换为货主</text>
+      <view class="switch-section mx-30rpx mt-30rpx relative z-10">
+        <view
+          class="switch-btn glass-card rounded-24rpx p-32rpx flex-center gap-12rpx card-press"
+          @tap="goToSwitchRole"
+        >
+          <TnIcon name="swap" size="36rpx" color="#3b82f6" />
+          <text class="text-primary-500 text-30rpx font-bold">切换为货主</text>
         </view>
       </view>
 
       <!-- 版本信息 -->
-      <view class="version-info">
-        <text class="version-text">物流运输 v1.0.0</text>
+      <view class="version-info mt-60rpx text-center">
+        <text class="text-zinc-400 text-24rpx">物流运输 v1.0.0</text>
       </view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scoped>
-.my-page {
-  min-height: 100vh;
-  background: #f5f6f8;
-}
-
-.top-navbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  padding-top: 80rpx;
-  background: linear-gradient(135deg, #007AFF, #00B4FF);
-}
-
-.navbar-right {
-  padding: 10rpx;
-}
-
-.my-content {
-  padding: 0 30rpx 30rpx;
-  margin-top: -60rpx;
-}
-
-// 用户卡片
-.user-card {
-  background: linear-gradient(135deg, #007AFF, #00B4FF);
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 8rpx 30rpx rgba(0, 122, 255, 0.3);
-
-  .user-info {
-    display: flex;
-    align-items: center;
-
-    .avatar-box {
-      width: 100rpx;
-      height: 100rpx;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .user-detail {
-      margin-left: 24rpx;
-
-      .nickname {
-        font-size: 36rpx;
-        color: #fff;
-        font-weight: bold;
-      }
-
-      .phone {
-        font-size: 26rpx;
-        color: rgba(255, 255, 255, 0.85);
-        margin-top: 8rpx;
-        display: block;
-      }
-
-      .verify-tag {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 4rpx 12rpx;
-        border-radius: 12rpx;
-        margin-top: 10rpx;
-
-        .verify-text {
-          font-size: 20rpx;
-          color: #fff;
-          margin-left: 6rpx;
-        }
-      }
-    }
-  }
-
-  .car-info {
-    display: flex;
-    align-items: center;
-    margin-top: 24rpx;
-    padding-top: 24rpx;
-    border-top: 1rpx solid rgba(255, 255, 255, 0.2);
-
-    .car-text {
-      font-size: 26rpx;
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    .plate-text {
-      font-size: 26rpx;
-      color: #fff;
-      margin-left: 16rpx;
-      font-weight: bold;
-    }
-  }
-}
-
-// 收入概览
-.income-section {
-  margin-bottom: 30rpx;
-}
-
-.income-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .income-item {
-    flex: 1;
-    text-align: center;
-
-    .income-label {
-      font-size: 26rpx;
-      color: #999;
-      display: block;
-      margin-bottom: 10rpx;
-    }
-
-    .income-value {
-      font-size: 32rpx;
-      color: #333;
-      font-weight: bold;
-      display: block;
-
-      &.primary {
-        color: #FF7A00;
-      }
-    }
-  }
-
-  .income-divider {
-    width: 1rpx;
-    background: #f0f0f0;
-  }
-}
-
-// 功能菜单
-.menu-section {
-  margin-bottom: 30rpx;
-}
-
-.menu-list {
-  background: #fff;
-  border-radius: 24rpx;
+// 顶部渐变背景
+.top-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 450rpx;
+  z-index: 1;
   overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
 
-.menu-item {
-  display: flex;
-  align-items: center;
-  padding: 32rpx 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .menu-icon-box {
-    width: 64rpx;
-    height: 64rpx;
-    background: linear-gradient(135deg, #007AFF, #00B4FF);
-    border-radius: 16rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    margin-right: 20rpx;
-  }
-
-  .menu-label {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
+  .top-gradient {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      #3b82f6 0%,
+      #6366f1 50%,
+      #8b5cf6 100%
+    );
+    border-radius: 0 0 80rpx 80rpx;
   }
 }
 
-// 身份切换
-.switch-section {
-  margin-bottom: 30rpx;
+// 导航栏玻璃态
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
 }
 
-.switch-btn {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 32rpx;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-  color: #007AFF;
+// 用户卡片玻璃态
+.user-card-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
+  border-radius: 32rpx;
+  padding: 40rpx;
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
 
-  .switch-text {
-    font-size: 30rpx;
-    font-weight: bold;
-    margin-left: 12rpx;
+// 头像容器
+.avatar-container {
+  position: relative;
+
+  .avatar-ring {
+    width: 110rpx;
+    height: 110rpx;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    padding: 4rpx;
+
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
+    }
+  }
+
+  .online-dot {
+    width: 20rpx;
+    height: 20rpx;
+    background: #10b981;
+    border-radius: 50%;
+    border: 4rpx solid #fff;
   }
 }
 
-// 版本信息
-.version-info {
-  text-align: center;
-  padding: 30rpx 0;
+// 收入卡片玻璃态
+.income-card-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+}
 
-  .version-text {
-    font-size: 24rpx;
-    color: #ccc;
-  }
+// 玻璃态卡片
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 </style>

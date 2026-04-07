@@ -61,9 +61,10 @@ onMounted(() => {
     <!-- 页面内容 -->
     <view class="list-content">
       <view
-        v-for="item in orderList"
+        v-for="(item, index) in orderList"
         :key="item.id"
-        class="order-card"
+        class="order-card animate-list-item"
+        :class="`delay-${Math.min(index + 1, 20)}`"
         @tap="goToDetail(item.id)"
       >
         <view class="card-header">
@@ -138,10 +139,10 @@ onMounted(() => {
 
 .order-card {
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--tn-radius-xl);
   padding: 30rpx;
   margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tn-shadow-soft-2);
 
   .card-header {
     display: flex;

@@ -33,35 +33,38 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="message-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="消息列表" />
 
     <!-- 页面内容 -->
-    <view class="message-content">
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
       <view
         v-for="item in messageList"
         :key="item.id"
-        class="message-card"
-        :class="{ unread: !item.isRead }"
+        class="card-press bg-white rounded-3xl p-6 mb-6 shadow-sm relative"
+        :class="{ 'bg-blue-50': !item.isRead }"
       >
-        <view class="message-icon">
+        <!-- 消息图标 -->
+        <view class="w-20 h-20 bg-gradient-to-br from-blue-500 to-blue-400 rounded-full flex items-center justify-center mr-5 flex-shrink-0">
           <TnIcon :name="getTypeIcon(item.type)" size="36" color="#fff" />
         </view>
-        <view class="message-info">
-          <view class="message-header">
-            <text class="message-title">{{ item.title }}</text>
-            <text class="message-time">{{ item.time }}</text>
+        <!-- 消息内容 -->
+        <view class="flex-1">
+          <view class="flex justify-between items-center mb-2">
+            <text class="text-gray-800 text-sm font-bold">{{ item.title }}</text>
+            <text class="text-gray-400 text-xs">{{ item.time }}</text>
           </view>
-          <text class="message-content-text">{{ item.content }}</text>
+          <text class="text-gray-500 text-xs leading-relaxed block">{{ item.content }}</text>
         </view>
-        <view v-if="!item.isRead" class="unread-dot" />
+        <!-- 未读红点 -->
+        <view v-if="!item.isRead" class="absolute top-6 right-6 w-4 h-4 bg-red-500 rounded-full" />
       </view>
 
       <!-- 空状态 -->
       <TnEmpty v-if="messageList.length === 0" mode="message" show-tips>
         <template #tips>
-          <text class="empty-text">暂无消息</text>
+          <text class="text-gray-400 text-lg block mt-4">暂无消息</text>
         </template>
       </TnEmpty>
     </view>
@@ -69,85 +72,13 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.message-page {
-  min-height: 100vh;
-  background: #f4f5f7;
-}
-
-.message-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.message-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 24rpx;
+.card-press {
   display: flex;
   align-items: flex-start;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-  position: relative;
-
-  &.unread {
-    background: #f0f7ff;
-  }
-
-  .message-icon {
-    width: 80rpx;
-    height: 80rpx;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20rpx;
-    flex-shrink: 0;
-  }
-
-  .message-info {
-    flex: 1;
-
-    .message-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 10rpx;
-
-      .message-title {
-        font-size: 30rpx;
-        color: #333;
-        font-weight: bold;
-      }
-
-      .message-time {
-        font-size: 24rpx;
-        color: #999;
-      }
-    }
-
-    .message-content-text {
-      font-size: 26rpx;
-      color: #666;
-      line-height: 1.5;
-      display: block;
-    }
-  }
-
-  .unread-dot {
-    position: absolute;
-    top: 30rpx;
-    right: 30rpx;
-    width: 16rpx;
-    height: 16rpx;
-    background: #ff4c4c;
-    border-radius: 50%;
-  }
+  transition: transform 0.15s ease;
 }
 
-.empty-text {
-  font-size: 32rpx;
-  color: #999;
-  display: block;
-  margin-top: 20rpx;
+.card-press:active {
+  transform: scale(0.98);
 }
 </style>

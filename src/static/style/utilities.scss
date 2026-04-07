@@ -1,0 +1,73 @@
+// =============================================
+// 工具类 - 将 Mixins 转换为可复用的 CSS 类
+// =============================================
+
+// ---------- 触控区域扩展 ----------
+.touch-expand {
+  margin: -12rpx;
+  padding: 12rpx;
+}
+
+.touch-expand-sm {
+  margin: -8rpx;
+  padding: 8rpx;
+}
+
+.touch-expand-xs {
+  margin: -4rpx;
+  padding: 4rpx;
+}
+
+// ---------- 按钮按压缩放 ----------
+.btn-press {
+  transition: transform var(--tn-duration-fast) var(--tn-ease-spring);
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+// ---------- 卡片按压反馈 ----------
+.card-press {
+  transition: transform var(--tn-duration-fast) var(--tn-ease-spring),
+    box-shadow var(--tn-duration-normal) var(--tn-ease-smooth);
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// ---------- 菜单项按压反馈 ----------
+.menu-item-press {
+  transition: background-color var(--tn-duration-fast) var(--tn-ease-smooth),
+    transform var(--tn-duration-fast) var(--tn-ease-spring);
+  &:active {
+    background-color: rgba(0, 0, 0, 0.03);
+    transform: scale(0.98);
+  }
+}
+
+// ---------- 悬浮状态 ----------
+.hover-lift {
+  transition: transform var(--tn-duration-normal) var(--tn-ease-smooth),
+    box-shadow var(--tn-duration-normal) var(--tn-ease-smooth);
+  &:hover {
+    transform: translateY(-2rpx);
+    box-shadow: var(--tn-shadow-hover);
+  }
+}
+
+// ---------- 安全区域 Mixins 转化的类 ----------
+.safe-area-top {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}
+
+.safe-area-bottom {
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+// ---------- Safe Area 导航栏 ----------
+.navbar-safe-area {
+  padding-top: constant(safe-area-inset-top);
+  padding-top: env(safe-area-inset-top);
+}

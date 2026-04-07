@@ -1,0 +1,136 @@
+// =============================================
+// 动画系统 - 弹簧动画 + 列表进入动画
+// =============================================
+
+// ---------- 列表项进入动画 ----------
+@keyframes list-item-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(20rpx) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-4rpx) scale(1.02);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// 列表项进入动画类
+.animate-list-item {
+  opacity: 0;
+  animation: list-item-enter 0.4s var(--tn-ease-spring) forwards;
+}
+
+// 列表项延迟（1-20）
+@for $i from 1 through 20 {
+  .delay-#{$i} {
+    animation-delay: #{$i * 60}ms !important;
+  }
+}
+
+// ---------- 淡入动画 ----------
+@keyframes fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s var(--tn-ease-smooth) forwards;
+}
+
+// ---------- 弹簧缩放入场 ----------
+@keyframes spring-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  60% {
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-spring-in {
+  animation: spring-in var(--tn-duration-spring) var(--tn-ease-spring) forwards;
+}
+
+// ---------- 滑入动画 ----------
+@keyframes slide-up {
+  0% {
+    opacity: 0;
+    transform: translateY(30rpx);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slide-up 0.4s var(--tn-ease-spring) forwards;
+}
+
+// ---------- 按钮按压缩放 ----------
+// 基础按压缩放
+.btn-press {
+  transition: transform var(--tn-duration-fast) var(--tn-ease-spring);
+  &:active {
+    transform: scale(0.94);
+  }
+}
+
+// ---------- 触控区域扩展 ----------
+@mixin touch-expand($size: 12rpx) {
+  margin: -#{$size};
+  padding: $size;
+}
+
+// 卡片按压反馈
+.card-press {
+  transition: transform var(--tn-duration-fast) var(--tn-ease-spring), box-shadow var(--tn-duration-normal) var(--tn-ease-smooth);
+  &:active {
+    transform: scale(0.98);
+  }
+}
+
+// 菜单项按压反馈
+.menu-item-press {
+  transition: background-color var(--tn-duration-fast) var(--tn-ease-smooth), transform var(--tn-duration-fast) var(--tn-ease-spring);
+  &:active {
+    background-color: rgba(0, 0, 0, 0.03);
+    transform: scale(0.98);
+  }
+}
+
+// ---------- 悬浮状态 ----------
+.hover-lift {
+  transition: transform var(--tn-duration-normal) var(--tn-ease-smooth), box-shadow var(--tn-duration-normal) var(--tn-ease-smooth);
+  &:hover {
+    transform: translateY(-2rpx);
+    box-shadow: var(--tn-shadow-hover);
+  }
+}
+
+// ---------- 减少动画（无障碍） ----------
+@media (prefers-reduced-motion: reduce) {
+  .animate-list-item,
+  .animate-fade-in,
+  .animate-spring-in,
+  .animate-slide-up {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .btn-press:active,
+  .card-press:active,
+  .menu-item-press:active {
+    transform: none;
+  }
+}

@@ -31,111 +31,51 @@ const handleLogout = () => {
 </script>
 
 <template>
-  <view class="settings-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="设置" />
 
     <!-- 页面内容 -->
-    <view class="settings-content">
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
       <!-- 设置列表 -->
-      <view class="settings-list">
-        <view v-for="item in settingsList" :key="item.id" class="settings-item">
-          <view class="settings-icon-box">
+      <view class="bg-white rounded-3xl overflow-hidden mb-6 shadow-sm">
+        <view
+          v-for="item in settingsList"
+          :key="item.id"
+          class="settings-item btn-press flex items-center p-6 border-b border-gray-100 last:border-b-0"
+        >
+          <view class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center mr-5">
             <TnIcon :name="item.icon" size="36" color="#fff" />
           </view>
-          <text class="settings-label">{{ item.label }}</text>
-          <TnIcon
-            v-if="item.type === 'arrow'"
-            name="right"
-            size="28"
-            color="#ccc"
-          />
-          <switch v-else class="settings-switch" :checked="true" />
+          <text class="flex-1 text-gray-800 text-sm">{{ item.label }}</text>
+          <TnIcon v-if="item.type === 'arrow'" name="right" size="28" color="#ccc" />
+          <switch v-else class="transform scale-80" :checked="true" />
         </view>
       </view>
 
       <!-- 退出登录 -->
-      <view class="logout-section">
-        <TnButton
-          type="danger"
-          plain
-          width="100%"
-          height="96rpx"
-          @click="handleLogout"
-        >
-          退出登录
-        </TnButton>
+      <view class="mb-6">
+        <view class="btn-press">
+          <TnButton type="danger" plain width="100%" height="96rpx" @click="handleLogout">
+            退出登录
+          </TnButton>
+        </view>
       </view>
 
       <!-- 版本信息 -->
-      <view class="version-info">
-        <text class="version-text">物流运输 v1.0.0</text>
+      <view class="text-center py-6">
+        <text class="text-gray-300 text-xs">物流运输 v1.0.0</text>
       </view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scoped>
-.settings-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.btn-press {
+  transition: transform 0.15s ease;
 }
 
-.settings-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.settings-list {
-  background: #fff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.settings-item {
-  display: flex;
-  align-items: center;
-  padding: 32rpx 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .settings-icon-box {
-    width: 64rpx;
-    height: 64rpx;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    border-radius: 16rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20rpx;
-  }
-
-  .settings-label {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
-  }
-
-  .settings-switch {
-    transform: scale(0.8);
-  }
-}
-
-.logout-section {
-  margin-bottom: 30rpx;
-}
-
-.version-info {
-  text-align: center;
-  padding: 30rpx 0;
-
-  .version-text {
-    font-size: 24rpx;
-    color: #ccc;
-  }
+.btn-press:active {
+  transform: scale(0.95);
 }
 </style>

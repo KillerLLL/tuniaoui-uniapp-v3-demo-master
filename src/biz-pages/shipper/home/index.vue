@@ -113,9 +113,10 @@ onMounted(() => {
         <TnTitle title="快捷功能" mode="dot" assist-color="#00B578" size="lg" />
         <view class="quick-grid">
           <view
-            v-for="item in quickActions"
+            v-for="(item, index) in quickActions"
             :key="item.id"
-            class="quick-item"
+            class="quick-item animate-list-item"
+            :class="`delay-${index + 1}`"
             @tap="navigateTo(item.path)"
           >
             <view class="quick-icon-box">
@@ -128,7 +129,7 @@ onMounted(() => {
 
       <!-- 公告 -->
       <view class="notice-section">
-        <view class="notice-card">
+        <view class="notice-card animate-list-item delay-5">
           <view class="notice-icon-box">
             <TnIcon name="sound" size="36" color="#007aff" />
           </view>
@@ -155,7 +156,7 @@ onMounted(() => {
     background: linear-gradient(135deg, #00b578, #00d68f);
     color: #fff;
     padding: 8rpx 20rpx;
-    border-radius: 20rpx;
+    border-radius: var(--tn-radius-lg);
     font-size: 24rpx;
     font-weight: bold;
   }
@@ -175,9 +176,10 @@ onMounted(() => {
 
 .user-card {
   background: linear-gradient(135deg, #00b578, #00d68f);
-  border-radius: 24rpx;
+  border-radius: var(--tn-radius-xl);
   padding: 40rpx;
   margin-bottom: 30rpx;
+  box-shadow: var(--tn-shadow-success);
 
   .user-info {
     display: flex;
@@ -187,7 +189,7 @@ onMounted(() => {
       width: 100rpx;
       height: 100rpx;
       background: rgba(255, 255, 255, 0.2);
-      border-radius: 50rpx;
+      border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -219,7 +221,7 @@ onMounted(() => {
         display: inline-block;
         background: rgba(255, 255, 255, 0.2);
         padding: 4rpx 12rpx;
-        border-radius: 12rpx;
+        border-radius: var(--tn-radius-sm);
         margin-top: 10rpx;
 
         .verify-text {
@@ -241,23 +243,24 @@ onMounted(() => {
 
 .quick-grid {
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--tn-radius-xl);
   padding: 30rpx;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tn-shadow-soft-2);
 
   .quick-item {
     display: flex;
     flex-direction: column;
     align-items: center;
+    border-radius: var(--tn-radius-md);
 
     .quick-icon-box {
       width: 80rpx;
       height: 80rpx;
       background: linear-gradient(135deg, #00b578, #00d68f);
-      border-radius: 20rpx;
+      border-radius: var(--tn-radius-lg);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -277,11 +280,11 @@ onMounted(() => {
 
 .notice-card {
   background: #fff;
-  border-radius: 24rpx;
+  border-radius: var(--tn-radius-xl);
   padding: 24rpx 30rpx;
   display: flex;
   align-items: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+  box-shadow: var(--tn-shadow-soft-2);
 
   .notice-icon-box {
     margin-right: 16rpx;

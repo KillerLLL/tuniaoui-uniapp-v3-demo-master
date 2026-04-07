@@ -87,12 +87,12 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="grab-page">
+  <view class="grab-page min-h-screen bg-zinc-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="抢单大厅" :show-back="false">
       <template #right>
         <view
-          class="navbar-right"
+          class="navbar-right btn-press p-20rpx"
           @tap="uni.navigateTo({ url: '/biz-pages/driver/common/search' })"
         >
           <TnIcon name="search" size="40" />
@@ -101,74 +101,79 @@ onMounted(() => {
     </CustomNavbar>
 
     <!-- 页面内容 -->
-    <view class="grab-content">
-      <!-- 筛选 Tab -->
-      <view class="filter-tabs">
+    <view class="grab-content px-30rpx pt-180rpx">
+      <!-- 筛选 Tab - 玻璃态设计 -->
+      <view class="filter-tabs glass-card p-8rpx mb-30rpx">
         <view
           v-for="(item, index) in filterList"
           :key="index"
-          class="filter-tab"
-          :class="{ active: filterIndex === index }"
+          class="filter-tab flex-1 text-center py-16rpx rounded-btn transition-all duration-200"
+          :class="filterIndex === index ? 'bg-primary text-white font-bold' : 'text-zinc-500'"
           @tap="handleFilterChange(index)"
         >
-          <text class="tab-text">{{ item }}</text>
+          <text class="text-28rpx">{{ item }}</text>
         </view>
       </view>
 
       <!-- 货源列表 -->
-      <scroll-view scroll-y class="grab-list">
-        <view v-for="item in grabList" :key="item.id" class="grab-card">
-          <!-- 货物信息头部 -->
-          <view class="card-header">
-            <view class="goods-tags">
+      <scroll-view scroll-y class="grab-list" :style="{ height: 'calc(100vh - 300rpx)' }">
+        <!-- 货源卡片 -->
+        <view
+          v-for="(item, index) in grabList"
+          :key="item.id"
+          class="goods-card white-card mb-24rpx p-30rpx card-press"
+          :class="`animate-list-item delay-${Math.min(index + 1, 20)}`"
+        >
+          <!-- 卡片头部：货物标签 + 发布时间 -->
+          <view class="flex-between mb-20rpx">
+            <view class="flex gap-12rpx">
               <TnTag type="primary" size="sm">{{ item.goodsType }}</TnTag>
               <TnTag type="warning" size="sm">{{ item.weight }}</TnTag>
               <TnTag type="success" size="sm">{{ item.distance }}</TnTag>
             </view>
-            <text class="publish-time">{{ item.publishTime }}</text>
+            <text class="text-22rpx text-zinc-400">{{ item.publishTime }}</text>
           </view>
 
-          <!-- 装卸地址 -->
-          <view class="address-section">
-            <view class="address-item">
-              <view class="address-icon-box start">
-                <TnIcon name="start" size="24" />
+          <!-- 路线区域 -->
+          <view class="route-section py-20rpx border-y border-zinc-100">
+            <!-- 装货地 -->
+            <view class="flex items-start">
+              <view class="route-icon-box w-40rpx h-40rpx rounded-full bg-primary/10 flex-center mr-12rpx">
+                <TnIcon name="start" size="24" color="#3b82f6" />
               </view>
-              <view class="address-info">
-                <text class="address-label">装货</text>
-                <text class="address-text">{{ item.loadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-22rpx text-zinc-400 block mb-4rpx">装货</text>
+                <text class="text-28rpx text-zinc-700">{{ item.loadingAddress }}</text>
               </view>
             </view>
-            <view class="address-line" />
-            <view class="address-item">
-              <view class="address-icon-box end">
-                <TnIcon name="location-fill" size="24" />
+            <!-- 连接线 -->
+            <view class="route-line w-4rpx h-24rpx bg-zinc-300 ml-18rpx my-8rpx" />
+            <!-- 卸货地 -->
+            <view class="flex items-start">
+              <view class="route-icon-box w-40rpx h-40rpx rounded-full bg-success/10 flex-center mr-12rpx">
+                <TnIcon name="location-fill" size="24" color="#10b981" />
               </view>
-              <view class="address-info">
-                <text class="address-label">卸货</text>
-                <text class="address-text">{{ item.unloadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-22rpx text-zinc-400 block mb-4rpx">卸货</text>
+                <text class="text-28rpx text-zinc-700">{{ item.unloadingAddress }}</text>
               </view>
             </view>
           </view>
 
-          <!-- 底部信息 -->
-          <view class="card-footer">
-            <view class="footer-left">
-              <text class="freight-label">运费</text>
-              <text class="freight-value">¥{{ item.freight }}</text>
-              <text class="service-fee">(含服务费¥{{ item.serviceFee }})</text>
+          <!-- 底部：运费 + 操作按钮 -->
+          <view class="flex-between mt-20rpx">
+            <view class="flex items-baseline">
+              <text class="text-24rpx text-zinc-500">运费</text>
+              <text class="text-40rpx font-bold text-orange ml-8rpx">¥{{ item.freight }}</text>
+              <text class="text-22rpx text-zinc-400 ml-8rpx">(含服务费¥{{ item.serviceFee }})</text>
             </view>
-            <view class="footer-right">
-              <TnButton type="info" plain size="sm" @click="goToDetail(item)"
-                >查看详情</TnButton
-              >
-              <TnButton
-                type="warning"
-                shape="round"
-                shadow
-                @click="handleGrab(item)"
-                >立即抢单</TnButton
-              >
+            <view class="flex gap-16rpx">
+              <TnButton type="info" plain size="sm" @click="goToDetail(item)">
+                查看详情
+              </TnButton>
+              <TnButton type="warning" shape="round" shadow @click="handleGrab(item)" class="btn-press">
+                立即抢单
+              </TnButton>
             </view>
           </view>
         </view>
@@ -180,197 +185,17 @@ onMounted(() => {
           show-tips
         >
           <template #tips>
-            <text class="empty-hint">暂无货源，稍后再来看看吧</text>
+            <text class="empty-hint text-26rpx text-zinc-400 mt-20rpx block">暂无货源，稍后再来看看吧</text>
           </template>
         </TnEmpty>
 
         <!-- 加载中 -->
-        <view v-if="loading" class="loading-state">
-          <text class="loading-text">加载中...</text>
+        <view v-if="loading" class="loading-state text-center py-40rpx">
+          <text class="loading-text text-28rpx text-zinc-400">加载中...</text>
         </view>
       </scroll-view>
     </view>
   </view>
 </template>
 
-<style lang="scss" scoped>
-.grab-page {
-  min-height: 100vh;
-  background: #f5f6f8;
-}
-
-.navbar-right {
-  padding: 10rpx;
-}
-
-.grab-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-// 筛选 Tab
-.filter-tabs {
-  display: flex;
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 8rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .filter-tab {
-    flex: 1;
-    text-align: center;
-    padding: 16rpx 0;
-    border-radius: 12rpx;
-    transition: all 0.2s;
-
-    .tab-text {
-      font-size: 28rpx;
-      color: #666;
-    }
-
-    &.active {
-      background: linear-gradient(135deg, #007aff, #00b4ff);
-
-      .tab-text {
-        color: #fff;
-        font-weight: bold;
-      }
-    }
-  }
-}
-
-// 货源列表
-.grab-list {
-  height: calc(100vh - 300rpx);
-}
-
-.grab-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20rpx;
-
-  .goods-tags {
-    display: flex;
-    gap: 12rpx;
-  }
-
-  .publish-time {
-    font-size: 22rpx;
-    color: #999;
-  }
-}
-
-.address-section {
-  padding: 20rpx 0;
-  border-top: 1rpx solid #f0f0f0;
-  border-bottom: 1rpx solid #f0f0f0;
-
-  .address-item {
-    display: flex;
-    align-items: flex-start;
-
-    .address-icon-box {
-      width: 40rpx;
-      height: 40rpx;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12rpx;
-
-      &.start {
-        background: #e6f0ff;
-        color: #007aff;
-      }
-
-      &.end {
-        background: #e6fff0;
-        color: #00b578;
-      }
-    }
-
-    .address-info {
-      flex: 1;
-
-      .address-label {
-        font-size: 22rpx;
-        color: #999;
-        display: block;
-        margin-bottom: 4rpx;
-      }
-
-      .address-text {
-        font-size: 28rpx;
-        color: #333;
-      }
-    }
-  }
-
-  .address-line {
-    width: 4rpx;
-    height: 24rpx;
-    background: #ddd;
-    margin-left: 18rpx;
-    margin-top: 8rpx;
-    margin-bottom: 8rpx;
-  }
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20rpx;
-
-  .footer-left {
-    .freight-label {
-      font-size: 24rpx;
-      color: #999;
-    }
-
-    .freight-value {
-      font-size: 40rpx;
-      color: #ff7a00;
-      font-weight: bold;
-      margin-left: 8rpx;
-    }
-
-    .service-fee {
-      font-size: 22rpx;
-      color: #999;
-      margin-left: 8rpx;
-    }
-  }
-
-  .footer-right {
-    display: flex;
-    gap: 16rpx;
-  }
-}
-
-.empty-hint {
-  font-size: 26rpx;
-  color: #999;
-  display: block;
-  margin-top: 20rpx;
-}
-
-.loading-state {
-  text-align: center;
-  padding: 40rpx;
-
-  .loading-text {
-    font-size: 28rpx;
-    color: #999;
-  }
-}
-</style>
+<!-- 无需额外样式，UnoCSS 原子化类名已覆盖所有样式 -->

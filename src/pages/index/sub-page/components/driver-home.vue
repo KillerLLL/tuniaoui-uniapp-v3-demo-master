@@ -20,9 +20,9 @@ const userInfo = ref({
 
 // 收入数据
 const incomeData = ref([
-  { label: '待结算', value: '¥128.00' },
-  { label: '今日收入', value: '¥356.00' },
-  { label: '已提现', value: '¥2,560' },
+  { label: '待结算', value: '¥128.00', key: 'pendingSettlement', color: 'warning' },
+  { label: '今日收入', value: '¥356.00', key: 'todayIncome', color: 'success' },
+  { label: '已提现', value: '¥2,560', key: 'totalIncome', color: 'primary' },
 ])
 
 // 进行中的订单
@@ -30,10 +30,10 @@ const ongoingOrder = ref<any>(null)
 
 // 快捷入口
 const quickActions = [
-  { id: 1, label: '我要接单', icon: 'car', path: '/biz-pages/driver/grab/index' },
-  { id: 2, label: '我的订单', icon: 'order', path: '/biz-pages/driver/order/list' },
-  { id: 3, label: '我的钱包', icon: 'wallet', path: '/biz-pages/driver/my/wallet' },
-  { id: 4, label: '车辆管理', icon: 'car-fill', path: '/biz-pages/driver/my/vehicle' },
+  { id: 1, label: '我要接单', icon: 'car-fill', path: '/biz-pages/driver/grab/index', gradient: 'from-primary-500 to-primary-600' },
+  { id: 2, label: '我的订单', icon: 'order', path: '/biz-pages/driver/order/list', gradient: 'from-success-500 to-success-600' },
+  { id: 3, label: '我的钱包', icon: 'wallet', path: '/biz-pages/driver/my/wallet', gradient: 'from-warning-500 to-warning-600' },
+  { id: 4, label: '车辆管理', icon: 'car', path: '/biz-pages/driver/my/vehicle', gradient: 'from-danger-500 to-danger-600' },
 ]
 
 // 公告列表
@@ -53,9 +53,9 @@ const loadData = async () => {
       userInfo.value = userRes.data
       const wallet = userRes.data.wallet || {}
       incomeData.value = [
-        { label: '待结算', value: `¥${wallet.pendingSettlement || 0}` },
-        { label: '今日收入', value: `¥${wallet.todayIncome || 0}` },
-        { label: '已提现', value: `¥${(wallet.totalIncome || 0).toLocaleString()}` },
+        { label: '待结算', value: `¥${wallet.pendingSettlement || 0}`, key: 'pendingSettlement', color: 'warning' },
+        { label: '今日收入', value: `¥${wallet.todayIncome || 0}`, key: 'todayIncome', color: 'success' },
+        { label: '已提现', value: `¥${(wallet.totalIncome || 0).toLocaleString()}`, key: 'totalIncome', color: 'primary' },
       ]
     }
     if (orderRes.code === 200) {
@@ -94,136 +94,253 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="driver-home">
+  <view class="driver-home min-h-screen bg-zinc-100">
+    <!-- 顶部渐变背景 -->
+    <view class="top-bg">
+      <view class="top-gradient" />
+    </view>
+
     <!-- 顶部导航栏 -->
-    <view class="top-navbar">
-      <view class="navbar-left" @tap="goToSwitchRole">
-        <view class="role-tag">
-          <TnIcon name="identity" />
-          <text class="role-text">司机</text>
+    <view class="navbar-glass fixed top-0 left-0 right-0 z-50 safe-top">
+      <view class="navbar-inner flex-between h-100rpx px-30rpx">
+        <!-- 左侧角色切换 -->
+        <view
+          class="role-btn flex-center gap-8rpx bg-white/20 backdrop-blur-md rounded-20rpx px-20rpx py-10rpx card-press"
+          @tap="goToSwitchRole"
+        >
+          <TnIcon name="people" size="32rpx" color="#fff" />
+          <text class="text-white text-26rpx font-bold">司机</text>
         </view>
-      </view>
-      <view class="navbar-right" @tap="goToMessage">
-        <TnIcon name="sound" size="44" />
-        <TnBadge :value="3" absolute />
+
+        <!-- 中间问候语 -->
+        <view class="text-center">
+          <text class="text-white/90 text-28rpx">早安，{{ userInfo.nickname }}</text>
+        </view>
+
+        <!-- 右侧消息通知 -->
+        <view
+          class="msg-btn relative flex-center w-70rpx h-70rpx bg-white/20 backdrop-blur-md rounded-full card-press"
+          @tap="goToMessage"
+        >
+          <TnIcon name="sound" size="36rpx" color="#fff" />
+          <view class="absolute -top-4rpx -right-4rpx w-32rpx h-32rpx bg-danger-500 rounded-full flex-center">
+            <text class="text-white text-20rpx font-bold">3</text>
+          </view>
+        </view>
       </view>
     </view>
 
     <!-- 页面内容 -->
-    <view class="home-content">
-      <!-- 个人信息卡片 -->
-      <view class="user-card">
-        <view class="user-info">
-          <view class="avatar-box">
-            <TnIcon name="people" size="50" color="#fff" />
-          </view>
-          <view class="user-detail">
-            <text class="nickname">{{ userInfo.nickname }}</text>
-            <text class="phone">{{ userInfo.phone }}</text>
-            <view class="verify-tag" v-if="userInfo.verifyStatus === 2">
-              <TnIcon name="verify" size="20" color="#fff" />
-              <text class="verify-text">已认证</text>
+    <view class="home-content pb-180rpx">
+      <!-- 用户信息玻璃态卡片 -->
+      <view class="user-card-glass mx-30rpx mt-200rpx relative z-10">
+        <view class="card-decoration absolute -top-40rpx -right-40rpx w-200rpx h-200rpx bg-gradient-to-br from-white/20 to-transparent rounded-full" />
+
+        <view class="user-info-row flex items-center">
+          <!-- 头像 -->
+          <view class="avatar-container">
+            <view class="avatar-ring">
+              <view class="avatar-inner flex-center">
+                <text class="text-white text-44rpx font-bold">
+                  {{ userInfo.nickname?.charAt(0) || '司' }}
+                </text>
+              </view>
             </view>
+            <view class="online-dot absolute bottom-4rpx right-4rpx" />
           </view>
-        </view>
-        <view class="car-info" v-if="userInfo.driverInfo">
-          <text class="car-text">{{ userInfo.driverInfo.carType }}</text>
-          <text class="plate-text">{{ userInfo.driverInfo.carPlate }}</text>
+
+          <!-- 用户信息 -->
+          <view class="user-detail ml-30rpx flex-1">
+            <view class="flex items-center gap-16rpx">
+              <text class="text-white text-36rpx font-bold">{{ userInfo.nickname }}</text>
+              <view
+                v-if="userInfo.verifyStatus === 2"
+                class="verify-badge flex items-center gap-4rpx bg-white/25 backdrop-blur-sm px-12rpx py-4rpx rounded-full"
+              >
+                <TnIcon name="star" size="20rpx" color="#fbbf24" />
+                <text class="text-white text-20rpx">已认证</text>
+              </view>
+            </view>
+            <text class="text-white/70 text-24rpx mt-8rpx block">{{ userInfo.phone }}</text>
+          </view>
+
+          <!-- 车辆信息 -->
+          <view
+            v-if="userInfo.driverInfo"
+            class="car-info-box bg-white/15 backdrop-blur-sm rounded-20rpx px-16rpx py-12rpx"
+          >
+            <view class="flex items-center gap-8rpx">
+              <TnIcon name="car" size="28rpx" color="#fff" />
+              <text class="text-white text-22rpx">{{ userInfo.driverInfo.carType }}</text>
+            </view>
+            <text class="text-white text-24rpx font-bold mt-4rpx block">
+              {{ userInfo.driverInfo.carPlate }}
+            </text>
+          </view>
         </view>
       </view>
 
-      <!-- 今日收入 -->
-      <view class="income-section">
-        <view class="income-card">
-          <view
-            v-for="(item, index) in incomeData"
-            :key="index"
-            class="income-item"
+      <!-- 收入三卡片 -->
+      <view class="income-cards mx-30rpx mt-30rpx grid grid-cols-3 gap-20rpx relative z-10">
+        <view
+          v-for="(item, index) in incomeData"
+          :key="index"
+          class="income-card-glass rounded-20rpx p-20rpx text-center card-press"
+          :class="index === 1 ? 'active-card' : ''"
+        >
+          <text class="text-white/70 text-24rpx block">{{ item.label }}</text>
+          <text
+            class="text-white text-36rpx font-bold mt-8rpx block"
+            :class="index === 1 ? 'text-42rpx' : ''"
           >
-            <text class="income-label">{{ item.label }}</text>
-            <text class="income-value">{{ item.value }}</text>
-          </view>
+            {{ item.value }}
+          </text>
+          <view
+            v-if="index === 1"
+            class="income-indicator absolute bottom-0 left-1/2 -translate-x-1/2 w-60rpx h-6rpx bg-white rounded-full"
+          />
         </view>
       </view>
 
-      <!-- 快捷功能 -->
-      <view class="quick-section">
-        <view class="section-title">
-          <text class="title-text">快捷功能</text>
+      <!-- 快捷功能网格 -->
+      <view class="quick-section mx-30rpx mt-30rpx relative z-10">
+        <view class="section-title flex items-center gap-12rpx mb-20rpx">
+          <view class="title-dot w-12rpx h-12rpx bg-primary-500 rounded-full" />
+          <text class="text-zinc-800 text-30rpx font-bold">快捷功能</text>
         </view>
-        <view class="quick-grid">
-          <view
-            v-for="item in quickActions"
-            :key="item.id"
-            class="quick-item"
-            @tap="navigateTo(item.path)"
-          >
-            <view class="quick-icon-box">
-              <TnIcon :name="item.icon" size="48" />
+        <view class="quick-grid glass-card rounded-24rpx p-30rpx">
+          <view class="grid grid-cols-4 gap-20rpx">
+            <view
+              v-for="item in quickActions"
+              :key="item.id"
+              class="quick-item flex flex-col items-center card-press"
+              @tap="navigateTo(item.path)"
+            >
+              <view
+                class="quick-icon w-90rpx h-90rpx rounded-20rpx flex-center mb-12rpx"
+                :class="`bg-gradient-to-br ${item.gradient} shadow-lg`"
+              >
+                <TnIcon :name="item.icon" size="44rpx" color="#fff" />
+              </view>
+              <text class="text-zinc-700 text-24rpx">{{ item.label }}</text>
             </view>
-            <text class="quick-label">{{ item.label }}</text>
           </view>
         </view>
       </view>
 
       <!-- 进行中订单 -->
-      <view class="order-section">
-        <view class="section-title">
-          <text class="title-text">进行中订单</text>
-          <text class="title-more" @tap="navigateTo('/biz-pages/driver/order/list')">
-            查看全部
-            <TnIcon name="right" size="24" />
-          </text>
+      <view class="order-section mx-30rpx mt-30rpx relative z-10">
+        <view class="section-header flex-between mb-20rpx">
+          <view class="flex items-center gap-12rpx">
+            <view class="title-dot w-12rpx h-12rpx bg-success-500 rounded-full" />
+            <text class="text-zinc-800 text-30rpx font-bold">进行中订单</text>
+          </view>
+          <view
+            class="more-btn flex items-center gap-4rpx card-press px-10rpx py-6rpx rounded-lg"
+            @tap="navigateTo('/biz-pages/driver/order/list')"
+          >
+            <text class="text-zinc-500 text-24rpx">查看全部</text>
+            <TnIcon name="right" size="24rpx" color="#999" />
+          </view>
         </view>
-        <view class="order-card" v-if="ongoingOrder" @tap="goToOrderDetail">
-          <view class="order-header">
-            <text class="order-no">订单号: {{ ongoingOrder.orderNo }}</text>
+
+        <!-- 有订单时 -->
+        <view
+          v-if="ongoingOrder"
+          class="order-card-glass rounded-24rpx p-30rpx card-press"
+          @tap="goToOrderDetail"
+        >
+          <view class="flex-between mb-20rpx">
+            <text class="text-zinc-500 text-24rpx">订单号: {{ ongoingOrder.orderNo }}</text>
             <view
-              class="order-status"
-              :style="{ background: ORDER_STATUS_CONFIG[ongoingOrder.status]?.color || '#999' }"
+              class="status-tag px-16rpx py-6rpx rounded-full"
+              :class="
+                ORDER_STATUS_CONFIG[ongoingOrder.status]?.color === '#00B578'
+                  ? 'bg-success-500/10'
+                  : 'bg-warning-500/10'
+              "
             >
-              {{ ORDER_STATUS_CONFIG[ongoingOrder.status]?.text || '未知' }}
+              <text
+                class="text-22rpx font-medium"
+                :class="
+                  ORDER_STATUS_CONFIG[ongoingOrder.status]?.color === '#00B578'
+                    ? 'text-success-500'
+                    : 'text-warning-500'
+                "
+              >
+                {{ ORDER_STATUS_CONFIG[ongoingOrder.status]?.text || '未知' }}
+              </text>
             </view>
           </view>
-          <view class="order-route">
-            <view class="route-point">
-              <view class="point-icon-box start">
-                <TnIcon name="start" size="24" />
+
+          <!-- 路线 -->
+          <view class="route-section py-20rpx border-y border-zinc-100/50">
+            <view class="flex items-start gap-16rpx">
+              <view class="point-icon w-44rpx h-44rpx bg-primary-500/10 rounded-full flex-center">
+                <TnIcon name="start" size="26rpx" color="#3b82f6" />
               </view>
-              <text class="point-text">{{ ongoingOrder.loadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-zinc-800 text-28rpx">装货: {{ ongoingOrder.loadingAddress }}</text>
+              </view>
             </view>
-            <view class="route-line"></view>
-            <view class="route-point">
-              <view class="point-icon-box end">
-                <TnIcon name="location-fill" size="24" />
+            <view class="route-line w-2rpx h-30rpx bg-zinc-300 ml-21rpx my-8rpx" />
+            <view class="flex items-start gap-16rpx">
+              <view class="point-icon w-44rpx h-44rpx bg-success-500/10 rounded-full flex-center">
+                <TnIcon name="location-fill" size="26rpx" color="#10b981" />
               </view>
-              <text class="point-text">{{ ongoingOrder.unloadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-zinc-800 text-28rpx">卸货: {{ ongoingOrder.unloadingAddress }}</text>
+              </view>
             </view>
           </view>
-          <view class="order-footer">
-            <text class="order-freight">运费: ¥{{ ongoingOrder.freight }}</text>
-            <text class="action-text">查看详情</text>
-            <TnIcon name="right" size="24" color="#007AFF" />
+
+          <!-- 底部 -->
+          <view class="flex-between mt-20rpx">
+            <view>
+              <text class="text-zinc-500 text-24rpx">运费</text>
+              <text class="text-warning-500 text-40rpx font-bold ml-8rpx">
+                ¥{{ ongoingOrder.freight }}
+              </text>
+            </view>
+            <view class="flex items-center gap-6rpx text-primary-500">
+              <text class="text-28rpx">查看详情</text>
+              <TnIcon name="right" size="26rpx" color="#3b82f6" />
+            </view>
           </view>
         </view>
-        <view class="order-empty" v-else>
-          <TnEmpty mode="order" />
-          <text class="empty-text">暂无进行中的订单</text>
-          <view class="empty-btn" @tap="navigateTo('/biz-pages/driver/grab/index')">
-            <TnButton theme="primary" size="sm">去抢单</TnButton>
+
+        <!-- 无订单时 -->
+        <view v-else class="order-empty-glass rounded-24rpx p-60rpx text-center">
+          <view class="empty-icon w-120rpx h-120rpx mx-auto mb-30rpx bg-zinc-100 rounded-full flex-center">
+            <TnIcon name="order" size="60rpx" color="#999" />
+          </view>
+          <text class="text-zinc-500 text-28rpx block mb-30rpx">暂无进行中的订单</text>
+          <view
+            class="inline-block bg-gradient-to-r from-primary-500 to-primary-600 text-white px-40rpx py-16rpx rounded-full text-28rpx font-medium shadow-lg shadow-primary-500/30 btn-press"
+            @tap="navigateTo('/biz-pages/driver/grab/index')"
+          >
+            去抢单
           </view>
         </view>
       </view>
 
-      <!-- 公告 -->
-      <view class="notice-section">
-        <view class="notice-card">
-          <view class="notice-icon-box">
-            <TnIcon name="sound" size="36" color="#007AFF" />
+      <!-- 公告区域 -->
+      <view class="notice-section mx-30rpx mt-30rpx mb-30rpx relative z-10">
+        <view class="notice-glass rounded-24rpx p-24rpx flex items-center gap-16rpx">
+          <view class="notice-icon w-56rpx h-56rpx bg-primary-500/10 rounded-full flex-center shrink-0">
+            <TnIcon name="sound" size="32rpx" color="#3b82f6" />
           </view>
-          <swiper class="notice-swiper" vertical autoplay circular interval="3000">
+          <swiper
+            class="notice-swiper flex-1 h-56rpx"
+            vertical
+            autoplay
+            circular
+            interval="3000"
+          >
             <swiper-item v-for="(notice, index) in noticeList" :key="index">
-              <text class="notice-text">{{ notice }}</text>
+              <text class="text-zinc-600 text-26rpx leading-56rpx text-ellipsis">
+                {{ notice }}
+              </text>
             </swiper-item>
           </swiper>
         </view>
@@ -233,354 +350,148 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.driver-home {
-  min-height: 100vh;
-  background: #f5f6f8;
-}
+// 顶部渐变背景
+.top-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 500rpx;
+  z-index: 1;
+  overflow: hidden;
 
-.top-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  padding-top: 80rpx;
-  background: linear-gradient(135deg, #007AFF, #00B4FF);
-}
-
-.navbar-left {
-  .role-tag {
-    display: flex;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.2);
-    color: #fff;
-    padding: 10rpx 24rpx;
-    border-radius: 20rpx;
-    font-size: 26rpx;
-    font-weight: bold;
-
-    .role-text {
-      margin-left: 8rpx;
-    }
+  .top-gradient {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      #3b82f6 0%,
+      #6366f1 25%,
+      #8b5cf6 50%,
+      #a855f7 75%,
+      #c084fc 100%
+    );
+    border-radius: 0 0 100rpx 100rpx;
   }
 }
 
-.navbar-right {
-  position: relative;
-  padding: 10rpx;
+// 导航栏玻璃态
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
 }
 
-.home-content {
-  padding: 30rpx;
-}
-
-// 用户卡片
-.user-card {
-  background: linear-gradient(135deg, #007AFF, #00B4FF);
-  border-radius: 24rpx;
+// 用户卡片玻璃态
+.user-card-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.25);
+  border-radius: 32rpx;
   padding: 40rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 8rpx 30rpx rgba(0, 122, 255, 0.3);
+  box-shadow: 0 8rpx 32rpx rgba(0, 0, 0, 0.1);
+}
 
-  .user-info {
-    display: flex;
-    align-items: center;
+// 头像容器
+.avatar-container {
+  position: relative;
 
-    .avatar-box {
-      width: 100rpx;
-      height: 100rpx;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 50rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+  .avatar-ring {
+    width: 110rpx;
+    height: 110rpx;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.1));
+    padding: 4rpx;
 
-    .user-detail {
-      margin-left: 24rpx;
-
-      .nickname {
-        font-size: 36rpx;
-        color: #fff;
-        font-weight: bold;
-      }
-
-      .phone {
-        font-size: 26rpx;
-        color: rgba(255, 255, 255, 0.85);
-        margin-top: 8rpx;
-        display: block;
-      }
-
-      .verify-tag {
-        display: inline-flex;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.2);
-        padding: 4rpx 12rpx;
-        border-radius: 12rpx;
-        margin-top: 10rpx;
-
-        .verify-text {
-          font-size: 20rpx;
-          color: #fff;
-          margin-left: 6rpx;
-        }
-      }
+    .avatar-inner {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #6366f1);
     }
   }
 
-  .car-info {
-    display: flex;
-    align-items: center;
-    margin-top: 24rpx;
-    padding-top: 24rpx;
-    border-top: 1rpx solid rgba(255, 255, 255, 0.2);
-
-    .car-text {
-      font-size: 26rpx;
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    .plate-text {
-      font-size: 26rpx;
-      color: #fff;
-      margin-left: 16rpx;
-      font-weight: bold;
-    }
+  .online-dot {
+    width: 20rpx;
+    height: 20rpx;
+    background: #10b981;
+    border-radius: 50%;
+    border: 4rpx solid #fff;
   }
 }
 
-// 收入卡片
-.income-section {
-  margin-bottom: 30rpx;
-}
+// 收入卡片玻璃态
+.income-card-glass {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
 
-.income-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .income-item {
-    flex: 1;
-    text-align: center;
-
-    .income-label {
-      font-size: 26rpx;
-      color: #999;
-      display: block;
-    }
-
-    .income-value {
-      font-size: 36rpx;
-      color: #333;
-      font-weight: bold;
-      margin-top: 10rpx;
-      display: block;
-    }
+  &.active-card {
+    background: rgba(255, 255, 255, 0.25);
+    border-color: rgba(255, 255, 255, 0.4);
   }
 }
 
-// 快捷功能
-.quick-section {
-  margin-bottom: 30rpx;
+// 玻璃态卡片
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
-.section-title {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24rpx;
-
-  .title-text {
-    font-size: 32rpx;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .title-more {
-    display: flex;
-    align-items: center;
-    font-size: 26rpx;
-    color: #999;
-  }
+// 订单卡片玻璃态
+.order-card-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
-.quick-grid {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .quick-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    .quick-icon-box {
-      width: 88rpx;
-      height: 88rpx;
-      background: linear-gradient(135deg, #007AFF, #00B4FF);
-      border-radius: 24rpx;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 12rpx;
-      color: #fff;
-    }
-
-    .quick-label {
-      font-size: 24rpx;
-      color: #333;
-    }
-  }
+// 无订单空状态
+.order-empty-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
-// 进行中订单
-.order-section {
-  margin-bottom: 30rpx;
+// 公告玻璃态
+.notice-glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 16rpx rgba(0, 0, 0, 0.05);
 }
 
-.order-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20rpx;
-
-    .order-no {
-      font-size: 26rpx;
-      color: #666;
-    }
-
-    .order-status {
-      padding: 6rpx 16rpx;
-      border-radius: 20rpx;
-      font-size: 22rpx;
-      color: #fff;
-    }
-  }
-
-  .order-route {
-    padding: 20rpx 0;
-    border-top: 1rpx solid #f0f0f0;
-    border-bottom: 1rpx solid #f0f0f0;
-
-    .route-point {
-      display: flex;
-      align-items: flex-start;
-
-      .point-icon-box {
-        width: 40rpx;
-        height: 40rpx;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12rpx;
-
-        &.start {
-          background: #e6f0ff;
-          color: #007AFF;
-        }
-
-        &.end {
-          background: #e6fff0;
-          color: #00B578;
-        }
-      }
-
-      .point-text {
-        font-size: 28rpx;
-        color: #333;
-        flex: 1;
-        line-height: 40rpx;
-      }
-    }
-
-    .route-line {
-      width: 4rpx;
-      height: 30rpx;
-      background: #ddd;
-      margin-left: 18rpx;
-      margin-top: 8rpx;
-      margin-bottom: 8rpx;
-    }
-  }
-
-  .order-footer {
-    display: flex;
-    align-items: center;
-    margin-top: 20rpx;
-
-    .order-freight {
-      font-size: 32rpx;
-      color: #FF7A00;
-      font-weight: bold;
-    }
-
-    .action-text {
-      flex: 1;
-      text-align: right;
-      color: #007AFF;
-      font-size: 28rpx;
-    }
-  }
+// 路由连接线
+.route-line {
+  background: linear-gradient(to bottom, #d1d5db, #e5e7eb);
 }
 
-.order-empty {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 60rpx 30rpx;
-  text-align: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+// 快捷图标渐变阴影
+.quick-icon {
+  box-shadow: 0 8rpx 16rpx rgba(59, 130, 246, 0.3);
 
-  .empty-text {
-    font-size: 28rpx;
-    color: #999;
-    display: block;
-    margin: 24rpx 0;
-  }
-
-  .empty-btn {
-    display: inline-block;
-  }
-}
-
-// 公告
-.notice-section {
-  margin-bottom: 30rpx;
-}
-
-.notice-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 24rpx 30rpx;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .notice-icon-box {
-    margin-right: 16rpx;
-  }
-
-  .notice-swiper {
-    flex: 1;
-    height: 40rpx;
-
-    .notice-text {
-      font-size: 26rpx;
-      color: #666;
-      line-height: 40rpx;
+  &.bg-gradient-to-br {
+    &.from-success-500 {
+      box-shadow: 0 8rpx 16rpx rgba(16, 185, 129, 0.3);
+    }
+    &.from-warning-500 {
+      box-shadow: 0 8rpx 16rpx rgba(245, 158, 11, 0.3);
+    }
+    &.from-danger-500 {
+      box-shadow: 0 8rpx 16rpx rgba(239, 68, 68, 0.3);
     }
   }
 }

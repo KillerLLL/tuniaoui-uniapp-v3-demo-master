@@ -59,82 +59,107 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="order-list-page">
-    <!-- 顶部导航栏 -->
-    <view class="top-navbar">
-      <text class="navbar-title">我的订单</text>
+  <view class="order-list-page min-h-screen bg-zinc-100">
+    <!-- 顶部渐变导航栏 -->
+    <view class="navbar-glass fixed top-0 left-0 right-0 z-50 safe-top">
+      <view class="navbar-inner flex-center h-100rpx">
+        <text class="text-white text-36rpx font-bold">我的订单</text>
+      </view>
     </view>
 
     <!-- 页面内容 -->
-    <view class="list-content">
+    <view class="list-content pb-30rpx">
       <!-- 筛选 Tab -->
-      <scroll-view scroll-x class="filter-scroll">
-        <view class="filter-tabs">
+      <scroll-view scroll-x class="filter-scroll white-space-nowrap mx-30rpx mt-200rpx mb-24rpx relative z-10">
+        <view class="filter-tabs inline-flex bg-white rounded-16rpx p-8rpx shadow-card">
           <view
             v-for="(item, index) in filterList"
             :key="index"
-            class="filter-tab"
-            :class="{ active: filterIndex === index }"
+            class="filter-tab px-32rpx py-16rpx rounded-12rpx transition-all duration-200 card-press"
+            :class="filterIndex === index ? 'bg-gradient-to-r from-primary-500 to-primary-600' : ''"
             @tap="handleFilterChange(index)"
           >
-            <text class="tab-text">{{ item.name }}</text>
+            <text
+              class="text-28rpx font-medium"
+              :class="filterIndex === index ? 'text-white' : 'text-zinc-600'"
+            >
+              {{ item.name }}
+            </text>
           </view>
         </view>
       </scroll-view>
 
       <!-- 订单列表 -->
-      <scroll-view scroll-y class="order-list">
+      <scroll-view scroll-y class="order-list mx-30rpx relative z-10">
         <view
           v-for="item in orderList"
           :key="item.id"
-          class="order-card"
+          class="order-card glass-card rounded-24rpx p-30rpx mb-24rpx card-press"
           @tap="goToDetail(item)"
         >
-          <view class="card-header">
-            <text class="order-no">{{ item.orderNo }}</text>
+          <view class="flex-between mb-20rpx">
+            <text class="text-zinc-500 text-26rpx">{{ item.orderNo }}</text>
             <view
-              class="order-status"
-              :style="{ background: ORDER_STATUS_CONFIG[item.status]?.color || '#999' }"
+              class="status-tag px-16rpx py-6rpx rounded-full"
+              :style="{ background: `${ORDER_STATUS_CONFIG[item.status]?.color}20` }"
             >
-              {{ ORDER_STATUS_CONFIG[item.status]?.text || '未知' }}
+              <text
+                class="text-22rpx font-medium"
+                :style="{ color: ORDER_STATUS_CONFIG[item.status]?.color || '#999' }"
+              >
+                {{ ORDER_STATUS_CONFIG[item.status]?.text || '未知' }}
+              </text>
             </view>
           </view>
 
-          <view class="card-body">
-            <view class="goods-info">
-              <text class="goods-type">{{ item.goodsType }}</text>
-              <text class="goods-weight">{{ item.weight }}</text>
+          <view class="card-body py-20rpx border-y border-zinc-100/50">
+            <view class="goods-info flex items-center gap-16rpx mb-16rpx">
+              <text class="text-zinc-800 text-28rpx font-bold">{{ item.goodsType }}</text>
+              <text class="text-zinc-400 text-26rpx">{{ item.weight }}</text>
             </view>
             <view class="route-info">
-              <view class="route-item">
-                <view class="route-icon-box start">
-                  <TnIcon name="start" size="20" />
+              <view class="flex items-center gap-12rpx mb-8rpx">
+                <view class="point-icon w-36rpx h-36rpx bg-primary-500/10 rounded-full flex-center">
+                  <TnIcon name="start" size="20rpx" color="#3b82f6" />
                 </view>
-                <text class="route-text">{{ item.loadingAddress }}</text>
+                <text class="text-zinc-600 text-26rpx flex-1 truncate">{{ item.loadingAddress }}</text>
               </view>
-              <view class="route-line"></view>
-              <view class="route-item">
-                <view class="route-icon-box end">
-                  <TnIcon name="location-fill" size="20" />
+              <view class="route-line w-2rpx h-20rpx bg-zinc-300 ml-18rpx my-6rpx" />
+              <view class="flex items-center gap-12rpx">
+                <view class="point-icon w-36rpx h-36rpx bg-success-500/10 rounded-full flex-center">
+                  <TnIcon name="location-fill" size="20rpx" color="#10b981" />
                 </view>
-                <text class="route-text">{{ item.unloadingAddress }}</text>
+                <text class="text-zinc-600 text-26rpx flex-1 truncate">{{ item.unloadingAddress }}</text>
               </view>
             </view>
           </view>
 
-          <view class="card-footer">
-            <text class="freight">运费: ¥{{ item.freight }}</text>
-            <view class="action-hint">
-              <text>查看详情</text>
-              <TnIcon name="right" size="22" />
+          <view class="flex-between mt-20rpx">
+            <view class="flex items-baseline">
+              <text class="text-zinc-500 text-24rpx">运费</text>
+              <text class="text-warning-500 text-36rpx font-bold ml-8rpx">¥{{ item.freight }}</text>
+            </view>
+            <view class="flex items-center gap-4rpx text-primary-500">
+              <text class="text-26rpx">查看详情</text>
+              <TnIcon name="right" size="22rpx" color="#3b82f6" />
             </view>
           </view>
         </view>
 
         <!-- 空状态 -->
-        <view class="empty-state" v-if="orderList.length === 0 && !loading">
-          <TnEmpty mode="order" />
-          <text class="empty-text">暂无订单</text>
+        <view
+          v-if="orderList.length === 0 && !loading"
+          class="empty-state py-100rpx text-center"
+        >
+          <view class="empty-icon w-160rpx h-160rpx mx-auto mb-30rpx bg-zinc-200/50 rounded-full flex-center">
+            <TnIcon name="order" size="80rpx" color="#999" />
+          </view>
+          <text class="text-zinc-400 text-28rpx block">暂无订单</text>
+        </view>
+
+        <!-- 加载中 -->
+        <view v-if="loading" class="loading-state py-60rpx text-center">
+          <text class="text-zinc-400 text-26rpx">加载中...</text>
         </view>
       </scroll-view>
     </view>
@@ -142,192 +167,25 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.order-list-page {
-  min-height: 100vh;
-  background: #f5f6f8;
+// 顶部渐变背景
+.navbar-glass {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
 }
 
-.top-navbar {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  padding-top: 80rpx;
-  background: #fff;
-
-  .navbar-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    color: #333;
-  }
+// 玻璃态卡片
+.glass-card {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
-.list-content {
-  padding: 20rpx 0 30rpx;
-}
-
-// 筛选 Tab
-.filter-scroll {
-  white-space: nowrap;
-  padding: 0 30rpx;
-  margin-bottom: 24rpx;
-}
-
-.filter-tabs {
-  display: inline-flex;
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 8rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .filter-tab {
-    padding: 16rpx 32rpx;
-    border-radius: 12rpx;
-    transition: all 0.2s;
-
-    .tab-text {
-      font-size: 28rpx;
-      color: #666;
-      white-space: nowrap;
-    }
-
-    &.active {
-      background: linear-gradient(135deg, #007AFF, #00B4FF);
-
-      .tab-text {
-        color: #fff;
-        font-weight: bold;
-      }
-    }
-  }
-}
-
-// 订单列表
-.order-list {
-  height: calc(100vh - 250rpx);
-  padding: 0 30rpx;
-}
-
-.order-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-
-  .order-no {
-    font-size: 26rpx;
-    color: #666;
-  }
-
-  .order-status {
-    padding: 6rpx 16rpx;
-    border-radius: 20rpx;
-    font-size: 22rpx;
-    color: #fff;
-  }
-}
-
-.card-body {
-  padding: 20rpx 0;
-  border-top: 1rpx solid #f0f0f0;
-  border-bottom: 1rpx solid #f0f0f0;
-
-  .goods-info {
-    display: flex;
-    gap: 16rpx;
-    margin-bottom: 16rpx;
-
-    .goods-type {
-      font-size: 28rpx;
-      color: #333;
-      font-weight: bold;
-    }
-
-    .goods-weight {
-      font-size: 26rpx;
-      color: #999;
-    }
-  }
-
-  .route-info {
-    .route-item {
-      display: flex;
-      align-items: center;
-
-      .route-icon-box {
-        width: 36rpx;
-        height: 36rpx;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin-right: 12rpx;
-
-        &.start {
-          background: #E6F0FF;
-          color: #007AFF;
-        }
-
-        &.end {
-          background: #E6FFF0;
-          color: #00B578;
-        }
-      }
-
-      .route-text {
-        font-size: 26rpx;
-        color: #666;
-      }
-    }
-
-    .route-line {
-      width: 4rpx;
-      height: 20rpx;
-      background: #ddd;
-      margin-left: 16rpx;
-      margin-top: 6rpx;
-      margin-bottom: 6rpx;
-    }
-  }
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20rpx;
-
-  .freight {
-    font-size: 32rpx;
-    color: #FF7A00;
-    font-weight: bold;
-  }
-
-  .action-hint {
-    display: flex;
-    align-items: center;
-    font-size: 26rpx;
-    color: #007AFF;
-  }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-    margin-top: 24rpx;
-    display: block;
-  }
+// 路由连接线
+.route-line {
+  background: linear-gradient(to bottom, #d1d5db, #e5e7eb);
 }
 </style>

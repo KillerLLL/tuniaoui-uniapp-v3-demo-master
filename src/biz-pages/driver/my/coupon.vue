@@ -39,44 +39,42 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="coupon-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="优惠券" />
 
     <!-- 页面内容 -->
-    <view class="coupon-content">
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
       <view
         v-for="item in couponList"
         :key="item.id"
-        class="coupon-card"
-        :class="{ disabled: item.status !== 0 }"
+        class="card-press flex mb-6 rounded-3xl overflow-hidden shadow-sm"
+        :class="{ 'opacity-60': item.status !== 0 }"
       >
-        <view class="coupon-left">
-          <text class="coupon-amount">¥{{ item.amount }}</text>
-          <text class="coupon-condition">{{ item.condition }}</text>
+        <!-- 优惠券左侧金额 -->
+        <view class="w-55 bg-gradient-to-br from-orange-500 to-orange-400 p-6 flex flex-col items-center justify-center">
+          <text class="text-white text-3xl font-bold">¥{{ item.amount }}</text>
+          <text class="text-white/80 text-xs mt-2">{{ item.condition }}</text>
         </view>
-        <view class="coupon-right">
-          <text class="coupon-name">{{ item.name }}</text>
-          <text class="coupon-expire">有效期至 {{ item.expireTime }}</text>
-          <TnTag
-            :type="
-              item.status === 0
-                ? 'success'
-                : item.status === 1
-                ? 'info'
-                : 'danger'
-            "
-            size="sm"
-          >
-            {{ getStatusText(item.status) }}
-          </TnTag>
+        <!-- 优惠券右侧信息 -->
+        <view class="flex-1 bg-white p-6 relative">
+          <text class="text-gray-800 text-base font-bold block mb-2">{{ item.name }}</text>
+          <text class="text-gray-400 text-xs block">有效期至 {{ item.expireTime }}</text>
+          <view class="absolute top-4 right-4">
+            <TnTag
+              :type="item.status === 0 ? 'success' : item.status === 1 ? 'info' : 'danger'"
+              size="sm"
+            >
+              {{ getStatusText(item.status) }}
+            </TnTag>
+          </view>
         </view>
       </view>
 
       <!-- 空状态 -->
       <TnEmpty v-if="couponList.length === 0" mode="coupon" show-tips>
         <template #tips>
-          <text class="empty-text">暂无优惠券</text>
+          <text class="text-gray-400 text-lg block mt-4">暂无优惠券</text>
         </template>
       </TnEmpty>
     </view>
@@ -84,74 +82,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.coupon-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.card-press {
+  transition: transform 0.15s ease;
 }
 
-.coupon-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.coupon-card {
-  background: #fff;
-  border-radius: 24rpx;
-  display: flex;
-  margin-bottom: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  &.disabled {
-    opacity: 0.6;
-  }
-
-  .coupon-left {
-    width: 220rpx;
-    background: linear-gradient(135deg, #ff7a00, #ff4500);
-    padding: 30rpx 20rpx;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-
-    .coupon-amount {
-      font-size: 48rpx;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .coupon-condition {
-      font-size: 22rpx;
-      color: rgba(255, 255, 255, 0.85);
-      margin-top: 8rpx;
-    }
-  }
-
-  .coupon-right {
-    flex: 1;
-    padding: 30rpx;
-    position: relative;
-
-    .coupon-name {
-      font-size: 30rpx;
-      color: #333;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 10rpx;
-    }
-
-    .coupon-expire {
-      font-size: 24rpx;
-      color: #999;
-      display: block;
-    }
-  }
-}
-
-.empty-text {
-  font-size: 32rpx;
-  color: #999;
-  display: block;
-  margin-top: 20rpx;
+.card-press:active {
+  transform: scale(0.98);
 }
 </style>

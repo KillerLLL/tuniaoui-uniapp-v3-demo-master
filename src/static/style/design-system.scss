@@ -1,0 +1,57 @@
+/* Design System - 全局 CSS 变量 */
+/* 与 UnoCSS 配合使用 */
+
+:root {
+  /* 状态栏高度 - 默认20px，小程序会自动获取真实值 */
+  --status-bar-height: 20px;
+
+  /* 主色调 */
+  --color-primary: #3b82f6;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* 玻璃态 */
+  --glass-bg: rgba(255, 255, 255, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.6);
+  --glass-shadow: 0 10px 30px -10px rgb(0 0 0 / 0.12), 0 4px 10px -4px rgb(0 0 0 / 0.08);
+
+  /* 圆角 */
+  --radius-card: 24rpx;
+  --radius-btn: 16rpx;
+  --radius-sm: 12rpx;
+
+  /* 间距 */
+  --space-xs: 8rpx;
+  --space-sm: 12rpx;
+  --space-md: 16rpx;
+  --space-lg: 20rpx;
+  --space-xl: 24rpx;
+  --space-2xl: 30rpx;
+
+  /* 文字颜色 */
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-tertiary: #a1a1aa;
+  --text-inverse: #ffffff;
+
+  /* 背景颜色 */
+  --bg-primary: #f4f4f5;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e4e4e7;
+}
+
+/* 暗黑模式 */
+.dark {
+  --glass-bg: rgba(39, 39, 42, 0.85);
+  --glass-border: rgba(255, 255, 255, 0.1);
+
+  --text-primary: #fafafa;
+  --text-secondary: #a1a1aa;
+  --text-tertiary: #52525b;
+  --text-inverse: #18181b;
+
+  --bg-primary: #09090b;
+  --bg-secondary: #18181b;
+  --bg-tertiary: #27272a;
+}

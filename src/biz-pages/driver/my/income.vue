@@ -41,51 +41,45 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="income-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="我的收入" />
 
     <!-- 页面内容 -->
-    <view class="income-content">
-      <!-- 概览卡片 -->
-      <view class="overview-card">
-        <view class="overview-header">
-          <text class="header-title">总收入</text>
-          <text class="header-value"
-            >¥{{ incomeOverview.totalIncome.toFixed(2) }}</text
-          >
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
+      <!-- 概览卡片 - 玻璃态 -->
+      <view class="glass-card mb-6 p-8 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-400 shadow-lg shadow-blue-500/30">
+        <view class="text-center mb-6">
+          <text class="text-white/80 text-sm block mb-2">总收入</text>
+          <text class="text-white text-3xl font-bold">¥{{ incomeOverview.totalIncome.toFixed(2) }}</text>
         </view>
-        <view class="overview-stats">
-          <view class="stat-item">
-            <text class="stat-label">今日收入</text>
-            <text class="stat-value"
-              >¥{{ incomeOverview.todayIncome.toFixed(2) }}</text
-            >
+        <view class="flex justify-around pt-6 border-t border-white/20">
+          <view class="text-center">
+            <text class="text-white/80 text-xs block mb-2">今日收入</text>
+            <text class="text-white text-lg font-bold">¥{{ incomeOverview.todayIncome.toFixed(2) }}</text>
           </view>
-          <view class="stat-divider" />
-          <view class="stat-item">
-            <text class="stat-label">待结算</text>
-            <text class="stat-value primary"
-              >¥{{ incomeOverview.pendingSettlement.toFixed(2) }}</text
-            >
+          <view class="w-1 bg-white/20" />
+          <view class="text-center">
+            <text class="text-white/80 text-xs block mb-2">待结算</text>
+            <text class="text-yellow-300 text-lg font-bold">¥{{ incomeOverview.pendingSettlement.toFixed(2) }}</text>
           </view>
         </view>
       </view>
 
       <!-- 收入明细 -->
-      <view class="detail-section">
-        <TnTitle title="收入明细" mode="dot" assist-color="#007AFF" size="lg" />
-        <view class="detail-list">
-          <view v-for="item in incomeDetail" :key="item.id" class="detail-item">
-            <view class="detail-left">
-              <text class="detail-date">{{ item.date }}</text>
-              <text class="detail-order">订单号: {{ item.orderNo }}</text>
+      <view class="mb-6">
+        <TnTitle title="收入明细" mode="dot" assist-color="#3b82f6" size="lg" />
+        <view class="bg-white rounded-3xl overflow-hidden shadow-sm">
+          <view v-for="item in incomeDetail" :key="item.id" class="detail-item flex justify-between items-center p-6 border-b border-gray-100 last:border-b-0">
+            <view>
+              <text class="text-gray-800 text-sm block mb-2">{{ item.date }}</text>
+              <text class="text-gray-400 text-xs">订单号: {{ item.orderNo }}</text>
             </view>
-            <text class="detail-amount">+¥{{ item.amount }}</text>
+            <text class="text-success text-lg font-bold">+¥{{ item.amount }}</text>
           </view>
           <TnEmpty v-if="incomeDetail.length === 0" mode="order" show-tips>
             <template #tips>
-              <text class="empty-text">暂无收入记录</text>
+              <text class="text-gray-400 text-sm block mt-4">暂无收入记录</text>
             </template>
           </TnEmpty>
         </view>
@@ -95,122 +89,12 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.income-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.glass-card {
+  backdrop-filter: blur(20rpx);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(59, 182, 255, 0.9));
 }
 
-.income-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-// 概览卡片
-.overview-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-
-  .overview-header {
-    text-align: center;
-    margin-bottom: 30rpx;
-
-    .header-title {
-      font-size: 28rpx;
-      color: rgba(255, 255, 255, 0.85);
-      display: block;
-      margin-bottom: 10rpx;
-    }
-
-    .header-value {
-      font-size: 56rpx;
-      color: #fff;
-      font-weight: bold;
-    }
-  }
-
-  .overview-stats {
-    display: flex;
-    justify-content: space-around;
-    padding-top: 30rpx;
-    border-top: 1rpx solid rgba(255, 255, 255, 0.2);
-
-    .stat-item {
-      text-align: center;
-
-      .stat-label {
-        font-size: 24rpx;
-        color: rgba(255, 255, 255, 0.85);
-        display: block;
-        margin-bottom: 8rpx;
-      }
-
-      .stat-value {
-        font-size: 32rpx;
-        color: #fff;
-        font-weight: bold;
-
-        &.primary {
-          color: #ffdd00;
-        }
-      }
-    }
-
-    .stat-divider {
-      width: 1rpx;
-      background: rgba(255, 255, 255, 0.2);
-    }
-  }
-}
-
-// 收入明细
-.detail-section {
-  margin-bottom: 30rpx;
-}
-
-.detail-list {
-  background: #fff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.detail-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .detail-left {
-    .detail-date {
-      font-size: 28rpx;
-      color: #333;
-      display: block;
-      margin-bottom: 8rpx;
-    }
-
-    .detail-order {
-      font-size: 24rpx;
-      color: #999;
-    }
-  }
-
-  .detail-amount {
-    font-size: 32rpx;
-    color: #00b578;
-    font-weight: bold;
-  }
-}
-
-.empty-text {
-  font-size: 28rpx;
-  color: #999;
-  display: block;
-  margin-top: 20rpx;
+.text-success {
+  color: #10b981;
 }
 </style>

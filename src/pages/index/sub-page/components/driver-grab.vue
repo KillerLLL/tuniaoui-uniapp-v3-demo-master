@@ -81,97 +81,126 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="grab-page">
+  <view class="grab-page min-h-screen bg-zinc-100">
+    <!-- 顶部渐变背景 -->
+    <view class="top-bg">
+      <view class="top-gradient" />
+    </view>
+
     <!-- 顶部导航栏 -->
-    <view class="top-navbar">
-      <text class="navbar-title">抢单大厅</text>
-      <view class="navbar-right" @tap="goToSearch">
-        <TnIcon name="search" size="40" />
+    <view class="navbar-glass fixed top-0 left-0 right-0 z-50 safe-top">
+      <view class="navbar-inner flex-between h-100rpx px-30rpx">
+        <text class="text-white text-36rpx font-bold">抢单大厅</text>
+        <view
+          class="search-btn flex-center w-70rpx h-70rpx bg-white/20 backdrop-blur-md rounded-full card-press"
+          @tap="goToSearch"
+        >
+          <TnIcon name="search" size="40rpx" color="#fff" />
+        </view>
       </view>
     </view>
 
     <!-- 页面内容 -->
-    <view class="grab-content">
+    <view class="grab-content pb-30rpx">
       <!-- 筛选 Tab -->
-      <view class="filter-tabs">
+      <view class="filter-tabs mx-30rpx mt-200rpx relative z-10">
         <view
           v-for="(item, index) in filterList"
           :key="index"
-          class="filter-tab"
-          :class="{ active: filterIndex === index }"
+          class="filter-tab flex-center flex-1 py-16rpx rounded-12rpx card-press transition-all duration-200"
+          :class="filterIndex === index ? 'bg-gradient-to-r from-primary-500 to-primary-600 text-white' : 'bg-white text-zinc-600'"
           @tap="handleFilterChange(index)"
         >
-          <text class="tab-text">{{ item }}</text>
+          <text class="text-28rpx font-medium">{{ item }}</text>
         </view>
       </view>
 
       <!-- 货源列表 -->
-      <scroll-view scroll-y class="grab-list">
+      <scroll-view scroll-y class="grab-list mx-30rpx mt-20rpx relative z-10">
         <view
           v-for="item in grabList"
           :key="item.id"
-          class="grab-card"
+          class="grab-card glass-card rounded-24rpx p-30rpx mb-24rpx card-press"
         >
           <!-- 货物信息头部 -->
-          <view class="card-header">
-            <view class="goods-tags">
-              <view class="goods-tag">
-                <text class="tag-text">{{ item.goodsType }}</text>
+          <view class="flex-between mb-20rpx">
+            <view class="flex items-center gap-12rpx">
+              <view class="goods-tag bg-primary-500/10 px-16rpx py-6rpx rounded-lg">
+                <text class="text-primary-500 text-22rpx font-medium">{{ item.goodsType }}</text>
               </view>
-              <view class="goods-tag weight">
-                <text class="tag-text">{{ item.weight }}</text>
+              <view class="goods-tag bg-warning-500/10 px-16rpx py-6rpx rounded-lg">
+                <text class="text-warning-500 text-22rpx font-medium">{{ item.weight }}</text>
               </view>
-              <view class="goods-tag distance">
-                <text class="tag-text">{{ item.distance }}</text>
+              <view class="goods-tag bg-success-500/10 px-16rpx py-6rpx rounded-lg">
+                <text class="text-success-500 text-22rpx font-medium">{{ item.distance }}</text>
               </view>
             </view>
-            <text class="publish-time">{{ item.publishTime }}</text>
+            <text class="text-zinc-400 text-22rpx">{{ item.publishTime }}</text>
           </view>
 
           <!-- 装卸地址 -->
-          <view class="address-section">
-            <view class="address-item">
-              <view class="address-icon-box start">
-                <TnIcon name="start" size="24" />
+          <view class="address-section py-20rpx border-y border-zinc-100/50">
+            <!-- 装货 -->
+            <view class="flex items-start gap-16rpx">
+              <view class="point-icon w-44rpx h-44rpx bg-primary-500/10 rounded-full flex-center">
+                <TnIcon name="start" size="26rpx" color="#3b82f6" />
               </view>
-              <view class="address-info">
-                <text class="address-label">装货</text>
-                <text class="address-text">{{ item.loadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-zinc-500 text-22rpx">装货</text>
+                <text class="text-zinc-800 text-28rpx block mt-4rpx">{{ item.loadingAddress }}</text>
               </view>
             </view>
-            <view class="address-line"></view>
-            <view class="address-item">
-              <view class="address-icon-box end">
-                <TnIcon name="location-fill" size="24" />
+            <!-- 连接线 -->
+            <view class="route-line w-2rpx h-30rpx bg-zinc-300 ml-21rpx my-8rpx" />
+            <!-- 卸货 -->
+            <view class="flex items-start gap-16rpx">
+              <view class="point-icon w-44rpx h-44rpx bg-success-500/10 rounded-full flex-center">
+                <TnIcon name="location-fill" size="26rpx" color="#10b981" />
               </view>
-              <view class="address-info">
-                <text class="address-label">卸货</text>
-                <text class="address-text">{{ item.unloadingAddress }}</text>
+              <view class="flex-1">
+                <text class="text-zinc-500 text-22rpx">卸货</text>
+                <text class="text-zinc-800 text-28rpx block mt-4rpx">{{ item.unloadingAddress }}</text>
               </view>
             </view>
           </view>
 
           <!-- 底部信息 -->
-          <view class="card-footer">
-            <view class="footer-left">
-              <text class="freight-label">运费</text>
-              <text class="freight-value">¥{{ item.freight }}</text>
+          <view class="flex-between mt-20rpx">
+            <view class="flex items-baseline">
+              <text class="text-zinc-500 text-24rpx">运费</text>
+              <text class="text-warning-500 text-44rpx font-bold ml-8rpx">¥{{ item.freight }}</text>
             </view>
-            <view class="footer-right">
-              <view class="action-btn detail" @tap="goToDetail(item)">
-                <text class="btn-text">查看详情</text>
+            <view class="flex items-center gap-16rpx">
+              <view
+                class="detail-btn px-24rpx py-16rpx bg-zinc-100 rounded-30rpx card-press"
+                @tap.stop="goToDetail(item)"
+              >
+                <text class="text-zinc-600 text-26rpx">查看详情</text>
               </view>
-              <view class="action-btn grab" @tap="handleGrab(item)">
-                <text class="btn-text">立即抢单</text>
+              <view
+                class="grab-btn px-30rpx py-16rpx bg-gradient-to-r from-warning-500 to-danger-500 rounded-30rpx shadow-lg shadow-warning-500/30 card-press"
+                @tap.stop="handleGrab(item)"
+              >
+                <text class="text-white text-26rpx font-bold">立即抢单</text>
               </view>
             </view>
           </view>
         </view>
 
         <!-- 空状态 -->
-        <view class="empty-state" v-if="grabList.length === 0 && !loading">
-          <TnEmpty mode="car" />
-          <text class="empty-text">暂无货源</text>
+        <view
+          v-if="grabList.length === 0 && !loading"
+          class="empty-state py-100rpx text-center"
+        >
+          <view class="empty-icon w-160rpx h-160rpx mx-auto mb-30rpx bg-zinc-200/50 rounded-full flex-center">
+            <TnIcon name="order" size="80rpx" color="#999" />
+          </view>
+          <text class="text-zinc-400 text-28rpx block">暂无货源</text>
+        </view>
+
+        <!-- 加载中 -->
+        <view v-if="loading" class="loading-state py-60rpx text-center">
+          <text class="text-zinc-400 text-26rpx">加载中...</text>
         </view>
       </scroll-view>
     </view>
@@ -179,237 +208,55 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.grab-page {
-  min-height: 100vh;
-  background: #f5f6f8;
-}
+// 顶部渐变背景
+.top-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 350rpx;
+  z-index: 1;
+  overflow: hidden;
 
-.top-navbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 30rpx;
-  padding-top: 80rpx;
-  background: #fff;
-
-  .navbar-title {
-    font-size: 36rpx;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .navbar-right {
-    padding: 10rpx;
-  }
-}
-
-.grab-content {
-  padding: 20rpx 30rpx 30rpx;
-}
-
-// 筛选 Tab
-.filter-tabs {
-  display: flex;
-  background: #fff;
-  border-radius: 16rpx;
-  padding: 8rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .filter-tab {
-    flex: 1;
-    text-align: center;
-    padding: 16rpx 0;
-    border-radius: 12rpx;
-    transition: all 0.2s;
-
-    .tab-text {
-      font-size: 28rpx;
-      color: #666;
-    }
-
-    &.active {
-      background: linear-gradient(135deg, #007AFF, #00B4FF);
-
-      .tab-text {
-        color: #fff;
-        font-weight: bold;
-      }
-    }
+  .top-gradient {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      135deg,
+      #f59e0b 0%,
+      #f97316 25%,
+      #ef4444 50%,
+      #dc2626 75%,
+      #b91c1c 100%
+    );
+    border-radius: 0 0 80rpx 80rpx;
   }
 }
 
-// 货源列表
-.grab-list {
-  height: calc(100vh - 300rpx);
+// 导航栏玻璃态
+.navbar-glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1rpx solid rgba(255, 255, 255, 0.2);
 }
 
-.grab-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+// 玻璃态卡片
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1rpx solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 4rpx 24rpx rgba(0, 0, 0, 0.08);
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 20rpx;
-
-  .goods-tags {
-    display: flex;
-    gap: 12rpx;
-
-    .goods-tag {
-      background: #E6F0FF;
-      padding: 6rpx 16rpx;
-      border-radius: 8rpx;
-
-      .tag-text {
-        font-size: 22rpx;
-        color: #007AFF;
-      }
-
-      &.weight {
-        background: #FFF7E6;
-
-        .tag-text {
-          color: #FF7A00;
-        }
-      }
-
-      &.distance {
-        background: #E6FFF0;
-
-        .tag-text {
-          color: #00B578;
-        }
-      }
-    }
-  }
-
-  .publish-time {
-    font-size: 22rpx;
-    color: #999;
-  }
+// 路由连接线
+.route-line {
+  background: linear-gradient(to bottom, #d1d5db, #e5e7eb);
 }
 
-.address-section {
-  padding: 20rpx 0;
-  border-top: 1rpx solid #f0f0f0;
-  border-bottom: 1rpx solid #f0f0f0;
-
-  .address-item {
-    display: flex;
-    align-items: flex-start;
-
-    .address-icon-box {
-      width: 40rpx;
-      height: 40rpx;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12rpx;
-
-      &.start {
-        background: #E6F0FF;
-        color: #007AFF;
-      }
-
-      &.end {
-        background: #E6FFF0;
-        color: #00B578;
-      }
-    }
-
-    .address-info {
-      flex: 1;
-
-      .address-label {
-        font-size: 22rpx;
-        color: #999;
-        display: block;
-        margin-bottom: 4rpx;
-      }
-
-      .address-text {
-        font-size: 28rpx;
-        color: #333;
-      }
-    }
-  }
-
-  .address-line {
-    width: 4rpx;
-    height: 24rpx;
-    background: #ddd;
-    margin-left: 18rpx;
-    margin-top: 8rpx;
-    margin-bottom: 8rpx;
-  }
-}
-
-.card-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 20rpx;
-
-  .footer-left {
-    .freight-label {
-      font-size: 24rpx;
-      color: #999;
-    }
-
-    .freight-value {
-      font-size: 40rpx;
-      color: #FF7A00;
-      font-weight: bold;
-      margin-left: 8rpx;
-    }
-  }
-
-  .footer-right {
-    display: flex;
-    gap: 16rpx;
-
-    .action-btn {
-      padding: 16rpx 24rpx;
-      border-radius: 30rpx;
-      font-size: 26rpx;
-
-      &.detail {
-        background: #f0f0f0;
-
-        .btn-text {
-          color: #666;
-        }
-      }
-
-      &.grab {
-        background: linear-gradient(135deg, #FF7A00, #FF4500);
-
-        .btn-text {
-          color: #fff;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-}
-
-.empty-state {
-  text-align: center;
-  padding: 100rpx 0;
-
-  .empty-text {
-    font-size: 32rpx;
-    color: #999;
-    margin-top: 24rpx;
-    display: block;
-  }
+// 抢单按钮阴影
+.grab-btn {
+  box-shadow: 0 8rpx 16rpx rgba(245, 158, 11, 0.3);
 }
 </style>

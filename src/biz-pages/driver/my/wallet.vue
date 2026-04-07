@@ -42,68 +42,66 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="wallet-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="我的钱包" />
 
     <!-- 页面内容 -->
-    <view class="wallet-content">
-      <!-- 余额卡片 -->
-      <view class="balance-card">
-        <text class="balance-label">账户余额(元)</text>
-        <text class="balance-value">¥{{ walletInfo.balance.toFixed(2) }}</text>
-        <view class="balance-actions">
-          <TnButton type="primary" shadow shape="round" @click="goToWithdraw">
-            提现
-          </TnButton>
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
+      <!-- 余额卡片 - 玻璃态 -->
+      <view class="glass-card mb-6 p-10 rounded-3xl bg-gradient-to-br from-blue-500 to-blue-400 shadow-lg shadow-blue-500/30">
+        <text class="text-white/80 text-sm block mb-4">账户余额(元)</text>
+        <text class="text-white text-4xl font-bold block mb-8">¥{{ walletInfo.balance.toFixed(2) }}</text>
+        <view class="flex gap-4">
+          <view class="btn-press flex-1">
+            <TnButton type="primary" shadow shape="round" @click="goToWithdraw">
+              提现
+            </TnButton>
+          </view>
         </view>
       </view>
 
       <!-- 收入统计 -->
-      <view class="income-stats">
-        <view class="stat-item" @tap="goToIncome">
-          <text class="stat-value"
-            >¥{{ walletInfo.todayIncome.toFixed(2) }}</text
-          >
-          <text class="stat-label">今日收入</text>
-        </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-value"
-            >¥{{ walletInfo.totalIncome.toFixed(2) }}</text
-          >
-          <text class="stat-label">累计收入</text>
-        </view>
-        <view class="stat-divider" />
-        <view class="stat-item">
-          <text class="stat-value primary"
-            >¥{{ walletInfo.pendingSettlement.toFixed(2) }}</text
-          >
-          <text class="stat-label">待结算</text>
+      <view class="card-press bg-white rounded-3xl p-6 shadow-sm mb-6">
+        <view class="flex">
+          <view class="flex-1 text-center" @tap="goToIncome">
+            <text class="text-gray-800 text-xl font-bold block mb-2">¥{{ walletInfo.todayIncome.toFixed(2) }}</text>
+            <text class="text-gray-400 text-xs">今日收入</text>
+          </view>
+          <view class="w-1 bg-gray-100" />
+          <view class="flex-1 text-center">
+            <text class="text-gray-800 text-xl font-bold block mb-2">¥{{ walletInfo.totalIncome.toFixed(2) }}</text>
+            <text class="text-gray-400 text-xs">累计收入</text>
+          </view>
+          <view class="w-1 bg-gray-100" />
+          <view class="flex-1 text-center">
+            <text class="text-primary text-xl font-bold block mb-2">¥{{ walletInfo.pendingSettlement.toFixed(2) }}</text>
+            <text class="text-gray-400 text-xs">待结算</text>
+          </view>
         </view>
       </view>
 
       <!-- 功能列表 -->
-      <view class="func-list">
-        <view class="func-item" @tap="goToIncome">
-          <view class="func-icon-box">
+      <view class="bg-white rounded-3xl overflow-hidden shadow-sm">
+        <view class="func-item btn-press" @tap="goToIncome">
+          <view class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center mr-5">
             <TnIcon name="chart" size="36" color="#fff" />
           </view>
-          <text class="func-label">我的收入</text>
+          <text class="flex-1 text-gray-800 text-base">我的收入</text>
           <TnIcon name="right" size="28" color="#ccc" />
         </view>
-        <view class="func-item" @tap="goToWithdraw">
-          <view class="func-icon-box">
+        <view class="func-item btn-press" @tap="goToWithdraw">
+          <view class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center mr-5">
             <TnIcon name="money" size="36" color="#fff" />
           </view>
-          <text class="func-label">提现记录</text>
+          <text class="flex-1 text-gray-800 text-base">提现记录</text>
           <TnIcon name="right" size="28" color="#ccc" />
         </view>
-        <view class="func-item">
-          <view class="func-icon-box">
+        <view class="func-item btn-press border-t border-gray-100">
+          <view class="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-400 rounded-2xl flex items-center justify-center mr-5">
             <TnIcon name="order" size="36" color="#fff" />
           </view>
-          <text class="func-label">银行卡管理</text>
+          <text class="flex-1 text-gray-800 text-base">银行卡管理</text>
           <TnIcon name="right" size="28" color="#ccc" />
         </view>
       </view>
@@ -112,114 +110,34 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.wallet-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.glass-card {
+  backdrop-filter: blur(20rpx);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.9), rgba(59, 182, 255, 0.9));
 }
 
-.wallet-content {
-  padding: 180rpx 30rpx 30rpx;
+.card-press {
+  transition: transform 0.15s ease;
 }
 
-// 余额卡片
-.balance-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
-  border-radius: 24rpx;
-  padding: 50rpx 40rpx;
-  margin-bottom: 30rpx;
-
-  .balance-label {
-    font-size: 28rpx;
-    color: rgba(255, 255, 255, 0.85);
-    display: block;
-    margin-bottom: 16rpx;
-  }
-
-  .balance-value {
-    font-size: 64rpx;
-    color: #fff;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 30rpx;
-  }
-
-  .balance-actions {
-    display: flex;
-    gap: 20rpx;
-  }
+.card-press:active {
+  transform: scale(0.98);
 }
 
-// 收入统计
-.income-stats {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .stat-item {
-    flex: 1;
-    text-align: center;
-
-    .stat-value {
-      font-size: 32rpx;
-      color: #333;
-      font-weight: bold;
-      display: block;
-      margin-bottom: 10rpx;
-
-      &.primary {
-        color: #ff7a00;
-      }
-    }
-
-    .stat-label {
-      font-size: 24rpx;
-      color: #999;
-    }
-  }
-
-  .stat-divider {
-    width: 1rpx;
-    background: #f0f0f0;
-  }
+.btn-press {
+  transition: transform 0.15s ease;
 }
 
-// 功能列表
-.func-list {
-  background: #fff;
-  border-radius: 24rpx;
-  overflow: hidden;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+.btn-press:active {
+  transform: scale(0.95);
 }
 
 .func-item {
   display: flex;
   align-items: center;
   padding: 32rpx 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
+}
 
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .func-icon-box {
-    width: 64rpx;
-    height: 64rpx;
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    border-radius: 16rpx;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-right: 20rpx;
-  }
-
-  .func-label {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
-  }
+.text-primary {
+  color: #3b82f6;
 }
 </style>

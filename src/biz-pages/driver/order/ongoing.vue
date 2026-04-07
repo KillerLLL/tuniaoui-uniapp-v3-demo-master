@@ -112,27 +112,27 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="ongoing-page">
+  <view class="ongoing-page min-h-screen bg-zinc-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="进行中订单" />
 
     <!-- 页面内容 -->
-    <view v-if="orderDetail" class="ongoing-content">
-      <!-- 状态卡片 -->
-      <view class="status-card">
-        <view class="status-header">
+    <view v-if="orderDetail" class="ongoing-content pt-180rpx pb-150rpx">
+      <!-- 状态卡片 - 渐变背景 -->
+      <view
+        class="status-card mx-30rpx rounded-card p-40rpx mb-30rpx bg-gradient-to-r from-primary to-blue-400"
+      >
+        <view class="flex items-center gap-20rpx mb-20rpx">
           <view
-            class="status-badge"
-            :style="{
-              background: ORDER_STATUS_CONFIG[orderDetail.status]?.color,
-            }"
+            class="status-badge px-24rpx py-10rpx rounded-full text-26rpx text-white font-bold"
+            :style="{ background: ORDER_STATUS_CONFIG[orderDetail.status]?.color }"
           >
             {{ ORDER_STATUS_CONFIG[orderDetail.status]?.text }}
           </view>
-          <text class="order-no">{{ orderDetail.orderNo }}</text>
+          <text class="text-26rpx text-white/85">{{ orderDetail.orderNo }}</text>
         </view>
-        <view v-if="getStatusAction(orderDetail.status)" class="status-action">
-          <text class="action-hint">{{
+        <view v-if="getStatusAction(orderDetail.status)" class="action-hint text-32rpx text-white font-bold">
+          {{
             orderDetail.status === ORDER_STATUS.GRABBED
               ? '请前往装货点'
               : orderDetail.status === ORDER_STATUS.PICKED_UP
@@ -142,80 +142,54 @@ onMounted(() => {
               : orderDetail.status === ORDER_STATUS.DELIVERED
               ? '已到达目的地，确认收款'
               : ''
-          }}</text>
+          }}
         </view>
       </view>
 
       <!-- 装货信息 -->
-      <view class="info-section">
-        <view class="section-header">
-          <view class="section-dot start" />
-          <text class="section-title">装货信息</text>
+      <view class="info-section px-30rpx mb-30rpx">
+        <view class="flex items-center mb-16rpx">
+          <view class="section-dot w-16rpx h-16rpx rounded-full bg-primary mr-12rpx" />
+          <text class="section-title text-32rpx font-bold text-zinc-700">装货信息</text>
         </view>
-        <view class="info-card">
+        <view class="info-card white-card p-30rpx">
           <view
-            class="address-row"
-            @tap="
-              openMap(
-                orderDetail.loading.latitude,
-                orderDetail.loading.longitude,
-                orderDetail.loading.address
-              )
-            "
+            class="address-row pb-20rpx border-b border-zinc-100 flex-between items-center"
+            @tap="openMap(orderDetail.loading.latitude, orderDetail.loading.longitude, orderDetail.loading.address)"
           >
-            <text class="address-text">{{ orderDetail.loading.address }}</text>
-            <text class="map-icon">📍</text>
+            <text class="address-text text-30rpx text-zinc-700 font-bold flex-1">{{ orderDetail.loading.address }}</text>
+            <TnIcon name="location-fill" size="40" color="#3b82f6" class="ml-16rpx" />
           </view>
-          <view class="contact-row">
-            <text class="contact-name">{{
-              orderDetail.loading.contactName
-            }}</text>
-            <text
-              class="contact-phone"
-              @tap="makePhoneCall(orderDetail.loading.contactPhone)"
-            >
+          <view class="contact-row py-20rpx border-b border-zinc-100 flex-between">
+            <text class="contact-name text-28rpx text-zinc-700">{{ orderDetail.loading.contactName }}</text>
+            <text class="contact-phone text-28rpx text-primary" @tap="makePhoneCall(orderDetail.loading.contactPhone)">
               {{ orderDetail.loading.contactPhone }}
             </text>
           </view>
-          <view class="time-row">
-            <text class="time-label">装货时间</text>
-            <text class="time-value">{{
-              orderDetail.loading.scheduledTime
-            }}</text>
+          <view class="time-row pt-16rpx flex-between">
+            <text class="time-label text-28rpx text-zinc-500">装货时间</text>
+            <text class="time-value text-28rpx text-zinc-700">{{ orderDetail.loading.scheduledTime }}</text>
           </view>
         </view>
       </view>
 
       <!-- 卸货信息 -->
-      <view class="info-section">
-        <view class="section-header">
-          <view class="section-dot end" />
-          <text class="section-title">卸货信息</text>
+      <view class="info-section px-30rpx mb-30rpx">
+        <view class="flex items-center mb-16rpx">
+          <view class="section-dot w-16rpx h-16rpx rounded-full bg-success mr-12rpx" />
+          <text class="section-title text-32rpx font-bold text-zinc-700">卸货信息</text>
         </view>
-        <view class="info-card">
+        <view class="info-card white-card p-30rpx">
           <view
-            class="address-row"
-            @tap="
-              openMap(
-                orderDetail.unloading.latitude,
-                orderDetail.unloading.longitude,
-                orderDetail.unloading.address
-              )
-            "
+            class="address-row pb-20rpx border-b border-zinc-100 flex-between items-center"
+            @tap="openMap(orderDetail.unloading.latitude, orderDetail.unloading.longitude, orderDetail.unloading.address)"
           >
-            <text class="address-text">{{
-              orderDetail.unloading.address
-            }}</text>
-            <text class="map-icon">📍</text>
+            <text class="address-text text-30rpx text-zinc-700 font-bold flex-1">{{ orderDetail.unloading.address }}</text>
+            <TnIcon name="location-fill" size="40" color="#10b981" class="ml-16rpx" />
           </view>
-          <view class="contact-row">
-            <text class="contact-name">{{
-              orderDetail.unloading.contactName
-            }}</text>
-            <text
-              class="contact-phone"
-              @tap="makePhoneCall(orderDetail.unloading.contactPhone)"
-            >
+          <view class="contact-row py-20rpx flex-between">
+            <text class="contact-name text-28rpx text-zinc-700">{{ orderDetail.unloading.contactName }}</text>
+            <text class="contact-phone text-28rpx text-primary" @tap="makePhoneCall(orderDetail.unloading.contactPhone)">
               {{ orderDetail.unloading.contactPhone }}
             </text>
           </view>
@@ -223,275 +197,46 @@ onMounted(() => {
       </view>
 
       <!-- 费用信息 -->
-      <view class="info-section">
-        <view class="section-header">
-          <text class="section-title">费用信息</text>
-        </view>
-        <view class="info-card fee-card">
-          <view class="fee-row">
-            <text class="fee-label">运费</text>
-            <text class="fee-value primary"
-              >¥{{ orderDetail.fee.freight }}</text
-            >
+      <view class="info-section px-30rpx mb-30rpx">
+        <text class="section-title text-32rpx font-bold text-zinc-700 mb-16rpx block">费用信息</text>
+        <view class="info-card fee-card white-card p-30rpx">
+          <view class="fee-row py-12rpx flex-between">
+            <text class="fee-label text-28rpx text-zinc-500">运费</text>
+            <text class="fee-value text-28rpx text-orange font-bold">¥{{ orderDetail.fee.freight }}</text>
           </view>
-          <view class="fee-row">
-            <text class="fee-label">服务费</text>
-            <text class="fee-value danger"
-              >-¥{{ orderDetail.fee.serviceFee }}</text
-            >
+          <view class="fee-row py-12rpx flex-between">
+            <text class="fee-label text-28rpx text-zinc-500">服务费</text>
+            <text class="fee-value text-28rpx text-red-500">-¥{{ orderDetail.fee.serviceFee }}</text>
           </view>
-          <view class="fee-divider" />
-          <view class="fee-row total">
-            <text class="fee-label">实际收入</text>
-            <text class="fee-value highlight"
-              >¥{{ orderDetail.fee.actualIncome }}</text
-            >
+          <view class="h-1rpx bg-zinc-200 my-10rpx" />
+          <view class="fee-row py-16rpx flex-between">
+            <text class="fee-label text-28rpx text-zinc-500">实际收入</text>
+            <text class="fee-value text-40rpx text-success font-bold">¥{{ orderDetail.fee.actualIncome }}</text>
           </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
-      <view v-if="getStatusAction(orderDetail.status)" class="action-section">
-        <view class="primary-btn" @tap="handleStatusAction">
-          <text class="btn-text">{{
-            getStatusAction(orderDetail.status).text
-          }}</text>
+      <view v-if="getStatusAction(orderDetail.status)" class="action-section fixed bottom-0 left-0 right-0 bg-white px-30rpx py-30rpx shadow-soft">
+        <view
+          class="primary-btn bg-gradient-to-r from-primary to-blue-400 rounded-full py-28rpx text-center btn-press"
+          @tap="handleStatusAction"
+        >
+          <text class="btn-text text-32rpx text-white font-bold">
+            {{ getStatusAction(orderDetail.status).text }}
+          </text>
         </view>
       </view>
 
       <!-- 底部占位 -->
-      <view class="bottom-space" />
+      <view class="bottom-space h-150rpx" />
     </view>
 
     <!-- 加载中 -->
-    <view v-else class="loading-state">
-      <text class="loading-text">加载中...</text>
+    <view v-else class="loading-state py-200rpx text-center">
+      <text class="loading-text text-28rpx text-zinc-400">加载中...</text>
     </view>
   </view>
 </template>
 
-<style lang="scss" scoped>
-.ongoing-page {
-  min-height: 100vh;
-  background: #f4f5f7;
-}
-
-.ongoing-content {
-  padding: 180rpx 30rpx 0;
-}
-
-// 状态卡片
-.status-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
-  border-radius: 24rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-
-  .status-header {
-    display: flex;
-    align-items: center;
-    gap: 20rpx;
-
-    .status-badge {
-      padding: 10rpx 24rpx;
-      border-radius: 30rpx;
-      font-size: 26rpx;
-      color: #fff;
-      font-weight: bold;
-    }
-
-    .order-no {
-      font-size: 26rpx;
-      color: rgba(255, 255, 255, 0.85);
-    }
-  }
-
-  .status-action {
-    margin-top: 20rpx;
-
-    .action-hint {
-      font-size: 32rpx;
-      color: #fff;
-      font-weight: bold;
-    }
-  }
-}
-
-// 信息区块
-.info-section {
-  margin-bottom: 30rpx;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 16rpx;
-
-  .section-dot {
-    width: 16rpx;
-    height: 16rpx;
-    border-radius: 50%;
-    margin-right: 12rpx;
-
-    &.start {
-      background: #007aff;
-    }
-
-    &.end {
-      background: #00b578;
-    }
-  }
-
-  .section-title {
-    font-size: 32rpx;
-    font-weight: bold;
-    color: #333;
-  }
-}
-
-.info-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.address-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 20rpx;
-  border-bottom: 1rpx solid #f0f0f0;
-
-  .address-text {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
-    font-weight: bold;
-  }
-
-  .map-icon {
-    font-size: 40rpx;
-    margin-left: 16rpx;
-  }
-}
-
-.contact-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx 0;
-  border-bottom: 1rpx solid #f0f0f0;
-
-  .contact-name {
-    font-size: 28rpx;
-    color: #333;
-  }
-
-  .contact-phone {
-    font-size: 28rpx;
-    color: #007aff;
-  }
-}
-
-.time-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-top: 16rpx;
-
-  .time-label {
-    font-size: 28rpx;
-    color: #999;
-  }
-
-  .time-value {
-    font-size: 28rpx;
-    color: #333;
-  }
-}
-
-// 费用卡片
-.fee-card {
-  .fee-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 12rpx 0;
-
-    .fee-label {
-      font-size: 28rpx;
-      color: #666;
-    }
-
-    .fee-value {
-      font-size: 28rpx;
-      color: #333;
-
-      &.primary {
-        color: #ff7a00;
-        font-weight: bold;
-      }
-
-      &.danger {
-        color: #ff4c4c;
-      }
-
-      &.highlight {
-        color: #00b578;
-        font-size: 40rpx;
-        font-weight: bold;
-      }
-    }
-
-    &.total {
-      padding-top: 16rpx;
-    }
-  }
-
-  .fee-divider {
-    height: 1rpx;
-    background: #f0f0f0;
-    margin: 10rpx 0;
-  }
-}
-
-// 操作按钮
-.action-section {
-  padding: 30rpx;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.primary-btn {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
-  border-radius: 48rpx;
-  padding: 28rpx 0;
-  text-align: center;
-
-  .btn-text {
-    color: #fff;
-    font-size: 32rpx;
-    font-weight: bold;
-  }
-}
-
-.bottom-space {
-  height: 150rpx;
-}
-
-// 加载状态
-.loading-state {
-  padding: 200rpx 0;
-  text-align: center;
-
-  .loading-text {
-    font-size: 28rpx;
-    color: #999;
-  }
-}
-</style>
+<!-- 无需额外样式，UnoCSS 原子化类名已覆盖所有样式 -->

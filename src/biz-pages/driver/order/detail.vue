@@ -162,102 +162,106 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="order-detail-page">
+  <view class="order-detail-page min-h-screen bg-zinc-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="订单详情" />
 
     <!-- 页面内容 -->
-    <view v-if="orderDetail" class="detail-content">
-      <!-- 状态步骤条 -->
-      <view class="steps-section">
-        <view class="steps-card">
+    <view v-if="orderDetail" class="detail-content pt-180rpx pb-150rpx">
+      <!-- 状态步骤条 - 玻璃态卡片 -->
+      <view class="steps-section px-30rpx mb-30rpx">
+        <view class="steps-card glass-card p-40rpx flex-between">
           <view
             v-for="(step, index) in steps"
             :key="index"
-            class="step-item"
+            class="step-item flex-1 flex-col-center relative"
             :class="step.status"
           >
-            <view class="step-dot">
+            <view
+              class="step-dot w-48rpx h-48rpx rounded-full flex-center mb-12rpx text-white text-24rpx"
+              :class="{
+                'bg-success': step.status === 'finish',
+                'bg-primary': step.status === 'process',
+                'bg-zinc-300': step.status === 'wait',
+              }"
+            >
               <TnIcon v-if="step.status === 'finish'" name="check" size="20" />
-              <text v-else-if="step.status === 'process'">{{ index + 1 }}</text>
               <text v-else>{{ index + 1 }}</text>
             </view>
-            <text class="step-text">{{ step.text }}</text>
-            <view v-if="index < steps.length - 1" class="step-line" />
+            <text
+              class="text-22rpx text-center"
+              :class="{
+                'text-success': step.status === 'finish',
+                'text-primary font-bold': step.status === 'process',
+                'text-zinc-400': step.status === 'wait',
+              }"
+            >{{ step.text }}</text>
+            <!-- 连接线 -->
+            <view
+              v-if="index < steps.length - 1"
+              class="step-line absolute top-24rpx w-full h-4rpx -translate-y-1/2"
+              :class="step.status === 'finish' ? 'bg-success' : 'bg-zinc-300'"
+              :style="{ left: 'calc(50% + 30rpx)', width: 'calc(100% - 60rpx)' }"
+            />
           </view>
         </view>
       </view>
 
-      <!-- 当前状态卡片 -->
-      <view class="status-card">
-        <view class="status-info">
-          <text class="status-label">当前状态</text>
-          <text
-            class="status-value"
-            :style="{ color: ORDER_STATUS_CONFIG[orderDetail.status]?.color }"
-          >
+      <!-- 当前状态卡片 - 渐变背景 -->
+      <view
+        class="status-card mx-30rpx rounded-card p-30rpx mb-30rpx bg-gradient-to-r from-primary to-blue-400"
+      >
+        <view class="flex-between">
+          <text class="text-28rpx text-white/85">当前状态</text>
+          <text class="text-36rpx font-bold" :style="{ color: ORDER_STATUS_CONFIG[orderDetail.status]?.color }">
             {{ ORDER_STATUS_CONFIG[orderDetail.status]?.text }}
           </text>
         </view>
         <view
           v-if="orderDetail.status === ORDER_STATUS.GRABBED"
-          class="status-hint"
+          class="text-26rpx text-white/85 mt-12rpx"
         >
           请前往装货点确认到达
         </view>
       </view>
 
       <!-- 货物信息 -->
-      <view class="info-section">
-        <TnTitle title="货物信息" mode="dot" assist-color="#007AFF" size="lg" />
-        <view class="info-card">
-          <view class="goods-tags">
+      <view class="info-section px-30rpx mb-30rpx">
+        <TnTitle title="货物信息" mode="dot" assist-color="#3b82f6" size="lg" />
+        <view class="info-card white-card mt-20rpx p-30rpx">
+          <view class="flex gap-12rpx mb-20rpx">
             <TnTag type="primary" size="sm">{{ orderDetail.goods.type }}</TnTag>
-            <TnTag type="warning" size="sm">{{
-              orderDetail.goods.weight
-            }}</TnTag>
-            <TnTag type="success" size="sm">{{
-              orderDetail.goods.volume
-            }}</TnTag>
+            <TnTag type="warning" size="sm">{{ orderDetail.goods.weight }}</TnTag>
+            <TnTag type="success" size="sm">{{ orderDetail.goods.volume }}</TnTag>
           </view>
-          <view class="info-row">
-            <text class="info-label">数量</text>
-            <text class="info-value">{{ orderDetail.goods.count }}件</text>
+          <view class="info-row py-16rpx border-b border-zinc-100">
+            <text class="info-label text-28rpx text-zinc-500 flex-shrink-0">数量</text>
+            <text class="info-value text-28rpx text-zinc-700">{{ orderDetail.goods.count }}件</text>
           </view>
-          <view v-if="orderDetail.goods.remark" class="info-row">
-            <text class="info-label">备注</text>
-            <text class="info-value remark">{{
-              orderDetail.goods.remark
-            }}</text>
+          <view v-if="orderDetail.goods.remark" class="info-row py-16rpx">
+            <text class="info-label text-28rpx text-zinc-500 flex-shrink-0">备注</text>
+            <text class="info-value text-28rpx text-zinc-700 flex-1 ml-20rpx">{{ orderDetail.goods.remark }}</text>
           </view>
         </view>
       </view>
 
       <!-- 装货信息 -->
-      <view class="info-section">
-        <TnTitle title="装货信息" mode="dot" assist-color="#007AFF" size="lg" />
-        <view class="info-card">
-          <view class="info-row address-row">
-            <text class="info-label">装货地址</text>
-            <view class="address-info">
-              <text class="address-text">{{
-                orderDetail.loading.address
-              }}</text>
-              <view class="address-actions">
+      <view class="info-section px-30rpx mb-30rpx">
+        <TnTitle title="装货信息" mode="dot" assist-color="#3b82f6" size="lg" />
+        <view class="info-card white-card mt-20rpx p-30rpx">
+          <view class="info-row flex-col items-start py-16rpx border-b border-zinc-100">
+            <text class="info-label text-28rpx text-zinc-500 mb-8rpx">装货地址</text>
+            <view class="flex-between w-full">
+              <text class="address-text text-28rpx text-zinc-700 flex-1">{{ orderDetail.loading.address }}</text>
+              <view class="flex gap-20rpx">
                 <view
-                  class="action-icon-box"
-                  @tap="
-                    openMap(
-                      orderDetail.loading.latitude,
-                      orderDetail.loading.longitude,
-                      orderDetail.loading.address
-                    )
-                  "
+                  class="action-icon-box w-56rpx h-56rpx rounded-full bg-primary/10 flex-center text-primary btn-press"
+                  @tap="openMap(orderDetail.loading.latitude, orderDetail.loading.longitude, orderDetail.loading.address)"
                 >
                   <TnIcon name="location-fill" size="32" />
                 </view>
                 <view
-                  class="action-icon-box"
+                  class="action-icon-box w-56rpx h-56rpx rounded-full bg-primary/10 flex-center text-primary btn-press"
                   @tap="makePhoneCall(orderDetail.loading.contactPhone)"
                 >
                   <TnIcon name="phone" size="32" />
@@ -265,55 +269,40 @@ onMounted(() => {
               </view>
             </view>
           </view>
-          <view class="info-row">
-            <text class="info-label">联系人</text>
-            <text class="info-value">{{
-              orderDetail.loading.contactName
-            }}</text>
+          <view class="info-row py-16rpx border-b border-zinc-100 flex-between">
+            <text class="info-label text-28rpx text-zinc-500">联系人</text>
+            <text class="info-value text-28rpx text-zinc-700">{{ orderDetail.loading.contactName }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">联系电话</text>
-            <text
-              class="info-value link"
-              @tap="makePhoneCall(orderDetail.loading.contactPhone)"
-            >
+          <view class="info-row py-16rpx border-b border-zinc-100 flex-between">
+            <text class="info-label text-28rpx text-zinc-500">联系电话</text>
+            <text class="info-value text-28rpx text-primary" @tap="makePhoneCall(orderDetail.loading.contactPhone)">
               {{ orderDetail.loading.contactPhone }}
             </text>
           </view>
-          <view class="info-row">
-            <text class="info-label">装货时间</text>
-            <text class="info-value">{{
-              orderDetail.loading.scheduledTime
-            }}</text>
+          <view class="info-row py-16rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">装货时间</text>
+            <text class="info-value text-28rpx text-zinc-700">{{ orderDetail.loading.scheduledTime }}</text>
           </view>
         </view>
       </view>
 
       <!-- 卸货信息 -->
-      <view class="info-section">
-        <TnTitle title="卸货信息" mode="dot" assist-color="#00B578" size="lg" />
-        <view class="info-card">
-          <view class="info-row address-row">
-            <text class="info-label">卸货地址</text>
-            <view class="address-info">
-              <text class="address-text">{{
-                orderDetail.unloading.address
-              }}</text>
-              <view class="address-actions">
+      <view class="info-section px-30rpx mb-30rpx">
+        <TnTitle title="卸货信息" mode="dot" assist-color="#10b981" size="lg" />
+        <view class="info-card white-card mt-20rpx p-30rpx">
+          <view class="info-row flex-col items-start py-16rpx border-b border-zinc-100">
+            <text class="info-label text-28rpx text-zinc-500 mb-8rpx">卸货地址</text>
+            <view class="flex-between w-full">
+              <text class="address-text text-28rpx text-zinc-700 flex-1">{{ orderDetail.unloading.address }}</text>
+              <view class="flex gap-20rpx">
                 <view
-                  class="action-icon-box"
-                  @tap="
-                    openMap(
-                      orderDetail.unloading.latitude,
-                      orderDetail.unloading.longitude,
-                      orderDetail.unloading.address
-                    )
-                  "
+                  class="action-icon-box w-56rpx h-56rpx rounded-full bg-success/10 flex-center text-success btn-press"
+                  @tap="openMap(orderDetail.unloading.latitude, orderDetail.unloading.longitude, orderDetail.unloading.address)"
                 >
                   <TnIcon name="location-fill" size="32" />
                 </view>
                 <view
-                  class="action-icon-box"
+                  class="action-icon-box w-56rpx h-56rpx rounded-full bg-success/10 flex-center text-success btn-press"
                   @tap="makePhoneCall(orderDetail.unloading.contactPhone)"
                 >
                   <TnIcon name="phone" size="32" />
@@ -321,18 +310,13 @@ onMounted(() => {
               </view>
             </view>
           </view>
-          <view class="info-row">
-            <text class="info-label">联系人</text>
-            <text class="info-value">{{
-              orderDetail.unloading.contactName
-            }}</text>
+          <view class="info-row py-16rpx border-b border-zinc-100 flex-between">
+            <text class="info-label text-28rpx text-zinc-500">联系人</text>
+            <text class="info-value text-28rpx text-zinc-700">{{ orderDetail.unloading.contactName }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">联系电话</text>
-            <text
-              class="info-value link"
-              @tap="makePhoneCall(orderDetail.unloading.contactPhone)"
-            >
+          <view class="info-row py-16rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">联系电话</text>
+            <text class="info-value text-28rpx text-primary" @tap="makePhoneCall(orderDetail.unloading.contactPhone)">
               {{ orderDetail.unloading.contactPhone }}
             </text>
           </view>
@@ -340,60 +324,51 @@ onMounted(() => {
       </view>
 
       <!-- 费用信息 -->
-      <view class="info-section">
-        <TnTitle title="费用信息" mode="dot" assist-color="#FF7A00" size="lg" />
-        <view class="info-card">
-          <view class="info-row">
-            <text class="info-label">运费</text>
-            <text class="info-value primary"
-              >¥{{ orderDetail.fee.freight }}</text
-            >
+      <view class="info-section px-30rpx mb-30rpx">
+        <TnTitle title="费用信息" mode="dot" assist-color="#f97316" size="lg" />
+        <view class="info-card white-card mt-20rpx p-30rpx">
+          <view class="info-row py-12rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">运费</text>
+            <text class="info-value text-28rpx text-orange font-bold">¥{{ orderDetail.fee.freight }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">平台服务费</text>
-            <text class="info-value danger"
-              >-¥{{ orderDetail.fee.serviceFee }}</text
-            >
+          <view class="info-row py-12rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">平台服务费</text>
+            <text class="info-value text-28rpx text-red-500">-¥{{ orderDetail.fee.serviceFee }}</text>
           </view>
-          <view class="info-divider" />
-          <view class="info-row total">
-            <text class="info-label">实际收入</text>
-            <text class="info-value highlight"
-              >¥{{ orderDetail.fee.actualIncome }}</text
-            >
+          <view class="h-1rpx bg-zinc-200 my-10rpx" />
+          <view class="info-row py-16rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">实际收入</text>
+            <text class="info-value text-36rpx text-success font-bold">¥{{ orderDetail.fee.actualIncome }}</text>
           </view>
         </view>
       </view>
 
       <!-- 货主信息 -->
-      <view class="info-section">
-        <TnTitle title="货主信息" mode="dot" assist-color="#999999" size="lg" />
-        <view class="info-card">
-          <view class="info-row">
-            <text class="info-label">货主姓名</text>
-            <text class="info-value">{{ orderDetail.shipper.name }}</text>
+      <view class="info-section px-30rpx mb-30rpx">
+        <TnTitle title="货主信息" mode="dot" assist-color="#71717a" size="lg" />
+        <view class="info-card white-card mt-20rpx p-30rpx">
+          <view class="info-row py-16rpx border-b border-zinc-100 flex-between">
+            <text class="info-label text-28rpx text-zinc-500">货主姓名</text>
+            <text class="info-value text-28rpx text-zinc-700">{{ orderDetail.shipper.name }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">联系电话</text>
-            <text
-              class="info-value link"
-              @tap="makePhoneCall(orderDetail.shipper.phone)"
-            >
+          <view class="info-row py-16rpx border-b border-zinc-100 flex-between">
+            <text class="info-label text-28rpx text-zinc-500">联系电话</text>
+            <text class="info-value text-28rpx text-primary" @tap="makePhoneCall(orderDetail.shipper.phone)">
               {{ orderDetail.shipper.phone }}
             </text>
           </view>
-          <view class="info-row">
-            <text class="info-label">货主评分</text>
-            <view class="info-value">
+          <view class="info-row py-16rpx flex-between">
+            <text class="info-label text-28rpx text-zinc-500">货主评分</text>
+            <view class="flex items-center">
               <TnIcon name="star" size="24" color="#ffb800" />
-              <text class="rating-text">{{ orderDetail.shipper.rating }}</text>
+              <text class="text-28rpx text-zinc-700 ml-8rpx">{{ orderDetail.shipper.rating }}</text>
             </view>
           </view>
         </view>
       </view>
 
       <!-- 操作按钮 -->
-      <view v-if="getStatusAction(orderDetail.status)" class="action-section">
+      <view v-if="getStatusAction(orderDetail.status)" class="action-section fixed bottom-0 left-0 right-0 bg-white px-30rpx py-30rpx shadow-soft">
         <TnButton
           type="primary"
           width="100%"
@@ -401,276 +376,18 @@ onMounted(() => {
           shape="round"
           shadow
           @click="handleStatusAction"
+          class="btn-press"
         >
           {{ getStatusAction(orderDetail.status).text }}
         </TnButton>
       </view>
-
-      <!-- 底部占位 -->
-      <view class="bottom-space" />
     </view>
 
     <!-- 加载中 -->
-    <view v-else class="loading-state">
-      <text class="loading-text">加载中...</text>
+    <view v-else class="loading-state py-200rpx text-center">
+      <text class="loading-text text-28rpx text-zinc-400">加载中...</text>
     </view>
   </view>
 </template>
 
-<style lang="scss" scoped>
-.order-detail-page {
-  min-height: 100vh;
-  background: #f5f6f8;
-}
-
-.detail-content {
-  padding: 180rpx 30rpx 0;
-}
-
-// 步骤条
-.steps-section {
-  margin-bottom: 30rpx;
-}
-
-.steps-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 40rpx 30rpx;
-  display: flex;
-  justify-content: space-between;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.step-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  flex: 1;
-
-  .step-dot {
-    width: 48rpx;
-    height: 48rpx;
-    border-radius: 50%;
-    background: #ddd;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 24rpx;
-    color: #fff;
-    margin-bottom: 12rpx;
-  }
-
-  .step-text {
-    font-size: 22rpx;
-    color: #999;
-    text-align: center;
-  }
-
-  .step-line {
-    position: absolute;
-    top: 24rpx;
-    left: calc(50% + 30rpx);
-    width: calc(100% - 60rpx);
-    height: 4rpx;
-    background: #ddd;
-  }
-
-  &.finish {
-    .step-dot {
-      background: #00b578;
-    }
-
-    .step-text {
-      color: #00b578;
-    }
-
-    .step-line {
-      background: #00b578;
-    }
-  }
-
-  &.process {
-    .step-dot {
-      background: #007aff;
-    }
-
-    .step-text {
-      color: #007aff;
-      font-weight: bold;
-    }
-  }
-}
-
-// 状态卡片
-.status-card {
-  background: linear-gradient(135deg, #007aff, #00b4ff);
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 30rpx;
-
-  .status-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-
-    .status-label {
-      font-size: 28rpx;
-      color: rgba(255, 255, 255, 0.85);
-    }
-
-    .status-value {
-      font-size: 36rpx;
-      font-weight: bold;
-    }
-  }
-
-  .status-hint {
-    font-size: 26rpx;
-    color: rgba(255, 255, 255, 0.85);
-    margin-top: 12rpx;
-  }
-}
-
-// 信息区块
-.info-section {
-  margin-bottom: 30rpx;
-}
-
-.info-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-top: 20rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.goods-tags {
-  display: flex;
-  gap: 12rpx;
-  margin-bottom: 20rpx;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 16rpx 0;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .info-label {
-    font-size: 28rpx;
-    color: #999;
-    flex-shrink: 0;
-  }
-
-  .info-value {
-    font-size: 28rpx;
-    color: #333;
-    text-align: right;
-
-    &.primary {
-      color: #ff7a00;
-      font-weight: bold;
-    }
-
-    &.danger {
-      color: #ff4c4c;
-    }
-
-    &.highlight {
-      color: #00b578;
-      font-size: 36rpx;
-      font-weight: bold;
-    }
-
-    &.link {
-      color: #007aff;
-    }
-
-    &.remark {
-      flex: 1;
-      margin-left: 20rpx;
-    }
-
-    .rating-text {
-      margin-left: 8rpx;
-      color: #333;
-    }
-  }
-
-  &.total {
-    padding-top: 20rpx;
-  }
-}
-
-.info-divider {
-  height: 1rpx;
-  background: #f0f0f0;
-  margin: 10rpx 0;
-}
-
-.address-row {
-  flex-direction: column;
-
-  .address-info {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-top: 8rpx;
-
-    .address-text {
-      flex: 1;
-      font-size: 28rpx;
-      color: #333;
-    }
-
-    .address-actions {
-      display: flex;
-      gap: 20rpx;
-
-      .action-icon-box {
-        width: 56rpx;
-        height: 56rpx;
-        background: #f0f7ff;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #007aff;
-      }
-    }
-  }
-}
-
-// 操作按钮
-.action-section {
-  padding: 30rpx;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: #fff;
-  box-shadow: 0 -4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.bottom-space {
-  height: 150rpx;
-}
-
-// 加载状态
-.loading-state {
-  padding: 200rpx 0;
-  text-align: center;
-
-  .loading-text {
-    font-size: 28rpx;
-    color: #999;
-  }
-}
-</style>
+<!-- 无需额外样式，UnoCSS 原子化类名已覆盖所有样式 -->

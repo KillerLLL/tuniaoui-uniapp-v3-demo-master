@@ -1,0 +1,58 @@
+// =============================================
+// 图鸟UI高级CSS变量 - 阴影、圆角、间距、动画
+// =============================================
+
+:root {
+  // ---------- 多层阴影系统 ----------
+  // 单层基础阴影
+  --tn-shadow-card: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
+
+  // 多层柔和阴影 - 1层（轻量）
+  --tn-shadow-soft-1: 0 2rpx 8rpx rgba(0, 0, 0, 0.04), 0 4rpx 16rpx rgba(0, 0, 0, 0.06);
+
+  // 多层柔和阴影 - 2层（标准）
+  --tn-shadow-soft-2: 0 1rpx 4rpx rgba(0, 0, 0, 0.02), 0 4rpx 12rpx rgba(0, 0, 0, 0.04), 0 8rpx 24rpx rgba(0, 0, 0, 0.06);
+
+  // 多层柔和阴影 - 3层（精致）
+  --tn-shadow-soft-3: 0 1rpx 2rpx rgba(0, 0, 0, 0.01), 0 3rpx 8rpx rgba(0, 0, 0, 0.03), 0 6rpx 16rpx rgba(0, 0, 0, 0.05), 0 12rpx 32rpx rgba(0, 0, 0, 0.08);
+
+  // 悬浮状态阴影
+  --tn-shadow-hover: 0 4rpx 12rpx rgba(0, 0, 0, 0.08), 0 8rpx 24rpx rgba(0, 0, 0, 0.1);
+
+  // 主色卡片阴影（蓝色渐变卡片）
+  --tn-shadow-primary: 0 4rpx 12rpx rgba(0, 122, 255, 0.15), 0 8rpx 24rpx rgba(0, 122, 255, 0.25), 0 16rpx 48rpx rgba(0, 122, 255, 0.35);
+
+  // 成功色卡片阴影（绿色渐变卡片）
+  --tn-shadow-success: 0 4rpx 12rpx rgba(0, 181, 120, 0.15), 0 8rpx 24rpx rgba(0, 181, 120, 0.25), 0 16rpx 48rpx rgba(0, 181, 120, 0.35);
+
+  // ---------- 圆角系统 ----------
+  --tn-radius-xs: 8rpx;
+  --tn-radius-sm: 12rpx;
+  --tn-radius-md: 16rpx;
+  --tn-radius-lg: 20rpx;
+  --tn-radius-xl: 24rpx;
+  --tn-radius-2xl: 32rpx;
+
+  // ---------- 间距系统 ----------
+  --tn-space-xs: 8rpx;
+  --tn-space-sm: 12rpx;
+  --tn-space-md: 16rpx;
+  --tn-space-lg: 20rpx;
+  --tn-space-xl: 24rpx;
+  --tn-space-2xl: 30rpx;
+  --tn-space-3xl: 40rpx;
+
+  // ---------- 触控区域 ----------
+  --tn-touch-target: 48px;
+
+  // ---------- 动画时长 ----------
+  --tn-duration-fast: 150ms;
+  --tn-duration-normal: 250ms;
+  --tn-duration-slow: 400ms;
+  --tn-duration-spring: 600ms;
+
+  // ---------- 缓动函数 ----------
+  --tn-ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --tn-ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --tn-ease-out: cubic-bezier(0, 0, 0.2, 1);
+}

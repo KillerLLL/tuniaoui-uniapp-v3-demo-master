@@ -84,154 +84,90 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="vehicle-detail-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar :title="isEdit ? '车辆详情' : '添加车辆'">
       <template #right>
-        <view class="navbar-right" @tap="handleSave">
-          <text class="save-text">保存</text>
+        <view class="p-2 btn-press" @tap="handleSave">
+          <text class="text-primary text-sm font-bold">保存</text>
         </view>
       </template>
     </CustomNavbar>
 
     <!-- 页面内容 -->
-    <view class="detail-content">
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
       <!-- 表单 -->
-      <view class="form-section">
-        <view class="form-item">
-          <text class="form-label">车牌号</text>
+      <view class="bg-white rounded-3xl mb-6 shadow-sm overflow-hidden">
+        <view class="form-item flex items-center p-6 border-b border-gray-100">
+          <text class="w-40 text-gray-500 text-sm flex-shrink-0">车牌号</text>
           <input
             v-model="vehicleForm.carPlate"
-            class="form-input"
+            class="flex-1 text-gray-800 text-sm"
             placeholder="请输入车牌号"
-            placeholder-class="input-placeholder"
+            placeholder-class="text-gray-300"
           />
         </view>
-        <view class="form-item">
-          <text class="form-label">车辆类型</text>
+        <view class="form-item flex items-center p-6 border-b border-gray-100">
+          <text class="w-40 text-gray-500 text-sm flex-shrink-0">车辆类型</text>
           <input
             v-model="vehicleForm.carType"
-            class="form-input"
+            class="flex-1 text-gray-800 text-sm"
             placeholder="如：中型货车"
-            placeholder-class="input-placeholder"
+            placeholder-class="text-gray-300"
           />
         </view>
-        <view class="form-item">
-          <text class="form-label">车长</text>
+        <view class="form-item flex items-center p-6 border-b border-gray-100">
+          <text class="w-40 text-gray-500 text-sm flex-shrink-0">车长</text>
           <input
             v-model="vehicleForm.carLength"
-            class="form-input"
+            class="flex-1 text-gray-800 text-sm"
             placeholder="如：6.8米"
-            placeholder-class="input-placeholder"
+            placeholder-class="text-gray-300"
           />
         </view>
-        <view class="form-item">
-          <text class="form-label">载重</text>
+        <view class="form-item flex items-center p-6 border-b border-gray-100">
+          <text class="w-40 text-gray-500 text-sm flex-shrink-0">载重</text>
           <input
             v-model="vehicleForm.maxLoad"
-            class="form-input"
+            class="flex-1 text-gray-800 text-sm"
             placeholder="如：10吨"
-            placeholder-class="input-placeholder"
+            placeholder-class="text-gray-300"
           />
         </view>
-        <view class="form-item">
-          <text class="form-label">容积</text>
+        <view class="form-item flex items-center p-6">
+          <text class="w-40 text-gray-500 text-sm flex-shrink-0">容积</text>
           <input
             v-model="vehicleForm.volume"
-            class="form-input"
+            class="flex-1 text-gray-800 text-sm"
             placeholder="如：40方"
-            placeholder-class="input-placeholder"
+            placeholder-class="text-gray-300"
           />
         </view>
       </view>
 
       <!-- 提示 -->
-      <view class="tips-section">
-        <text class="tips-title">温馨提示</text>
-        <text class="tips-text">• 请填写真实的车辆信息</text>
-        <text class="tips-text">• 车辆信息审核通过后可接单</text>
-        <text class="tips-text">• 如需修改，请联系客服</text>
+      <view class="bg-white rounded-3xl p-6 shadow-sm">
+        <text class="text-gray-800 text-sm font-bold block mb-4">温馨提示</text>
+        <view class="space-y-2">
+          <text class="text-gray-400 text-xs block">• 请填写真实的车辆信息</text>
+          <text class="text-gray-400 text-xs block">• 车辆信息审核通过后可接单</text>
+          <text class="text-gray-400 text-xs block">• 如需修改，请联系客服</text>
+        </view>
       </view>
     </view>
   </view>
 </template>
 
 <style lang="scss" scoped>
-.vehicle-detail-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.btn-press {
+  transition: transform 0.15s ease;
 }
 
-.navbar-right {
-  padding: 10rpx;
-
-  .save-text {
-    font-size: 28rpx;
-    color: #007aff;
-    font-weight: bold;
-  }
+.btn-press:active {
+  transform: scale(0.95);
 }
 
-.detail-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.form-section {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 10rpx 0;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-}
-
-.form-item {
-  display: flex;
-  align-items: center;
-  padding: 30rpx;
-  border-bottom: 1rpx solid #f5f5f5;
-
-  &:last-child {
-    border-bottom: none;
-  }
-
-  .form-label {
-    width: 160rpx;
-    font-size: 28rpx;
-    color: #666;
-    flex-shrink: 0;
-  }
-
-  .form-input {
-    flex: 1;
-    font-size: 30rpx;
-    color: #333;
-  }
-
-  .input-placeholder {
-    color: #bbb;
-    font-size: 28rpx;
-  }
-}
-
-.tips-section {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .tips-title {
-    font-size: 28rpx;
-    color: #333;
-    font-weight: bold;
-    display: block;
-    margin-bottom: 16rpx;
-  }
-
-  .tips-text {
-    font-size: 26rpx;
-    color: #999;
-    display: block;
-    margin-bottom: 10rpx;
-  }
+.text-primary {
+  color: #3b82f6;
 }
 </style>

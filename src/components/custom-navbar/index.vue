@@ -48,23 +48,33 @@ const handleBack = () => {
 </script>
 
 <template>
-  <view class="custom-navbar" :style="{ backgroundColor: bgColor }">
+  <view
+    class="custom-navbar fixed top-0 left-0 right-0 z-999"
+    :style="{ backgroundColor: bgColor }"
+  >
     <!-- 状态栏占位 -->
     <view :style="{ height: statusBarHeight + 'px' }" />
     <!-- 导航栏主体 -->
     <view
-      class="navbar-content"
-      :style="{ height: '44px', color: textColor }"
+      class="navbar-content h-11 flex items-center px-6 relative"
+      :style="{ color: textColor }"
     >
       <!-- 返回按钮 -->
-      <view v-if="showBack" class="back-btn" @tap="handleBack">
-        <TnIcon name="left" size="36" />
-        <text class="back-text">返回</text>
+      <view
+        v-if="showBack"
+        class="back-btn flex items-center p-2 -m-2 z-1 rounded-sm btn-press"
+        @tap="handleBack"
+      >
+        <TnIcon name="left" size="18" />
+        <text class="back-text text-sm ml-1">返回</text>
       </view>
       <!-- 左侧插槽 -->
       <slot name="left" />
       <!-- 标题 -->
-      <text class="navbar-title" :class="{ 'has-back': showBack }">
+      <text
+        class="navbar-title flex-1 text-center text-base font-bold absolute left-1/2 -translate-x-1/2"
+        :class="{ 'has-back': showBack }"
+      >
         {{ title }}
       </text>
       <!-- 右侧插槽 -->
@@ -74,49 +84,17 @@ const handleBack = () => {
 </template>
 
 <style lang="scss" scoped>
-.custom-navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 999;
+/* 使用 UnoCSS 原子化类名，保留必要的作用域样式 */
 
-  .navbar-content {
-    display: flex;
-    align-items: center;
-    padding: 0 30rpx;
-    position: relative;
-  }
+// 玻璃态背景效果（通过 UnoCSS glass-card 类实现）
+:deep(.glass-card) {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
+}
 
-  .back-btn {
-    display: flex;
-    align-items: center;
-    padding: 10rpx 0;
-    z-index: 1;
-
-    .back-icon {
-      display: flex;
-      align-items: center;
-    }
-
-    .back-text {
-      font-size: 28rpx;
-      margin-left: 4rpx;
-    }
-  }
-
-  .navbar-title {
-    flex: 1;
-    text-align: center;
-    font-size: 32rpx;
-    font-weight: bold;
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-
-    &.has-back {
-      // 有返回按钮时居中
-    }
-  }
+// 导航栏阴影
+:deep(.navbar-shadow) {
+  box-shadow: 0 1rpx 0 rgba(0, 0, 0, 0.05);
 }
 </style>

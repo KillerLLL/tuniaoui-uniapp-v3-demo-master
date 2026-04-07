@@ -33,57 +33,57 @@ const clearHistory = () => {
 </script>
 
 <template>
-  <view class="search-page">
+  <view class="search-page min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="搜索" />
 
     <!-- 页面内容 -->
-    <view class="search-content">
+    <view class="search-content px-6 pt-45">
       <!-- 搜索框 -->
-      <view class="search-box">
+      <view class="search-box glass-card rounded-full px-4 py-2 flex items-center mb-6">
         <input
           v-model="searchKey"
-          class="search-input"
+          class="search-input flex-1 h-9 text-sm"
           placeholder="搜索货源"
           placeholder-class="input-placeholder"
           @confirm="handleSearch"
         />
-        <view class="search-btn" @tap="handleSearch">
-          <text>搜索</text>
+        <view class="search-btn bg-gradient-to-r from-primary to-blue-400 px-4 py-2 rounded-full btn-press" @tap="handleSearch">
+          <text class="text-sm text-white">搜索</text>
         </view>
       </view>
 
       <!-- 搜索历史 -->
-      <view v-if="historyList.length > 0" class="history-section">
-        <view class="section-header">
-          <text class="section-title">搜索历史</text>
-          <text class="clear-btn" @tap="clearHistory">清空</text>
+      <view v-if="historyList.length > 0" class="history-section mb-6">
+        <view class="section-header flex justify-between items-center mb-4">
+          <text class="section-title text-base font-bold text-gray-800">搜索历史</text>
+          <text class="clear-btn text-sm text-gray-400 btn-press" @tap="clearHistory">清空</text>
         </view>
-        <view class="history-tags">
+        <view class="history-tags flex flex-wrap gap-3">
           <view
             v-for="(item, index) in historyList"
             :key="index"
-            class="history-tag"
+            class="history-tag glass-card px-4 py-2 rounded-full card-press"
             @tap="searchKey = item"
           >
-            <text class="tag-text">{{ item }}</text>
+            <text class="tag-text text-sm text-gray-600">{{ item }}</text>
           </view>
         </view>
       </view>
 
       <!-- 热门搜索 -->
-      <view class="hot-section">
-        <view class="section-header">
-          <text class="section-title">热门搜索</text>
+      <view class="hot-section mb-6">
+        <view class="section-header flex justify-between items-center mb-4">
+          <text class="section-title text-base font-bold text-gray-800">热门搜索</text>
         </view>
-        <view class="hot-tags">
+        <view class="hot-tags flex flex-wrap gap-3">
           <view
             v-for="(item, index) in hotList"
             :key="index"
-            class="hot-tag"
+            class="hot-tag glass-card px-4 py-2 rounded-full card-press"
             @tap="searchKey = item"
           >
-            <text class="tag-text">{{ item }}</text>
+            <text class="tag-text text-sm text-gray-600">{{ item }}</text>
           </view>
         </view>
       </view>
@@ -92,86 +92,44 @@ const clearHistory = () => {
 </template>
 
 <style lang="scss" scoped>
-.search-page {
-  min-height: 100vh;
-  background: #f4f5f7;
-}
+/* 使用 UnoCSS 原子化类名 */
 
-.search-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.search-box {
-  display: flex;
-  background: #fff;
-  border-radius: 48rpx;
-  padding: 10rpx 10rpx 10rpx 30rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .search-input {
-    flex: 1;
-    height: 70rpx;
-    font-size: 28rpx;
-  }
-
-  .input-placeholder {
-    color: #bbb;
-    font-size: 28rpx;
-  }
-
-  .search-btn {
-    background: linear-gradient(135deg, #007aff, #00b4ff);
-    padding: 16rpx 32rpx;
-    border-radius: 36rpx;
-
-    text {
-      color: #fff;
-      font-size: 28rpx;
-    }
-  }
-}
-
-.history-section,
-.hot-section {
-  margin-bottom: 30rpx;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20rpx;
-
-  .section-title {
-    font-size: 30rpx;
-    font-weight: bold;
-    color: #333;
-  }
-
-  .clear-btn {
-    font-size: 26rpx;
-    color: #999;
-  }
-}
-
-.history-tags,
-.hot-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16rpx;
-}
-
-.history-tag,
-.hot-tag {
-  background: #fff;
-  padding: 16rpx 24rpx;
-  border-radius: 30rpx;
+/* 玻璃态卡片效果 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20rpx);
+  -webkit-backdrop-filter: blur(20rpx);
   box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.04);
+}
 
-  .tag-text {
-    font-size: 26rpx;
-    color: #666;
+/* 按钮按压效果 */
+.btn-press {
+  transition: transform 0.15s ease, opacity 0.15s ease;
+
+  &:active {
+    transform: scale(0.96);
+    opacity: 0.9;
   }
+}
+
+/* 卡片按压效果 */
+.card-press {
+  transition: transform 0.2s ease, opacity 0.2s ease;
+
+  &:active {
+    transform: scale(0.95);
+    opacity: 0.9;
+  }
+}
+
+/* 输入框占位符样式 */
+.input-placeholder {
+  color: #bbb;
+  font-size: 28rpx;
+}
+
+/* 搜索按钮渐变阴影 */
+.search-btn {
+  box-shadow: 0 2rpx 10rpx rgba(59, 130, 246, 0.3);
 }
 </style>

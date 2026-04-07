@@ -44,11 +44,11 @@ onMounted(() => {
 </script>
 
 <template>
-  <view class="invoice-page">
+  <view class="min-h-screen bg-gray-100">
     <!-- 自定义导航栏 -->
     <CustomNavbar title="发票管理">
       <template #right>
-        <view class="navbar-right">
+        <view class="p-2">
           <TnButton type="primary" size="sm" plain @click="applyInvoice">
             申请
           </TnButton>
@@ -57,41 +57,35 @@ onMounted(() => {
     </CustomNavbar>
 
     <!-- 页面内容 -->
-    <view class="invoice-content">
-      <view v-for="item in invoiceList" :key="item.id" class="invoice-card">
-        <view class="card-header">
-          <text class="invoice-title">{{ item.title }}</text>
+    <view class="px-4 pb-8" style="padding-top: 180rpx">
+      <view v-for="item in invoiceList" :key="item.id" class="card-press bg-white rounded-3xl p-6 mb-6 shadow-sm">
+        <!-- 卡片头部 -->
+        <view class="flex justify-between items-center pb-4 mb-4 border-b border-gray-100">
+          <text class="text-gray-800 text-base font-bold">{{ item.title }}</text>
           <TnTag
-            :type="
-              item.status === 2
-                ? 'success'
-                : item.status === 0
-                ? 'warning'
-                : item.status === 1
-                ? 'primary'
-                : 'danger'
-            "
+            :type="item.status === 2 ? 'success' : item.status === 0 ? 'warning' : item.status === 1 ? 'primary' : 'danger'"
             size="sm"
           >
             {{ getStatusText(item.status) }}
           </TnTag>
         </view>
-        <view class="card-body">
-          <view class="info-row">
-            <text class="info-label">税号</text>
-            <text class="info-value">{{ item.taxNo }}</text>
+        <!-- 卡片内容 -->
+        <view class="space-y-3">
+          <view class="flex justify-between">
+            <text class="text-gray-400 text-sm">税号</text>
+            <text class="text-gray-800 text-sm">{{ item.taxNo }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">开票金额</text>
-            <text class="info-value primary">¥{{ item.amount }}</text>
+          <view class="flex justify-between">
+            <text class="text-gray-400 text-sm">开票金额</text>
+            <text class="text-orange-500 text-sm font-bold">¥{{ item.amount }}</text>
           </view>
-          <view class="info-row">
-            <text class="info-label">申请时间</text>
-            <text class="info-value">{{ item.createTime }}</text>
+          <view class="flex justify-between">
+            <text class="text-gray-400 text-sm">申请时间</text>
+            <text class="text-gray-800 text-sm">{{ item.createTime }}</text>
           </view>
-          <view v-if="item.invoiceTime" class="info-row">
-            <text class="info-label">开票时间</text>
-            <text class="info-value">{{ item.invoiceTime }}</text>
+          <view v-if="item.invoiceTime" class="flex justify-between">
+            <text class="text-gray-400 text-sm">开票时间</text>
+            <text class="text-gray-800 text-sm">{{ item.invoiceTime }}</text>
           </view>
         </view>
       </view>
@@ -99,15 +93,9 @@ onMounted(() => {
       <!-- 空状态 -->
       <TnEmpty v-if="invoiceList.length === 0" mode="order" show-tips>
         <template #tips>
-          <text class="empty-text">暂无发票记录</text>
-          <view class="empty-btn">
-            <TnButton
-              type="primary"
-              size="sm"
-              shadow
-              shape="round"
-              @click="applyInvoice"
-            >
+          <text class="text-gray-400 text-lg block mb-6">暂无发票记录</text>
+          <view class="inline-block">
+            <TnButton type="primary" size="sm" shadow shape="round" @click="applyInvoice">
               申请开票
             </TnButton>
           </view>
@@ -118,73 +106,11 @@ onMounted(() => {
 </template>
 
 <style lang="scss" scoped>
-.invoice-page {
-  min-height: 100vh;
-  background: #f4f5f7;
+.card-press {
+  transition: transform 0.15s ease;
 }
 
-.navbar-right {
-  padding: 10rpx;
-}
-
-.invoice-content {
-  padding: 180rpx 30rpx 30rpx;
-}
-
-.invoice-card {
-  background: #fff;
-  border-radius: 24rpx;
-  padding: 30rpx;
-  margin-bottom: 24rpx;
-  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.06);
-
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20rpx;
-    padding-bottom: 20rpx;
-    border-bottom: 1rpx solid #f5f5f5;
-
-    .invoice-title {
-      font-size: 30rpx;
-      color: #333;
-      font-weight: bold;
-    }
-  }
-
-  .card-body {
-    .info-row {
-      display: flex;
-      justify-content: space-between;
-      padding: 12rpx 0;
-
-      .info-label {
-        font-size: 28rpx;
-        color: #999;
-      }
-
-      .info-value {
-        font-size: 28rpx;
-        color: #333;
-
-        &.primary {
-          color: #ff7a00;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-}
-
-.empty-text {
-  font-size: 32rpx;
-  color: #999;
-  display: block;
-  margin-bottom: 30rpx;
-}
-
-.empty-btn {
-  display: inline-block;
+.card-press:active {
+  transform: scale(0.98);
 }
 </style>
